@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <Sidebar></Sidebar>
-    <router-view></router-view>
+    <router-view class="content"></router-view>
   </div>
 </template>
 
@@ -16,4 +16,7 @@ export default {
 </script>
 
 <style lang="scss">
+  .content {
+    margin-left: 170px;
+  }
 </style>

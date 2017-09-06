@@ -1,10 +1,10 @@
 <template lang="html">
   <div class="side-menu" v-bind:style="style">
     <div class="menu-trigger" v-show="showMenu" @click="triggerMenu">
-      <
+      <Icon type="arrow-left-b" />
     </div>
     <div class="menu-trigger" v-show="!showMenu" @click="triggerMenu">
-      >
+      <Icon type="arrow-right-b" />
     </div>
     <router-link :to="item.path" tag="div" class="side-menu-item" v-for="(item, index) in menu" :key="item.name">
       <img :src="item.imgUrl" :alt="item.name" v-show="showMenu">

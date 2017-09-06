@@ -1,13 +1,306 @@
 <template lang="html">
   <div class="">
-    离线导入
+    <div class="form">
+      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" inline>
+        <FormItem prop="taskId" label="任务编号">
+          <Input type="text" v-model="filterForm.taskId"></Input>
+        </FormItem>
+        <FormItem prop="dbName" label="库名">
+          <Input type="text" v-model="filterForm.dbName"></Input>
+        </FormItem>
+        <FormItem prop="tableName" label="表名">
+          <Input type="text" v-model="filterForm.tableName"></Input>
+        </FormItem>
+        <FormItem prop="taskStatus" label="任务状态">
+          <Select v-model="filterForm.taskStatus" placeholder="请选择">
+            <Option value=1>运行中</Option>
+            <Option value=2>已完成</Option>
+            <Option value=3>已失败</Option>
+            <Option value=4>待运行</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="">筛选</Button>
+        </FormItem>
+      </Form>
+    </div>
+    <div class="operation-group">
+      <div class="operation-item" id="run-task">
+        <span class="operation-directive">立即运行</span>
+      </div>
+      <div class="operation-item" id="delete-task">
+        <span class="operation-directive">删除任务</span>
+      </div>
+      <div class="operation-item" id="create-task">
+        <span class="operation-directive">创建导入任务</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      filterForm: {
+        taskId: '',
+        dbName: '',
+        tableName: '',
+        taskStatus: ''
+      },
+      labelWidth: 80,
+      columns: [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
+          type: 'index',
+          width: 65,
+          align: 'center',
+          sortable: true
+        },
+        {
+          title: '任务编号',
+          key: 'taskId',
+          sortable: true,
+          align: 'center',
+          width: 110
+        },
+        {
+          title: '数据库类型',
+          key: 'dbType',
+          align: 'center',
+          width: 110
+        },
+        {
+          title: 'IP',
+          key: 'IP',
+          align: 'center',
+          width: 110
+        },
+        {
+          title: '库名',
+          key: 'dbName',
+          sortable: true,
+          align: 'center',
+          width: 80
+        },
+        {
+          title: '表名',
+          key: 'tbName',
+          sortable: true,
+          align: 'center',
+          width: 100
+        },
+        {
+          title: '任务状态',
+          key: 'status',
+          align: 'center',
+          render: (h, params) => {
+            if (params.row.progress) {
+              return h('div', [
+                h('Progress', {
+                  props: {
+                    percent: params.row.progress * 100
+                  },
+                  style: {
+                  }
+                })
+              ])
+            }
+          }
+        },
+        {
+          title: '调度类型',
+          key: 'scheduleMode',
+          align: 'center',
+          width: 85
+        },
+        {
+          title: '调度时间',
+          key: 'scheduleDate',
+          align: 'center'
+        },
+        {
+          title: '调度状态',
+          key: 'scheduleState',
+          align: 'center',
+          width: 85
+        },
+        {
+          title: '用户',
+          key: 'user',
+          align: 'center',
+          width: 85
+        },
+        {
+          title: '操作',
+          key: '',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            switch (params.row.status) {
+              case 1:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              case 2:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params.row.status)
+                      }
+                    }
+                  }, '启动'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              case 3:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params.row.status)
+                      }
+                    }
+                  }, '停止'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        console.log(params)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              default:
+                break
+            }
+          }
+        }
+      ],
+      taskList: [
+        {
+          'scheduleState': 1,
+          'tbName': 'tb_ocrtask',
+          'blocks': 2,
+          'IP': '192.168.1.11',
+          'dbName': 'ocr',
+          'scheduleMode': 0,
+          'scheduleDate': '2016-09-09 10:08:32',
+          'dbType': 'Informix',
+          'progress': null,
+          'user': 'admin',
+          'taskId': 123,
+          'status': 1
+        },
+        {
+          'scheduleState': 1,
+          'tbName': 'tb_ocrtask',
+          'blocks': 2,
+          'IP': '192.168.1.11',
+          'dbName': 'ocr',
+          'scheduleMode': 0,
+          'scheduleDate': '2016-09-09 10:08:32',
+          'dbType': 'Informix',
+          'progress': 0.56,
+          'user': 'admin',
+          'taskId': 123,
+          'status': 2
+        },
+        {
+          'scheduleState': 1,
+          'tbName': 'tb_ocrtask',
+          'blocks': 2,
+          'IP': '192.168.1.11',
+          'dbName': 'ocr',
+          'scheduleMode': 0,
+          'scheduleDate': '2016-09-09 10:08:32',
+          'dbType': 'Informix',
+          'progress': 0.85,
+          'user': 'admin',
+          'taskId': 123,
+          'status': 3
+        }
+      ]
+    }
+  }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  .operation-group {
+    overflow: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background: #f9f9f9;
+    .operation-item {
+      float: left;
+      margin-left: 1em;
+      margin-right: .5em;
+      cursor: pointer;
+      .operation-directive {
+        margin-left: 20px;
+      }
+    }
+    #run-task {
+      background: url('../assets/images/icon/run.png') no-repeat left center;
+    }
+    #delete-task {
+      background: url('../assets/images/icon/nored.png') no-repeat left center;
+    }
+    #create-task {
+      background: url('../assets/images/icon/new.png') no-repeat left center;
+    }
+  }
+  .table-container {
+    padding-top: 1em;
+    background: #f0f0f0;
+    .table {
+      margin-left: .5em;
+      margin-right: .5em;
+    }
+  }
 </style>
