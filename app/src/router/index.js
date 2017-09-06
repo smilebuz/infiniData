@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Integration from '@/views/Integration'
+import Dashboard from '@/views/Dashboard'
 import OffImport from '@/views/OffImport'
 import IncImport from '@/views/IncImport'
+import OffExport from '@/views/OffExport'
+import Source from '@/views/Source'
 import Handle from '@/views/Handle'
 import Manage from '@/views/Manage'
 import Op from '@/views/Op'
@@ -22,12 +25,24 @@ export default new Router({
       component: Integration,
       children: [
         {
+          path: 'Dashboard',
+          component: Dashboard
+        },
+        {
           path: 'OffImport',
           component: OffImport
         },
         {
           path: 'IncImport',
           component: IncImport
+        },
+        {
+          path: 'OffExport',
+          component: OffExport
+        },
+        {
+          path: 'Source',
+          component: Source
         }
       ]
     },

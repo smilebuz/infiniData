@@ -22,7 +22,7 @@ export default {
       menu: [
         {
           name: '仪表盘',
-          path: '',
+          path: '/Integration/Dashboard',
           imgUrl: require('../assets/images/icon/menu1.png'),
           imgUrlBG: require('../assets/images/icon/menu01.png')
         },
@@ -40,13 +40,13 @@ export default {
         },
         {
           name: '离线导出',
-          path: '',
+          path: '/Integration/OffExport',
           imgUrl: require('../assets/images/icon/menu4.png'),
           imgUrlBG: require('../assets/images/icon/menu04.png')
         },
         {
           name: '数据源',
-          path: '',
+          path: '/Integration/Source',
           imgUrl: require('../assets/images/icon/menu5.png'),
           imgUrlBG: require('../assets/images/icon/menu05.png')
         }
