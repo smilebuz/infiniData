@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
 import Integration from '@/views/Integration'
 import OffImport from '@/views/OffImport'
 import IncImport from '@/views/IncImport'
@@ -14,8 +13,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: '/Integration',
+      component: Integration
     },
     {
       path: '/Integration',

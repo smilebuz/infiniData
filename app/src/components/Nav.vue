@@ -43,7 +43,7 @@ export default {
     top: 0;
     width: 100%;
     height: 50px;
-    background: #232530;
+    background: #17191E;
     .logo {
       float: left;
       height: 100%;
