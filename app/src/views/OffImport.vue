@@ -1,17 +1,17 @@
 <template lang="html">
   <div class="">
     <div class="form">
-      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" inline>
-        <FormItem prop="taskId" label="任务编号">
+      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" id="filterForm" inline>
+        <FormItem prop="taskId" label="任务编号" class="form-item">
           <Input type="text" v-model="filterForm.taskId"></Input>
         </FormItem>
-        <FormItem prop="dbName" label="库名">
+        <FormItem prop="dbName" label="库名" class="form-item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tableName" label="表名">
+        <FormItem prop="tableName" label="表名" class="form-item">
           <Input type="text" v-model="filterForm.tableName"></Input>
         </FormItem>
-        <FormItem prop="taskStatus" label="任务状态">
+        <FormItem prop="taskStatus" label="任务状态" class="form-item">
           <Select v-model="filterForm.taskStatus" placeholder="请选择">
             <Option value=1>运行中</Option>
             <Option value=2>已完成</Option>
@@ -19,7 +19,7 @@
             <Option value=4>待运行</Option>
           </Select>
         </FormItem>
-        <FormItem>
+        <FormItem class="form-item">
           <Button type="primary" @click="">筛选</Button>
         </FormItem>
       </Form>
@@ -37,6 +37,12 @@
     </div>
     <div class="table-container">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+    </div>
+    <div class="pagination">
+      <div class="page-info">
+        当前第几页 共几页
+      </div>
+      <Page :total='100'></Page>
     </div>
   </div>
 </template>
@@ -271,6 +277,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  #filterForm {
+    overflow: auto;
+    .form-item {
+      float: left;
+    }
+  }
   .operation-group {
     overflow: auto;
     padding-top: 1em;
@@ -302,5 +314,12 @@ export default {
       margin-left: .5em;
       margin-right: .5em;
     }
+  },
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
   }
 </style>
