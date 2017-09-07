@@ -25,38 +25,44 @@
         清空
       </Button>
     </div>
-    <div class="setting-container">
-      <div class="table-container">
-        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
-        <div class="pagination">
-          <div class="page-info">
-            当前第几页 共几页
+    <div class="main-container">
+      <div class="setting-container">
+        <div class="table-container">
+          <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
+          <div class="pagination">
+            <div class="page-info">
+              当前第几页 共几页
+            </div>
+            <Page :total='100'></Page>
           </div>
-          <Page :total='100'></Page>
+        </div>
+        <div class="settings">
+          <Card>
+            <p slot="title">分片设置</p>
+            <p slot="extra">
+              <Icon type="gear-b"></Icon>
+            </p>
+            <Input v-model="setting.blocks"></Input>
+          </Card>
+          <Card>
+            <p slot="title">调度设置</p>
+            <p slot="extra">
+              <Icon type="gear-b"></Icon>
+            </p>
+            <RadioGroup vertical v-model="setting.scheduleMode" class="radio-group">
+              <Radio label="手动"></Radio>
+              <Radio label="定时">
+                <span>定时</span>
+                <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              </Radio>
+              <Radio label="失效"></Radio>
+            </RadioGroup>
+          </Card>
         </div>
       </div>
-      <div class="settings">
-        <Card>
-          <p slot="title">分片设置</p>
-          <p slot="extra">
-            <Icon type="gear-b"></Icon>
-          </p>
-          <Input v-model="setting.blocks"></Input>
-        </Card>
-        <Card>
-          <p slot="title">调度设置</p>
-          <p slot="extra">
-            <Icon type="gear-b"></Icon>
-          </p>
-          <RadioGroup vertical v-model="setting.scheduleMode" class="radio-group">
-            <Radio label="手动"></Radio>
-            <Radio label="定时">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-            </Radio>
-            <Radio label="失效"></Radio>
-          </RadioGroup>
-        </Card>
+      <div class="button-container">
+        <Button type="primary">提交</Button>
+        <Button>取消</Button>
       </div>
     </div>
   </div>
@@ -157,26 +163,31 @@ export default {
       margin-right: .5em;
     }
   }
-  .setting-container {
+  .main-container {
     padding-top: 1em;
     background: #f0f0f0;
-    display: flex;
-    .table-container {
-      .table {
-        margin-left: .5em;
-        margin-right: .5em;
-      }
-    }
-    .settings {
-      flex: 1;
+    .setting-container {
       display: flex;
-      flex-direction: column;
-      margin-right: .5em;
-      .radio-group {
-        text-align: left;
+      .table-container {
+        .table {
+          margin-left: .5em;
+          margin-right: .5em;
+        }
+      }
+      .settings {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-right: .5em;
+        .radio-group {
+          text-align: left;
+        }
       }
     }
-  },
+    .button-container {
+      margin-top: 1em;
+    }
+  }
   .pagination {
     display: flex;
     justify-content: space-between;
