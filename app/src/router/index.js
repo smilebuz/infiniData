@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Integration from '@/views/Integration'
 import Dashboard from '@/views/Dashboard'
 import OffImport from '@/views/OffImport'
+import CreateOffImp from '@/views/CreateOffImp'
 import IncImport from '@/views/IncImport'
 import OffExport from '@/views/OffExport'
 import Source from '@/views/Source'
@@ -16,7 +17,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: '/Integration',
+      name: '/',
       component: Integration
     },
     {
@@ -31,6 +32,10 @@ export default new Router({
         {
           path: 'OffImport',
           component: OffImport
+        },
+        {
+          path: 'CreateOffImp',
+          component: CreateOffImp
         },
         {
           path: 'IncImport',

@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="">
+  <div>
     <div class="form">
       <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" id="filterForm" inline>
         <FormItem prop="taskId" label="任务编号" class="form-item">
@@ -31,9 +31,9 @@
       <div class="operation-item" id="delete-task">
         <span class="operation-directive">删除任务</span>
       </div>
-      <div class="operation-item" id="create-task">
+      <router-link to="/Integration/CreateOffImp" tag="div" class="operation-item" id="create-task">
         <span class="operation-directive">创建导入任务</span>
-      </div>
+      </router-link>
     </div>
     <div class="table-container">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
@@ -75,7 +75,22 @@ export default {
           key: 'taskId',
           sortable: true,
           align: 'center',
-          width: 110
+          width: 110,
+          render: (h, params) => {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    alert(params.row.taskId)
+                  }
+                }
+              }, params.row.taskId)
+            ])
+          }
         },
         {
           title: '数据库类型',
@@ -107,12 +122,13 @@ export default {
           title: '任务状态',
           key: 'status',
           align: 'center',
+          width: 150,
           render: (h, params) => {
             if (params.row.progress) {
               return h('div', [
                 h('Progress', {
                   props: {
-                    percent: params.row.progress * 100
+                    percent: parseFloat((params.row.progress * 100).toFixed(2))
                   },
                   style: {
                   }
@@ -130,7 +146,9 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleDate',
-          align: 'center'
+          align: 'center',
+          width: 85,
+          ellipsis: true
         },
         {
           title: '调度状态',
@@ -253,7 +271,7 @@ export default {
           'dbType': 'Informix',
           'progress': 0.56,
           'user': 'admin',
-          'taskId': 123,
+          'taskId': 124,
           'status': 2
         },
         {
@@ -267,7 +285,7 @@ export default {
           'dbType': 'Informix',
           'progress': 0.85,
           'user': 'admin',
-          'taskId': 123,
+          'taskId': 125,
           'status': 3
         }
       ]
@@ -278,12 +296,12 @@ export default {
 
 <style lang="scss" scoped>
   #filterForm {
-    overflow: auto;
     .form-item {
       float: left;
     }
   }
   .operation-group {
+    width: 100%;
     overflow: auto;
     padding-top: 1em;
     padding-bottom: 1em;
