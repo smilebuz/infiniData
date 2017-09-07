@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Integration from '@/views/Integration'
-import Dashboard from '@/views/Dashboard'
-import OffImport from '@/views/OffImport'
-import CreateOffImp from '@/views/CreateOffImp'
-import IncImport from '@/views/IncImport'
-import OffExport from '@/views/OffExport'
-import Source from '@/views/Source'
-import Handle from '@/views/Handle'
-import Manage from '@/views/Manage'
-import Op from '@/views/Op'
+
+import Integration from '../views/Integration'
+import Dashboard from '../views/Integration/Dashboard'
+import OffImport from '../views/Integration/OffImport'
+import CreateOffImp from '../views/Integration/CreateOffImp'
+import IncImport from '../views/Integration/IncImport'
+import OffExport from '../views/Integration/OffExport'
+import Source from '../views/Integration/Source'
+
+import Handle from '../views/Handle'
+import Manage from '../views/Manage'
+import Op from '../views/Op'
 
 Vue.use(Router)
 

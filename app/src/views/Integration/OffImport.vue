@@ -316,13 +316,13 @@ export default {
       }
     }
     #run-task {
-      background: url('../assets/images/icon/run.png') no-repeat left center;
+      background: url('../../assets/images/icon/run.png') no-repeat left center;
     }
     #delete-task {
-      background: url('../assets/images/icon/nored.png') no-repeat left center;
+      background: url('../../assets/images/icon/nored.png') no-repeat left center;
     }
     #create-task {
-      background: url('../assets/images/icon/new.png') no-repeat left center;
+      background: url('../../assets/images/icon/new.png') no-repeat left center;
     }
   }
   .table-container {
