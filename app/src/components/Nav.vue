@@ -39,8 +39,6 @@ export default {
 
 <style lang="scss">
   .nav {
-    position: fixed;
-    top: 0;
     width: 100%;
     height: 50px;
     background: #17191E;
@@ -55,14 +53,18 @@ export default {
       display: inline-flex;
       float: left;
       height: 100%;
-      align-items: center;
       .nav-menu-item {
         padding-left: 1em;
         padding-right: 1em;
+        height: 100%;
+        line-height: 50px;
         font-size: 14px;
         font-weight: 700;
         cursor: pointer;
         color: #fff;
+        &:hover {
+          background: #66b8f0;
+        }
       }
     }
   }

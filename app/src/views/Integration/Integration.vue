@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="integration">
     <Sidebar></Sidebar>
     <router-view class="content"></router-view>
   </div>
@@ -19,8 +19,12 @@ export default {
   }
 }
 </script>
-<style lang='scss'>
-.content {
-  margin-left: 170px;
-}
+<style lang='scss' scoped>
+  .integration {
+    height: 100%;
+    display: flex;
+    .content {
+      flex-grow: 1;
+    }
+  }
 </style>

@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     style () {
-      return this.showMenu ? {'width': '170px'} : {'width': '70px'}
+      return this.showMenu ? {'flex-basis': '170px'} : {'flex-basis': '70px'}
     }
   },
   methods: {
@@ -71,9 +71,6 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: fixed;
-    left: 0;
-    top: 50px;
     height: 100%;
     background: #343B44;
     .menu-trigger {

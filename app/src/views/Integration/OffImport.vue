@@ -295,9 +295,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #filterForm {
-    .form-item {
-      float: left;
+  .form {
+    padding-top: 1em;
+    #filterForm {
+      overflow: auto;
+      .form-item {
+        float: left;
+        margin-bottom: 1em;
+      }
     }
   }
   .operation-group {
