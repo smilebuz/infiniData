@@ -17,7 +17,8 @@
           <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name">
             <!--textarea :rows="sqlEditor.rows" v-model="tab.content" placeholder="请输入" class="sqlEditor" :id="tab.id"></textarea-->
             <!--Input type="textarea" :rows="sqlEditor.rows" v-model="sqlEditor.content" placeholder="请输入..."></Input-->
-            <div :id="tab.id" class="sqlEditor"></div>
+            <div :id="tab.id" class="sqlEditor" v-model='tab.content'></div>
+            <Button @click="showSql(tab.content)">测试brace</Button>
           </TabPane>
         </Tabs>
       </div>
@@ -78,20 +79,27 @@ export default {
       return {
         background: 'url(' + imgUrl + ') no-repeat left center'
       }
+    },
+    showSql (sql) {
+      alert(sql)
     }
   },
   mounted () {
     let ace = require('brace')
-    // require('brace/mode/javascript')
     require('brace/mode/sql')
-    // require('brace/theme/monokai')
     require('brace/theme/chrome')
-
-    let editor = ace.edit('sql-build')
-    // editor.getSession().setMode('ace/mode/javascript')
-    editor.getSession().setMode('ace/mode/sql')
-    // editor.setTheme('ace/theme/monokai')
-    editor.setTheme('ace/theme/chrome')
+    require('brace/ext/language_tools.js') // 自动补全
+    ace.acequire('ace/ext/language_tools')
+    for (let tab of this.sqlTabs) {
+      let editor = ace.edit(tab.id)
+      editor.getSession().setMode('ace/mode/sql')
+      editor.setTheme('ace/theme/chrome')
+      editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: false,
+        enableLiveAutocompletion: true
+      })
+    }
   }
 }
 </script>
