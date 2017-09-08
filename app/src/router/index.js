@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import Login from '../views/Login'
+
 import Integration from '../views/Integration'
 import Dashboard from '../views/Integration/Dashboard'
 import OffImport from '../views/Integration/OffImport'
@@ -21,6 +23,11 @@ export default new Router({
       path: '/',
       name: '/',
       component: Integration
+    },
+    {
+      path: '/Login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/Integration',
