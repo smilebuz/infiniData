@@ -78,7 +78,7 @@
 </template>
 
 <script>
-// import updateCompletions from '../utils/updateCompletions.js'
+import updateCompletions from '../utils/updateCompletions.js'
 
 export default {
   data () {
@@ -188,6 +188,28 @@ export default {
         rows: 5
       },
       schemaInfo: {
+        fuzzy: {
+          tbl_user: [
+            {
+              column_name: 'user_id',
+              data_type: 'int',
+              table_name: 'tbl_user',
+              table_schema: 'fuzzy',
+              table_type: 'Tables',
+              is_nullable: 'no'
+            }
+          ],
+          tbl_log: [
+            {
+              column_name: 'id',
+              data_type: 'int',
+              table_name: 'tbl_log',
+              table_schema: 'fuzzy',
+              table_type: 'Tables',
+              is_nullable: 'no'
+            }
+          ]
+        }
       },
       dataColumns: [
         {
@@ -273,6 +295,7 @@ export default {
     require('brace/theme/chrome')
     require('brace/ext/language_tools.js') // 自动补全
     ace.acequire('ace/ext/language_tools')
+    updateCompletions(this.schemaInfo)
     for (let tab of this.sqlTabs) {
       let editor = ace.edit(tab.id)
       editor.getSession().setMode('ace/mode/sql')
