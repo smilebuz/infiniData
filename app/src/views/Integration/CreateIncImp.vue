@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="createOffImp">
+  <div class="createIncImp">
     <div class="form-inline">
       <Form ref="searchForm" :model="searchForm" :label-width="labelWidth" id="searchForm" inline>
         <FormItem prop="dataSource" label="数据源" class="form__item">
@@ -37,13 +37,6 @@
       </div>
       <div class="setting">
         <Card>
-          <p slot="title">分片设置</p>
-          <p slot="extra">
-            <Icon type="gear-b"></Icon>
-          </p>
-          <Input v-model="setting.blocks"></Input>
-        </Card>
-        <Card>
           <p slot="title">调度设置</p>
           <p slot="extra">
             <Icon type="gear-b"></Icon>
@@ -54,6 +47,10 @@
               <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
             </Radio>
+            <Radio label="周期">
+              <span>定时</span>
+              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            </Radio>
             <Radio label="失效"></Radio>
           </RadioGroup>
         </Card>
@@ -61,7 +58,7 @@
     </div>
     <div class="btncontainer">
       <Button type="primary" class="button">提交</Button>
-      <router-link to="OffImport" tag="Button" class="button">取消</router-link>
+      <router-link to="IncImport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
 </template>
@@ -104,13 +101,16 @@ export default {
           key: 'table_name'
         },
         {
-          title: '总记录数',
-          key: 'count',
-          sortable: true
-        },
-        {
           title: '主键字段',
           key: 'pk'
+        },
+        {
+          title: '增量字段',
+          key: ''
+        },
+        {
+          title: '增量条件',
+          key: ''
         }
       ],
       sourceList: [
@@ -128,7 +128,6 @@ export default {
         }
       ],
       setting: {
-        blocks: 0,
         scheduleMode: 0,
         scheduleDate: '',
         scheduleState: ''

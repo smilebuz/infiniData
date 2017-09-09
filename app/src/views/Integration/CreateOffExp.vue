@@ -37,11 +37,29 @@
       </div>
       <div class="setting">
         <Card>
-          <p slot="title">分片设置</p>
+          <p slot="title">导出目标</p>
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <Input v-model="setting.blocks"></Input>
+          <RadioGroup vertical class="radiogroup">
+            <Radio label="CSV"></Radio>
+            <div class="setting__group">
+              <span class="setting__group-label">编码</span>
+              <Select class="setting__group-select">
+              </Select>
+            </div>
+            <div class="setting__group">
+              <span class="setting__group-label">分隔符</span>
+              <Select class="setting__group-select">
+              </Select>
+            </div>
+            <Radio label="数据库"></Radio>
+            <div class="setting__group">
+              <span class="setting__group-label">数据源</span>
+              <Select class="setting__group-select">
+              </Select>
+            </div>
+          </RadioGroup>
         </Card>
         <Card>
           <p slot="title">调度设置</p>
@@ -54,6 +72,10 @@
               <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
             </Radio>
+            <Radio label="周期">
+              <span>周期</span>
+              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            </Radio>
             <Radio label="失效"></Radio>
           </RadioGroup>
         </Card>
@@ -61,7 +83,7 @@
     </div>
     <div class="btncontainer">
       <Button type="primary" class="button">提交</Button>
-      <router-link to="OffImport" tag="Button" class="button">取消</router-link>
+      <router-link to="OffExport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
 </template>
@@ -109,26 +131,16 @@ export default {
           sortable: true
         },
         {
-          title: '主键字段',
-          key: 'pk'
-        }
-      ],
-      sourceList: [
-        {
-          dbName: 'Informix',
-          count: 3000,
-          pk: 'ID',
-          table_name: 'export'
+          title: '存储类型',
+          key: ''
         },
         {
-          dbName: 'Informix',
-          count: 4000,
-          pk: 'ID',
-          table_name: 'export'
+          title: '描述',
+          key: ''
         }
       ],
+      sourceList: [],
       setting: {
-        blocks: 0,
         scheduleMode: 0,
         scheduleDate: '',
         scheduleState: ''
@@ -172,6 +184,22 @@ export default {
   .setting {
     flex-grow: 1;
     text-align: left;
+  }
+  .radiogroup {
+    width: 100%;
+  }
+  .setting__group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .setting__group-label {
+    margin-left: 20px;
+    min-width: 30px;
+  }
+  .setting__group-select {
+    max-width: 120px;
   }
   .pagination {
     display: flex;

@@ -9,7 +9,9 @@ import OffImport from '../views/Integration/OffImport'
 import OffImpDetail from '../views/Integration/OffImpDetail'
 import CreateOffImp from '../views/Integration/CreateOffImp'
 import IncImport from '../views/Integration/IncImport'
+import CreateIncImp from '../views/Integration/CreateIncImp'
 import OffExport from '../views/Integration/OffExport'
+import CreateOffExp from '../views/Integration/CreateOffExp'
 import Source from '../views/Integration/Source'
 
 import Handle from '../views/Handle'
@@ -56,8 +58,16 @@ export default new Router({
           component: IncImport
         },
         {
+          path: 'CreateIncImp',
+          component: CreateIncImp
+        },
+        {
           path: 'OffExport',
           component: OffExport
+        },
+        {
+          path: 'CreateOffExp',
+          component: CreateOffExp
         },
         {
           path: 'Source',

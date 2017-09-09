@@ -61,7 +61,7 @@
           </TabPane>
         </Tabs>
         <Tabs type="card">
-          <TabPane label="数据">
+          <TabPane label="数据" class="tabpane">
             <Table border stripe :columns="dataColumns" :data="dataList"></Table>
           </TabPane>
           <TabPane label="日志">
@@ -225,7 +225,6 @@ export default {
       dataColumns: [
         {
           type: 'index',
-          width: 60,
           align: 'center'
         },
         {
@@ -357,11 +356,12 @@ export default {
 
 <style lang="scss" scoped>
   .side {
-    flex-basis: 170px;
+    max-width: 170px;
     text-align: left;
   }
   .dbSelect {
     display: flex;
+    margin-top: 5px;
     margin-left: 5px;
     align-items: center;
   }
@@ -424,6 +424,7 @@ export default {
     padding: 1em;
     font-size: 14px;
   }
+
   .logpad {
     height: 100%;
     padding: 1em;

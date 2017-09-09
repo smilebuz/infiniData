@@ -77,6 +77,7 @@ export default {
         {
           type: 'index',
           align: 'center',
+          title: '序号',
           sortable: true
         },
         {
@@ -165,6 +166,7 @@ export default {
           title: '操作',
           key: '',
           align: 'center',
+          width: 140,
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
@@ -337,6 +339,9 @@ export default {
   .tbcontainer {
     padding: 15px 10px;
     background: #f0f0f0;
+  }
+  .table {
+    width: 100%;
   }
   .pagination {
     display: flex;
