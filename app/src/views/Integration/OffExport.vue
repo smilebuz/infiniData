@@ -136,7 +136,8 @@ export default {
                 },
                 on: {
                   click: () => {
-                    alert(params.row.taskId)
+                    // alert(params.row.taskId)
+                    this.$router.push('OffExpDetail')
                   }
                 }
               }, params.row.taskId)

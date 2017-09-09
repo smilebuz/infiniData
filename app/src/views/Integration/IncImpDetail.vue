@@ -1,8 +1,7 @@
 <template lang="html">
-  <div class="offimpDetail">
+  <div class="incimpDetail">
     <div class="progressAll">
-      <span>执行详情</span>
-      <Progress :percent="progressAll" class="progress"></Progress>
+      <p>{{ detailInfo.dbName }}库的{{ detailInfo.tbName }}表的定时任务{{ detailInfo.taskId }}执行历史记录</p>
     </div>
     <div class="tbcontainer">
       <Table :columns="columns" :data="detailList"></Table>
@@ -20,7 +19,11 @@
 export default {
   data () {
     return {
-      progressAll: 80,
+      detailInfo: {
+        dbName: 'ocr',
+        tbName: 'tb_ocrtask',
+        taskId: '1234'
+      },
       columns: [
         {
           type: 'index',
@@ -33,25 +36,18 @@ export default {
           align: 'center'
         },
         {
-          title: '抽取节点',
-          key: 'IP',
+          title: '增量字段',
+          key: 'incField',
+          align: 'center'
+        },
+        {
+          title: '增量条件',
+          key: 'incCondition',
           align: 'center'
         },
         {
           title: '总记录数',
           key: 'totalRows',
-          sortable: true,
-          align: 'center'
-        },
-        {
-          title: '起始行号',
-          key: 'firstRow',
-          sortable: true,
-          align: 'center'
-        },
-        {
-          title: '终止行号',
-          key: 'lastRow',
           sortable: true,
           align: 'center'
         },
@@ -80,8 +76,8 @@ export default {
         {
           title: '调度状态',
           key: 'status',
-          align: 'center',
           width: 150,
+          align: 'center',
           render: (h, params) => {
             if (params.row.status === 2) {
               return h('div', [
@@ -90,6 +86,10 @@ export default {
                     percent: parseFloat((params.row.progress * 100).toFixed(2))
                   }
                 })
+              ])
+            } else {
+              return h('div', [
+                h('span', {}, params.row.status)
               ])
             }
           }
@@ -102,32 +102,17 @@ export default {
       ],
       detailList: [
         {
-          'firstRow': 1,
-          'lastRow': 1000,
-          'IP': '192.168.1.1',
+          'incField': 'UpdateTime',
           'scheduleDate': '2017-09-01 12:00:00',
           'progress': 0.99,
           'startTime': '2017-09-01 12:00:00',
           'totalRows': 10000,
           'endTime': '',
           'extractSpeed': '50000',
+          'incCondition': '>=2017.08.25<=2017.08.27',
           'spendTime': '',
           'status': 1,
           'info': ''
-        },
-        {
-          'firstRow': 1,
-          'lastRow': 1000,
-          'IP': '192.168.1.1',
-          'scheduleDate': '2017-09-01 12:00:00',
-          'progress': 0.85,
-          'startTime': '2017-09-01 12:00:00',
-          'totalRows': 10000,
-          'endTime': '',
-          'extractSpeed': '50000',
-          'spendTime': '',
-          'status': 2,
-          'info': '失败原因'
         }
       ],
       pageInfo: {
@@ -142,9 +127,9 @@ export default {
 
 <style lang="scss">
   .progressAll {
-    display: flex;
-    justify-content: flex-start;
     padding: 10px;
+    text-align: left;
+    font-size: 14px;
   }
   .progress {
     flex-basis: 80%;

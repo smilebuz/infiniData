@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="">
+  <div class="source">
     数据源
   </div>
 </template>
@@ -9,5 +9,5 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
 </style>

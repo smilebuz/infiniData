@@ -31,6 +31,27 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
+        <div class="modal__content">
+          <span class="edit__label">调度设置</span>
+          <div class="radiogroup">
+            <div class="radiogroup__item">
+              <Radio label="手动" class="radio"></Radio>
+            </div>
+            <div class="radiogroup__item">
+              <Radio label="定时" class="radio"></Radio>
+              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            </div>
+            <div class="radiogroup__item">
+              <Radio label="周期" class="radio"></Radio>
+              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            </div>
+            <div class="radiogroup__item">
+              <Radio label="失效" class="radio"></Radio>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
@@ -93,7 +114,8 @@ export default {
                 },
                 on: {
                   click: () => {
-                    alert(params.row.taskId)
+                    // alert(params.row.taskId)
+                    this.$router.push('IncImpDetail')
                   }
                 }
               }, params.row.taskId)
@@ -171,7 +193,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log(params)
+                    this.openEditModal(params.row.taskId)
                   }
                 }
               }, '编辑')
@@ -200,6 +222,10 @@ export default {
         currentPage: 1,
         totalPage: 17,
         pageSize: 10
+      },
+      editModal: {
+        show: false,
+        title: '任务编辑'
       }
     }
   },
@@ -219,7 +245,12 @@ export default {
         default:
           break
       }
-    }
+    },
+    openEditModal (taskId) {
+      this.editModal.show = true
+    },
+    editTask () {},
+    cancelEdit () {}
   }
 }
 </script>
@@ -249,6 +280,33 @@ export default {
   }
   .table {
     width: 100%;
+  }
+  .modal__content {
+    display: flex;
+  }
+  .radiogroup {
+    display: flex;
+    flex-direction: column;
+  }
+  .radio {
+    min-width: 60px;
+  }
+  .radiogroup__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-left: 10px;
+  }
+  .radiogroup__select {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  .radiogroup__item-label {
+    min-width: 40px;
+  }
+  .select {
+    max-width: 120px;
   }
   .pagination {
     display: flex;
