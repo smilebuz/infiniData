@@ -46,7 +46,7 @@
     </div>
     <div class="sqlpad">
       <div class="opgroup">
-        <div class="opgroup__item" v-for="(item, index) in operations" :key="item.name" :style="operationStyle(item.imgUrl)">
+        <div class="opgroup__item" v-for="(item, index) in operations" :key="item.name" :style="operationStyle(item.imgUrl)" @click="operate(item.action)">
           <!-- img :src="item.imgUrl" :alt="item.name" -->
           <span>{{ item.name }}</span>
         </div>
@@ -79,6 +79,12 @@
 
 <script>
 import updateCompletions from '../utils/updateCompletions.js'
+
+let ace = require('brace')
+require('brace/mode/sql')
+require('brace/theme/chrome')
+require('brace/ext/language_tools.js') // 自动补全
+ace.acequire('ace/ext/language_tools')
 
 export default {
   data () {
@@ -148,22 +154,27 @@ export default {
       operations: [
         {
           name: '运行',
+          action: 'run',
           imgUrl: require('../assets/images/icon/run.png')
         },
         {
           name: '停止',
+          action: 'stop',
           imgUrl: require('../assets/images/icon/stop.png')
         },
         {
           name: '新建',
+          action: 'new',
           imgUrl: require('../assets/images/icon/new.png')
         },
         {
           name: '保存',
+          action: 'save',
           imgUrl: require('../assets/images/icon/save.png')
         },
         {
           name: '导出',
+          action: 'export',
           imgUrl: require('../assets/images/icon/export.png')
         }
       ],
@@ -285,19 +296,30 @@ export default {
         background: 'url(' + imgUrl + ') no-repeat left center'
       }
     },
+    operate (action) {
+      switch (action) {
+        case 'new':
+          let newSql = {
+            id: 'sql' + new Date().getTime(),
+            name: '新建语句',
+            content: ''
+          }
+          this.sqlTabs.push(newSql)
+          this.$nextTick(function () {
+            this.setBrace(newSql.id)
+          })
+          break
+        default:
+          break
+      }
+    },
     showSql (sql) {
       alert(sql)
-    }
-  },
-  mounted () {
-    let ace = require('brace')
-    require('brace/mode/sql')
-    require('brace/theme/chrome')
-    require('brace/ext/language_tools.js') // 自动补全
-    ace.acequire('ace/ext/language_tools')
-    updateCompletions(this.schemaInfo)
-    for (let tab of this.sqlTabs) {
-      let editor = ace.edit(tab.id)
+      // this.setBraces()
+    },
+    setBrace (id) {
+      updateCompletions(this.schemaInfo)
+      let editor = ace.edit(id)
       editor.getSession().setMode('ace/mode/sql')
       editor.setTheme('ace/theme/chrome')
       editor.setOptions({
@@ -305,9 +327,31 @@ export default {
         enableSnippets: false,
         enableLiveAutocompletion: true
       })
+    },
+    setBraces () {
+      updateCompletions(this.schemaInfo)
+      for (let tab of this.sqlTabs) {
+        let editor = ace.edit(tab.id)
+        editor.getSession().setMode('ace/mode/sql')
+        editor.setTheme('ace/theme/chrome')
+        editor.setOptions({
+          enableBasicAutocompletion: true,
+          enableSnippets: false,
+          enableLiveAutocompletion: true
+        })
+      }
     }
+  },
+  /*
+  watch: {
+    sqlTabs: function (newTabs) {
+      this.setBraces()
+    }
+  },
+  */
+  mounted () {
+    this.setBraces()
   }
-
 }
 </script>
 

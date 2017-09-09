@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div class="">
     <div class="form">
       <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" id="filterForm" inline>
         <FormItem prop="taskId" label="任务编号" class="form-item">

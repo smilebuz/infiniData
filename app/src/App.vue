@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar></Navbar>
-    <router-view>
+    <router-view class="container">
     </router-view>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang='scss' scoped>
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

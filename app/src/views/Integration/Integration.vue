@@ -20,11 +20,4 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .integration {
-    height: 100%;
-    display: flex;
-    .content {
-      flex-grow: 1;
-    }
-  }
 </style>

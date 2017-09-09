@@ -67,31 +67,5 @@ export default {
 </script>
 
 <style lang="scss">
-  .side-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
-    background: #343B44;
-    .menu-trigger {
-      width: 100%;
-      cursor: pointer;
-      color: #fff;
-      background: #434D5F;
-    }
-    .side-menu-item {
-      width: 100%;
-      height: 50px;
-      text-align: left;
-      margin-left: 20px;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 50px;
-      cursor: pointer;
-      color: #fff;
-    }
-  }
-  .menu-xs {
-    width: 50px;
-  }
+  
 </style>
