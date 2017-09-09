@@ -1,69 +1,67 @@
 <template lang="html">
-  <div class="">
-    <div class="form">
+  <div class="createOffImp">
+    <div class="form-inline">
       <Form ref="searchForm" :model="searchForm" :label-width="labelWidth" id="searchForm" inline>
-        <FormItem prop="dataSource" label="任务状态" class="form-item">
+        <FormItem prop="dataSource" label="任务状态" class="form__item">
           <Select v-model="searchForm.dataSource" placeholder="请选择">
             <Option v-for="(source, index) in searchForm.dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
         </FormItem>
-        <FormItem prop="tbName" label="表名" class="form-item">
+        <FormItem prop="tbName" label="表名" class="form__item">
           <Input type="text" v-model="searchForm.tbName"></Input>
         </FormItem>
-        <FormItem class="form-item">
+        <FormItem class="form__item">
           <Button type="primary" @click="">查询</Button>
         </FormItem>
       </Form>
     </div>
-    <div class="operation-group">
-      <Button type="success" class="operation-item" icon="checkmark" size="small">
+    <div class="opgroup">
+      <Button type="success" class="opgroup__item" icon="checkmark" size="small">
         全选
       </Button>
-      <Button type="error" class="operation-item" icon="close" size="small">
+      <Button type="error" class="opgroup__item" icon="close" size="small">
         清空
       </Button>
     </div>
-    <div class="main-container">
-      <div class="setting-container">
-        <div class="table-container">
-          <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
-          <div class="pagination">
-            <div class="page-info">
-              当前第几页 共几页
-            </div>
-            <Page :total='100'></Page>
+    <div class="main">
+      <div class="tbcontainer">
+        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
+        <div class="pagination">
+          <div>
+            当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
           </div>
-        </div>
-        <div class="settings">
-          <Card>
-            <p slot="title">分片设置</p>
-            <p slot="extra">
-              <Icon type="gear-b"></Icon>
-            </p>
-            <Input v-model="setting.blocks"></Input>
-          </Card>
-          <Card>
-            <p slot="title">调度设置</p>
-            <p slot="extra">
-              <Icon type="gear-b"></Icon>
-            </p>
-            <RadioGroup vertical v-model="setting.scheduleMode" class="radio-group">
-              <Radio label="手动"></Radio>
-              <Radio label="定时">
-                <span>定时</span>
-                <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-              </Radio>
-              <Radio label="失效"></Radio>
-            </RadioGroup>
-          </Card>
+          <Page :total='100'></Page>
         </div>
       </div>
-      <div class="button-container">
-        <Button type="primary">提交</Button>
-        <Button>取消</Button>
+      <div class="setting">
+        <Card>
+          <p slot="title">分片设置</p>
+          <p slot="extra">
+            <Icon type="gear-b"></Icon>
+          </p>
+          <Input v-model="setting.blocks"></Input>
+        </Card>
+        <Card>
+          <p slot="title">调度设置</p>
+          <p slot="extra">
+            <Icon type="gear-b"></Icon>
+          </p>
+          <RadioGroup vertical v-model="setting.scheduleMode" class="radiogroup">
+            <Radio label="手动"></Radio>
+            <Radio label="定时">
+              <span>定时</span>
+              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            </Radio>
+            <Radio label="失效"></Radio>
+          </RadioGroup>
+        </Card>
       </div>
+    </div>
+    <div class="btncontainer">
+      <Button type="primary" class="button">提交</Button>
+      <Button class="button">取消</Button>
     </div>
   </div>
 </template>
@@ -90,34 +88,29 @@ export default {
       columns: [
         {
           type: 'selection',
-          aling: 'center',
-          width: 60
+          aling: 'center'
         },
         {
           type: 'index',
           align: 'center',
-          width: 60
+          title: '序号'
         },
         {
           title: '库名',
-          key: 'dbName',
-          width: 230
+          key: 'dbName'
         },
         {
           title: '表名',
-          key: 'table_name',
-          width: 230
+          key: 'table_name'
         },
         {
           title: '总记录数',
           key: 'count',
-          sortable: true,
-          width: 230
+          sortable: true
         },
         {
           title: '主键字段',
-          key: 'pk',
-          width: 230
+          key: 'pk'
         }
       ],
       sourceList: [
@@ -139,6 +132,11 @@ export default {
         scheduleMode: 0,
         scheduleDate: '',
         scheduleState: ''
+      },
+      pageInfo: {
+        currentPage: 1,
+        totalPage: 17,
+        pageSize: 10
       }
     }
   }
@@ -146,53 +144,48 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #searchForm {
-    .form-item {
-      float: left;
-    }
+  .form-inline {
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
-  .operation-group {
-    width: 100%;
-    overflow: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;
+  .form__item {
+    margin-bottom: 0;
+  }
+  .opgroup {
+    display: flex;
+    padding: 10px;
     background: #f9f9f9;
-    .operation-item {
-      float: left;
-      margin-left: 1em;
-      margin-right: .5em;
-    }
   }
-  .main-container {
-    padding-top: 1em;
+  .opgroup__item {
+    margin-right: 10px;
+  }
+  .main {
+    padding: 15px 10px;
     background: #f0f0f0;
-    .setting-container {
-      display: flex;
-      .table-container {
-        .table {
-          margin-left: .5em;
-          margin-right: .5em;
-        }
-      }
-      .settings {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        margin-right: .5em;
-        .radio-group {
-          text-align: left;
-        }
-      }
-    }
-    .button-container {
-      margin-top: 1em;
-    }
+    display: flex;
+  }
+  .tbcontainer {
+    flex-grow: 4;
+    padding-right: 10px;
+  }
+  .setting {
+    flex-grow: 1;
+    text-align: left;
   }
   .pagination {
     display: flex;
     justify-content: space-between;
-    padding-top: 1em;
-    padding-left: .5em;
-    padding-right: .5em;
+    align-items: center;
+    padding: 1em;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+  }
+  .btncontainer {
+    padding: 30px;
+    background: #f0f0f0;
+  }
+  .button {
+    margin-right: 20px;
   }
 </style>

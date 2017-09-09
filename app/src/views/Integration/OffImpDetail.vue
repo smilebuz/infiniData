@@ -1,13 +1,13 @@
 <template lang="html">
-  <div>
-    <div class="progress-all">
+  <div class="offimpDetail">
+    <div class="progressAll">
       <span>执行详情</span>
       <Progress :percent="progressAll" class="progress"></Progress>
     </div>
-    <div class="table-container">
+    <div class="tbcontainer">
       <Table :columns="columns" :data="detailList"></Table>
       <div class="pagination">
-        <div class="page-info">
+        <div>
           当前第几页 共几页
         </div>
         <Page :total='100'></Page>
@@ -24,8 +24,7 @@ export default {
       columns: [
         {
           type: 'index',
-          title: '序号',
-          width: 60
+          title: '序号'
         },
         {
           title: '调度时间',
@@ -124,26 +123,23 @@ export default {
 </script>
 
 <style lang="scss">
-  .progress-all {
+  .progressAll {
     display: flex;
     justify-content: center;
-    .progress {
-      flex-basis: 80%;
-    }
   }
-  .table-container {
-    padding: 1em;
+  .progress {
+    flex-basis: 80%;
+  }
+  .tbcontainer {
+    padding: 15px 10px;
     background: #f0f0f0;
-    .table {
-      margin-left: .5em;
-      margin-right: .5em;
-    }
-  },
+  }
   .pagination {
     display: flex;
     justify-content: space-between;
-    padding-top: 1em;
-    padding-left: .5em;
-    padding-right: .5em;
+    align-items: center;
+    padding: 1em;
+    border: 1px solid #e6e6e6;
+    background: #fff;
   }
 </style>

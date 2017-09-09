@@ -25,15 +25,15 @@
       </Form>
     </div>
     <div class="opgroup">
-      <div class="opgroup__item" v-for="operation in operations" :key="operation.value" :style="opStyle(operation.imgUrl)">
+      <div class="opgroup__item" v-for="operation in operations" :key="operation.value" :style="opStyle(operation.imgUrl)" @click="operateTask(operation.value)">
         {{ operation.text }}
       </div>
     </div>
     <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
       <div class="pagination">
-        <div class="page-info">
-          当前第几页 共几页
+        <div>
+          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
         </div>
         <Page :total='100'></Page>
       </div>
@@ -72,12 +72,10 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: 60,
           align: 'center'
         },
         {
           type: 'index',
-          width: 65,
           align: 'center',
           sortable: true
         },
@@ -86,7 +84,6 @@ export default {
           key: 'taskId',
           sortable: true,
           align: 'center',
-          width: 110,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -106,34 +103,29 @@ export default {
         {
           title: '数据库类型',
           key: 'dbType',
-          align: 'center',
-          width: 110
+          align: 'center'
         },
         {
           title: 'IP',
           key: 'IP',
-          align: 'center',
-          width: 110
+          align: 'center'
         },
         {
           title: '库名',
           key: 'dbName',
           sortable: true,
-          align: 'center',
-          width: 80
+          align: 'center'
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          align: 'center',
-          width: 100
+          align: 'center'
         },
         {
           title: '任务状态',
           key: 'status',
           align: 'center',
-          width: 140,
           render: (h, params) => {
             if (params.row.progress) {
               return h('div', [
@@ -151,32 +143,27 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          align: 'center',
-          width: 85
+          align: 'center'
         },
         {
           title: '调度时间',
           key: 'scheduleDate',
           align: 'center',
-          width: 85,
           ellipsis: true
         },
         {
           title: '调度状态',
           key: 'scheduleState',
-          align: 'center',
-          width: 85
+          align: 'center'
         },
         {
           title: '用户',
           key: 'user',
-          align: 'center',
-          width: 80
+          align: 'center'
         },
         {
           title: '操作',
           key: '',
-          width: 140,
           align: 'center',
           render: (h, params) => {
             switch (params.row.status) {
@@ -299,7 +286,12 @@ export default {
           'taskId': 125,
           'status': 3
         }
-      ]
+      ],
+      pageInfo: {
+        currentPage: 1,
+        totalPage: 17,
+        pageSize: 10
+      }
     }
   },
   methods: {
@@ -309,15 +301,21 @@ export default {
         paddingLeft: '20px',
         marginLeft: '20px'
       }
+    },
+    operateTask (opType) {
+      switch (opType) {
+        case 'create':
+          this.$router.push('CreateOffImp')
+          break
+        default:
+          break
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .offimport {
-    width: 100%;
-  }
   .form-inline {
     display: flex;
     padding-top: 10px;
@@ -334,12 +332,11 @@ export default {
   }
   .opgroup__item {
     height: 100%;
+    cursor: pointer;
   }
   .tbcontainer {
     padding: 15px 10px;
     background: #f0f0f0;
-  }
-  .table {
   }
   .pagination {
     display: flex;

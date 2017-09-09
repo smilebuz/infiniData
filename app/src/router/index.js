@@ -6,6 +6,7 @@ import Login from '../views/Login'
 import Integration from '../views/Integration'
 import Dashboard from '../views/Integration/Dashboard'
 import OffImport from '../views/Integration/OffImport'
+import OffImpDetail from '../views/Integration/OffImpDetail'
 import CreateOffImp from '../views/Integration/CreateOffImp'
 import IncImport from '../views/Integration/IncImport'
 import OffExport from '../views/Integration/OffExport'
@@ -41,6 +42,10 @@ export default new Router({
         {
           path: 'OffImport',
           component: OffImport
+        },
+        {
+          path: 'OffImpDetail',
+          component: OffImpDetail
         },
         {
           path: 'CreateOffImp',
