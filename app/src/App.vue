@@ -27,4 +27,8 @@ export default {
     height: 100%;
     /* margin-top: 60px; */
   }
+  .container {
+    display: flex;
+    min-height: calc(100% - 50px);
+  }
 </style>

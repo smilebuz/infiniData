@@ -356,10 +356,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .handle {
-    display: flex;
-    min-height: calc(100% - 50px);
-  }
   .side {
     flex-basis: 170px;
     text-align: left;
