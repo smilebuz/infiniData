@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     style () {
-      return this.showMenu ? {'flex-basis': '170px'} : {'flex-basis': 'auto'}
+      return this.showMenu ? {'flex-basis': '170px', 'min-width': '170px'} : {'flex-basis': 'auto'}
     }
   },
   methods: {

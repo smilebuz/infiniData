@@ -1,17 +1,17 @@
 <template lang="html">
-  <div class="">
-    <div class="form">
-      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" id="filterForm" inline>
-        <FormItem prop="taskId" label="任务编号" class="form-item">
+  <div class="offimport">
+    <div class="form-inline">
+      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" inline>
+        <FormItem prop="taskId" label="任务编号" class="form__item">
           <Input type="text" v-model="filterForm.taskId"></Input>
         </FormItem>
-        <FormItem prop="dbName" label="库名" class="form-item">
+        <FormItem prop="dbName" label="库名" class="form__item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tableName" label="表名" class="form-item">
+        <FormItem prop="tableName" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tableName"></Input>
         </FormItem>
-        <FormItem prop="taskStatus" label="任务状态" class="form-item">
+        <FormItem prop="taskStatus" label="任务状态" class="form__item">
           <Select v-model="filterForm.taskStatus" placeholder="请选择">
             <Option value=1>运行中</Option>
             <Option value=2>已完成</Option>
@@ -19,30 +19,24 @@
             <Option value=4>待运行</Option>
           </Select>
         </FormItem>
-        <FormItem class="form-item">
+        <FormItem class="form__item">
           <Button type="primary" @click="">筛选</Button>
         </FormItem>
       </Form>
     </div>
-    <div class="operation-group">
-      <div class="operation-item" id="run-task">
-        <span class="operation-directive">立即运行</span>
+    <div class="opgroup">
+      <div class="opgroup__item" v-for="operation in operations" :key="operation.value" :style="opStyle(operation.imgUrl)">
+        {{ operation.text }}
       </div>
-      <div class="operation-item" id="delete-task">
-        <span class="operation-directive">删除任务</span>
-      </div>
-      <router-link to="/Integration/CreateOffImp" tag="div" class="operation-item" id="create-task">
-        <span class="operation-directive">创建导入任务</span>
-      </router-link>
     </div>
-    <div class="table-container">
+    <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
-    </div>
-    <div class="pagination">
-      <div class="page-info">
-        当前第几页 共几页
+      <div class="pagination">
+        <div class="page-info">
+          当前第几页 共几页
+        </div>
+        <Page :total='100'></Page>
       </div>
-      <Page :total='100'></Page>
     </div>
   </div>
 </template>
@@ -58,6 +52,23 @@ export default {
         taskStatus: ''
       },
       labelWidth: 80,
+      operations: [
+        {
+          value: 'run',
+          text: '立即运行',
+          imgUrl: require('../../assets/images/icon/run.png')
+        },
+        {
+          value: 'delete',
+          text: '删除任务',
+          imgUrl: require('../../assets/images/icon/nored.png')
+        },
+        {
+          value: 'create',
+          text: '创建导入任务',
+          imgUrl: require('../../assets/images/icon/new.png')
+        }
+      ],
       columns: [
         {
           type: 'selection',
@@ -122,7 +133,7 @@ export default {
           title: '任务状态',
           key: 'status',
           align: 'center',
-          width: 150,
+          width: 140,
           render: (h, params) => {
             if (params.row.progress) {
               return h('div', [
@@ -160,12 +171,12 @@ export default {
           title: '用户',
           key: 'user',
           align: 'center',
-          width: 85
+          width: 80
         },
         {
           title: '操作',
           key: '',
-          width: 150,
+          width: 140,
           align: 'center',
           render: (h, params) => {
             switch (params.row.status) {
@@ -290,59 +301,52 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    opStyle (imgUrl) {
+      return {
+        background: 'url(' + imgUrl + ') no-repeat left center',
+        paddingLeft: '20px',
+        marginLeft: '20px'
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .form {
-    padding-top: 1em;
-    #filterForm {
-      overflow: auto;
-      .form-item {
-        float: left;
-        margin-bottom: 1em;
-      }
-    }
-  }
-  .operation-group {
+  .offimport {
     width: 100%;
-    overflow: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    background: #f9f9f9;
-    .operation-item {
-      float: left;
-      margin-left: 1em;
-      margin-right: .5em;
-      cursor: pointer;
-      .operation-directive {
-        margin-left: 20px;
-      }
-    }
-    #run-task {
-      background: url('../../assets/images/icon/run.png') no-repeat left center;
-    }
-    #delete-task {
-      background: url('../../assets/images/icon/nored.png') no-repeat left center;
-    }
-    #create-task {
-      background: url('../../assets/images/icon/new.png') no-repeat left center;
-    }
   }
-  .table-container {
-    padding-top: 1em;
+  .form-inline {
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .form__item {
+    margin-bottom: 0;
+  }
+  .opgroup {
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+    background: #f9f9f9;
+  }
+  .opgroup__item {
+    height: 100%;
+  }
+  .tbcontainer {
+    padding: 15px 10px;
     background: #f0f0f0;
-    .table {
-      margin-left: .5em;
-      margin-right: .5em;
-    }
-  },
+  }
+  .table {
+  }
   .pagination {
     display: flex;
     justify-content: space-between;
-    padding-top: 1em;
-    padding-left: .5em;
-    padding-right: .5em;
+    align-items: center;
+    padding: 1em;
+    border: 1px solid #e6e6e6;
+    background: #fff;
   }
 </style>
