@@ -6,6 +6,9 @@
 </template>
 
 <script>
+import '../../assets/css/common.scss'
+import '../../assets/css/pagination.scss'
+
 import Sidebar from '@/components/Sidebar'
 
 export default {

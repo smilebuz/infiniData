@@ -341,31 +341,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .form-inline {
-    display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .form__item {
-    margin-bottom: 0;
-  }
-  .opgroup {
-    display: flex;
-    height: 30px;
-    line-height: 30px;
-    background: #f9f9f9;
-  }
-  .opgroup__item {
-    height: 100%;
-    cursor: pointer;
-  }
-  .tbcontainer {
-    padding: 15px 10px;
-    background: #f0f0f0;
-  }
-  .table {
-    width: 100%;
-  }
   .edit__label {
     margin-top: 7px;
   }
@@ -395,13 +370,5 @@ export default {
   }
   .select {
     max-width: 120px;
-  }
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border: 1px solid #e6e6e6;
-    background: #fff;
   }
 </style>

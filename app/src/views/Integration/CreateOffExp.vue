@@ -17,16 +17,16 @@
         </FormItem>
       </Form>
     </div>
-    <div class="opgroup">
-      <Button type="success" class="opgroup__item" icon="checkmark" size="small">
+    <div class="opbuttons">
+      <Button type="success" class="opbutton" icon="checkmark" size="small">
         全选
       </Button>
-      <Button type="error" class="opgroup__item" icon="close" size="small">
+      <Button type="error" class="opbutton" icon="close" size="small">
         清空
       </Button>
     </div>
     <div class="main">
-      <div class="tbcontainer">
+      <div class="createPanel">
         <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
         <div class="pagination">
           <div>
@@ -156,30 +156,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .form-inline {
-    display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .form__item {
-    margin-bottom: 0;
-  }
-  .opgroup {
-    display: flex;
-    padding: 10px;
-    background: #f9f9f9;
-  }
-  .opgroup__item {
-    margin-right: 10px;
-  }
   .main {
     padding: 15px 10px;
     background: #f0f0f0;
     display: flex;
-  }
-  .tbcontainer {
-    flex-grow: 4;
-    padding-right: 10px;
   }
   .setting {
     flex-grow: 1;
@@ -200,14 +180,6 @@ export default {
   }
   .setting__group-select {
     max-width: 120px;
-  }
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border: 1px solid #e6e6e6;
-    background: #fff;
   }
   .btncontainer {
     padding: 30px;

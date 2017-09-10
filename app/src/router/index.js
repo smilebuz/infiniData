@@ -26,8 +26,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: '/',
-      component: Integration
+      redirect: '/Integration/Dashboard'
     },
     {
       path: '/Login',

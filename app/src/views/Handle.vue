@@ -45,8 +45,8 @@
       </div>
     </div>
     <div class="sqlpad">
-      <div class="opgroup">
-        <div class="opgroup__item" v-for="(item, index) in operations" :key="item.name" :style="operationStyle(item.imgUrl)" @click="operate(item.action)">
+      <div class="handlegroup">
+        <div class="handlegroup__item" v-for="(item, index) in operations" :key="item.name" :style="operationStyle(item.imgUrl)" @click="operate(item.action)">
           <!-- img :src="item.imgUrl" :alt="item.name" -->
           <span>{{ item.name }}</span>
         </div>
@@ -404,14 +404,14 @@ export default {
     max-width: calc(100% - 170px);
     background: #f0f0f0;
   }
-  .opgroup {
+  .handlegroup {
     display: flex;
     padding-top: 1em;
     padding-bottom: 1em;
     cursor: pointer;
     background: #f8f8f8;
   }
-  .opgroup__item {
+  .handlegroup__item {
     padding-left: 20px;
     margin-left: 20px;
   }

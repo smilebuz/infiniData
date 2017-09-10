@@ -11,9 +11,7 @@
     <div class="taskPanel">
       <Tabs type="card" class="tabs">
         <TabPane :label="value.name" v-for="(value, key) in tasks" :key="key" class="tabpane">
-          <div class="tbcontainer">
-            <Table :columns="value.columns" :data="value.taskList" stripe border class="table"></Table>
-          </div>
+          <Table :columns="value.columns" :data="value.taskList" stripe border class="table"></Table>
         </TabPane>
       </Tabs>
     </div>
@@ -151,5 +149,7 @@ export default {
   .taskPanel {
     width: calc(100% - 20px);
     margin-left: 10px;
+  }
+  .tbcontainer {
   }
 </style>

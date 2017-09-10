@@ -134,16 +134,4 @@ export default {
   .progress {
     flex-basis: 80%;
   }
-  .tbcontainer {
-    padding: 15px 10px;
-    background: #f0f0f0;
-  }
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border: 1px solid #e6e6e6;
-    background: #fff;
-  }
 </style>
