@@ -9,9 +9,11 @@
       </div>
     </div>
     <div class="taskPanel">
-      <Tabs type="card">
-        <TabPane :label="value.name" v-for="(value, key) in tasks" :key="key">
-          <Table :columns="value.columns" :data="value.taskList" stripe border></Table>
+      <Tabs type="card" class="tabs">
+        <TabPane :label="value.name" v-for="(value, key) in tasks" :key="key" class="tabpane">
+          <div class="tbcontainer">
+            <Table :columns="value.columns" :data="value.taskList" stripe border class="table"></Table>
+          </div>
         </TabPane>
       </Tabs>
     </div>
@@ -61,24 +63,27 @@ export default {
           name: '离线导入',
           columns: [
             {
-              type: 'index'
+              type: 'index',
+              width: 60
             },
             {
               title: '任务号',
-              key: 'taskId'
+              key: 'taskId',
+              width: 120
             },
             {
               title: '库名',
-              key: 'dbName'
+              key: 'dbName',
+              width: 120
             },
             {
               title: '表名',
-              key: 'tbName'
+              key: 'tbName',
+              width: 120
             },
             {
               title: '状态',
-              key: '',
-              width: 500,
+              key: 'progress',
               render: (h, params) => {
                 return h('div', [
                   h('Progress', {
@@ -125,13 +130,11 @@ export default {
 <style lang="scss" scoped>
   .dashboard {
     background: #f0f0f0;
-    padding-left: 10px;
-    padding-right: 10px;
   }
   .overview {
     display: flex;
     justify-content: space-between;
-    padding: 15px 0;
+    padding: 15px 10px;
   }
   .overview__box {
     padding-left: 90px;
@@ -144,5 +147,9 @@ export default {
   }
   .overview__box-detail {
     text-align: left;
+  }
+  .taskPanel {
+    width: calc(100% - 20px);
+    margin-left: 10px;
   }
 </style>
