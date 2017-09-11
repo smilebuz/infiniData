@@ -50,15 +50,17 @@
       </Modal>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total='100'></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator on-change="goSearch(params)"></Page>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { Api, polling } from '../../api/Api'
+
 export default {
   data () {
     return {
@@ -144,15 +146,14 @@ export default {
         {
           title: '任务状态',
           key: 'status',
+          width: 150,
           align: 'center',
           render: (h, params) => {
-            if (params.row.progress) {
+            if (params.row.progress > 0 && params.row.progress < 100) {
               return h('div', [
                 h('Progress', {
                   props: {
-                    percent: parseFloat((params.row.progress * 100).toFixed(2))
-                  },
-                  style: {
+                    percent: params.row.progress
                   }
                 })
               ])
@@ -263,54 +264,27 @@ export default {
           }
         }
       ],
-      taskList: [
-        {
-          'scheduleState': 1,
-          'tbName': 'tb_ocrtask',
-          'blocks': 2,
-          'IP': '192.168.1.11',
-          'dbName': 'ocr',
-          'scheduleMode': 0,
-          'scheduleDate': '2016-09-09 10:08:32',
-          'dbType': 'Informix',
-          'progress': null,
-          'user': 'admin',
-          'taskId': 123,
-          'status': 1
-        },
-        {
-          'scheduleState': 1,
-          'tbName': 'tb_ocrtask',
-          'blocks': 2,
-          'IP': '192.168.1.11',
-          'dbName': 'ocr',
-          'scheduleMode': 0,
-          'scheduleDate': '2016-09-09 10:08:32',
-          'dbType': 'Informix',
-          'progress': 0.56,
-          'user': 'admin',
-          'taskId': 124,
-          'status': 2
-        },
-        {
-          'scheduleState': 1,
-          'tbName': 'tb_ocrtask',
-          'blocks': 2,
-          'IP': '192.168.1.11',
-          'dbName': 'ocr',
-          'scheduleMode': 0,
-          'scheduleDate': '2016-09-09 10:08:32',
-          'dbType': 'Informix',
-          'progress': 0.85,
-          'user': 'admin',
-          'taskId': 125,
-          'status': 3
-        }
-      ],
+      taskList: [],
+      statusList: {
+        '0': '不运行',
+        '1': '待运行',
+        '4': '已完成',
+        '99': '已失败'
+      },
+      scheduleModeList: {
+        '1': '手动',
+        '2': '定时',
+        '3': '周期'
+      },
+      scheduleStateList: {
+        '0': '已失效',
+        '1': '生效中'
+      },
       pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
+        currentPage: 0,
+        totalPage: 0,
+        pageSize: 0,
+        totalCount: 0
       },
       editModal: {
         show: false,
@@ -318,7 +292,25 @@ export default {
       }
     }
   },
+  computed: {
+    pollingList () {
+      return this.taskList.filter((task, i, arr) => {
+        return task.progress > 0 && task.progress < 100
+      })
+    }
+  },
   methods: {
+    search () {
+      let params = {}
+      Api.fullQuery.post(params).then(data => {
+        this.taskList = [...data.data]
+        this.pageInfo.currentPage = data.pageNum
+        this.pageInfo.totalPage = data.totalPage
+        this.pageInfo.pageSize = data.pageSize
+        this.pageInfo.totalCount = data.totalCount
+        this.pollingListStatus()
+      })
+    },
     opStyle (imgUrl) {
       return {
         background: 'url(' + imgUrl + ') no-repeat left center',
@@ -339,7 +331,34 @@ export default {
       this.editModal.show = true
     },
     editTask () {},
-    cancelEdit () {}
+    cancelEdit () {},
+    goSearch (params) {
+      debugger
+    },
+    pollingListStatus () {
+      if (!this.taskList.length) {
+        return null
+      }
+      let list = this.taskList.filter((el, i, arr) => {
+        return el.progress > 0 && el.progress < 100
+      })
+      list.forEach((task, i, arr) => {
+        let params = {
+          taskId: task.taskId
+        }
+        polling(params, (data) => {
+          task.progress = data.progress
+        }, task)
+      })
+    },
+    stopPolling () {
+      this.pollingList.forEach((task, i, arr) => {
+        clearTimeout(task.timer)
+      })
+    }
+  },
+  mounted () {
+    this.search()
   }
 }
 </script>
