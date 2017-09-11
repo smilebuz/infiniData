@@ -15,6 +15,7 @@ import OffExport from '../views/Integration/OffExport'
 import OffExpDetail from '../views/Integration/OffExpDetail'
 import CreateOffExp from '../views/Integration/CreateOffExp'
 import Source from '../views/Integration/Source'
+import CreateSource from '../views/Integration/CreateSource'
 
 import Handle from '../views/Handle'
 import Manage from '../views/Manage'
@@ -81,6 +82,10 @@ export default new Router({
         {
           path: 'Source',
           component: Source
+        },
+        {
+          path: 'CreateSource',
+          component: CreateSource
         }
       ]
     },

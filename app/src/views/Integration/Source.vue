@@ -31,21 +31,39 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
+      <Modal v-model="editModal.show" :title="editModal.title">
         <div class="modal__content">
-          <span class="edit__label">调度设置</span>
-          <div class="radiogroup">
-            <div class="radiogroup__item">
-              <Radio label="手动" class="radio"></Radio>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="定时" class="radio"></Radio>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="失效" class="radio"></Radio>
-            </div>
-          </div>
+          <Form :model="configForm" :label-width="80" class="configform">
+            <FormItem label="连接名称">
+              <Input v-model="configForm.connName"></Input>
+            </FormItem>
+            <FormItem label="主机IP">
+              <Input v-model="configForm.host"></Input>
+            </FormItem>
+            <FormItem label="数据库名称">
+              <Input v-model="configForm.dbName"></Input>
+            </FormItem>
+            <FormItem label="端口号">
+              <Input v-model="configForm.port"></Input>
+            </FormItem>
+            <FormItem label="用户名">
+              <Input v-model="configForm.userName"></Input>
+            </FormItem>
+            <FormItem label="密码">
+              <Input v-model="configForm.password"></Input>
+            </FormItem>
+            <FormItem label="编码设置">
+              <Select v-model="configForm.encoding">
+                <Option value="utf8">UTF-8</Option>
+                <Option value="gbk">GBK</Option>
+              </Select>
+            </FormItem>
+          </Form>
+        </div>
+        <div slot="footer" class="buttongroup">
+          <Button type="primary" @click="testConn">测试连接</Button>
+          <Button type="info" @click="editSource">保存</Button>
+          <Button @click="cancelEdit">取消</Button>
         </div>
       </Modal>
       <div class="pagination">
@@ -162,7 +180,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log(params)
+                    this.editModal.show = true
                   }
                 }
               }, '编辑')
@@ -191,9 +209,18 @@ export default {
         totalPage: 17,
         pageSize: 10
       },
+      configForm: {
+        connName: '',
+        encoding: '',
+        host: '',
+        port: '',
+        dbName: '',
+        userName: '',
+        password: ''
+      },
       editModal: {
         show: false,
-        title: '任务编辑'
+        title: '数据源编辑'
       }
     }
   },
@@ -208,7 +235,7 @@ export default {
     operateTask (opType) {
       switch (opType) {
         case 'create':
-          this.$router.push('CreateOffImp')
+          this.$router.push('CreateSource')
           break
         default:
           break
@@ -217,8 +244,17 @@ export default {
     openEditModal (taskId) {
       this.editModal.show = true
     },
-    editTask () {},
-    cancelEdit () {}
+    editSource () {
+      // 编辑请求
+      this.$router.push('Source')
+    },
+    cancelEdit () {
+      this.$router.push('Source')
+    },
+    testConn () {
+      // 测试请求
+      this.modals.connModal = true
+    }
   }
 }
 </script>
@@ -252,36 +288,9 @@ export default {
   .modal__content {
     display: flex;
   }
-  .radiogroup {
-    display: flex;
-    flex-direction: column;
-  }
-  .radio {
-    min-width: 60px;
-  }
-  .radiogroup__item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-left: 10px;
-  }
-  .radiogroup__select {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-  }
-  .radiogroup__item-label {
-    min-width: 40px;
-  }
-  .select {
-    max-width: 120px;
-  }
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border: 1px solid #e6e6e6;
-    background: #fff;
+  .configform {
+    width: 80%;
+    margin: 0 auto;
+    overflow: auto;
   }
 </style>

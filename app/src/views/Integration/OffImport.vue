@@ -359,6 +359,9 @@ export default {
   },
   mounted () {
     this.search()
+  },
+  beforeDestroy () {
+    this.stopPolling()
   }
 }
 </script>
