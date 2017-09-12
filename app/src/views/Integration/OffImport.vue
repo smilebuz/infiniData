@@ -330,6 +330,7 @@ export default {
       debugger
     },
     pollingListStatus () {
+      this.stopPolling()
       if (!this.taskList.length) {
         return null
       }
@@ -342,11 +343,13 @@ export default {
         }
         polling(params, (data) => {
           task.progress = data.progress
+          console.log('任务id:', task.taskId, '任务timer:', task.timer)
         }, task)
       })
     },
     stopPolling () {
       this.pollingList.forEach((task, i, arr) => {
+        console.log('停止轮询', task.timer)
         clearTimeout(task.timer)
       })
     }

@@ -96,7 +96,7 @@ export const polling = (params, update, ref) => {
       if (data.data.response === 1) {
         if (data.data.progress > 0 && data.data.progress < 100) {
           let timer = setTimeout(() => {
-            polling(params)
+            polling(params, update, ref)
           }, 5000)
 
           if (ref) {

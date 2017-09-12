@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
+    <Navbar v-show="this.$router.history.current.name !== 'Login'"></Navbar>
     <router-view class="container">
     </router-view>
   </div>

@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     login () {
-      this.$router.push('/Integration')
+      this.$router.push('/Integration/Dashboard')
     }
   }
 }
