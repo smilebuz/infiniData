@@ -92,19 +92,17 @@ export default {
       ],
       columns: [
         {
-          type: 'selection',
-          align: 'center'
+          type: 'selection'
         },
         {
           type: 'index',
-          align: 'center',
           title: '序号'
         },
         {
           title: '任务编号',
           key: 'taskId',
           sortable: true,
-          align: 'center',
+          width: 110,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -125,64 +123,60 @@ export default {
         {
           title: '数据库类型',
           key: 'dbType',
-          align: 'center'
+          width: 100
         },
         {
           title: 'IP',
           key: 'IP',
-          align: 'center'
+          width: 90,
+          ellipsis: true
         },
         {
           title: '库名',
           key: 'dbName',
-          sortable: true,
-          align: 'center'
+          width: 90,
+          sortable: true
         },
         {
           title: '表名',
           key: 'tbName',
+          width: 90,
           sortable: true,
-          align: 'center'
+          ellipsis: true
         },
         {
           title: '主键字段',
-          key: 'priKey',
-          align: 'center'
+          key: 'priKey'
         },
         {
           title: '增量字段',
-          key: 'incField',
-          align: 'center'
+          key: 'incField'
         },
         {
           title: '增量条件',
           key: 'incCondition',
-          align: 'center'
-        },
-        {
-          title: '调度类型',
-          key: 'scheduleMode',
-          align: 'center'
-        },
-        {
-          title: '调度时间',
-          key: 'scheduleDate',
-          align: 'center',
           ellipsis: true
         },
         {
+          title: '调度类型',
+          key: 'scheduleMode'
+        },
+        {
+          title: '调度时间',
+          key: 'scheduleDate'
+        },
+        {
           title: '调度状态',
-          key: 'scheduleState',
-          align: 'center'
+          key: 'scheduleState'
         },
         {
           title: '用户',
-          key: 'user',
-          align: 'center'
+          key: 'user'
         },
         {
           title: '操作',
           key: '',
+          width: 140,
           align: 'center',
           render: (h, params) => {
             return h('div', [

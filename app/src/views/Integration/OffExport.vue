@@ -113,12 +113,10 @@ export default {
       ],
       columns: [
         {
-          type: 'selection',
-          align: 'center'
+          type: 'selection'
         },
         {
           type: 'index',
-          align: 'center',
           title: '序号',
           sortable: true
         },
@@ -126,7 +124,7 @@ export default {
           title: '任务编号',
           key: 'taskId',
           sortable: true,
-          align: 'center',
+          width: 110,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -147,62 +145,59 @@ export default {
         {
           title: '数据库类型',
           key: 'dbType',
-          align: 'center'
+          width: 100
         },
         {
           title: 'IP',
           key: 'IP',
-          align: 'center'
+          width: 80,
+          ellipsis: true
         },
         {
           title: '库名',
           key: 'dbName',
-          sortable: true,
-          align: 'center'
+          sortable: true
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          align: 'center'
+          ellipsis: true
         },
         {
           title: '类型',
-          key: 'type',
-          align: 'center'
+          key: 'type'
         },
         {
           title: '目标位置',
           key: 'targetPath',
-          align: 'center',
+          width: 70,
           ellipsis: true
         },
         {
           title: '调度类型',
           key: 'scheduleMode',
-          align: 'center'
+          width: 70
         },
         {
           title: '调度时间',
           key: 'scheduleDate',
-          align: 'center',
+          width: 70,
           ellipsis: true
         },
         {
           title: '调度状态',
           key: 'scheduleState',
-          align: 'center'
+          width: 70
         },
         {
           title: '用户',
-          key: 'user',
-          align: 'center'
+          key: 'user'
         },
         {
           title: '操作',
           key: '',
           width: 140,
-          align: 'center',
           render: (h, params) => {
             switch (params.row.status) {
               case 1:

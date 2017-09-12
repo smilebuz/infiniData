@@ -28,56 +28,49 @@ export default {
         {
           type: 'index',
           title: '序号',
-          align: 'center'
+          width: 60
         },
         {
           title: '调度时间',
           key: 'scheduleDate',
-          align: 'center'
+          ellipsis: true
         },
         {
           title: '增量字段',
-          key: 'incField',
-          align: 'center'
+          key: 'incField'
         },
         {
           title: '增量条件',
-          key: 'incCondition',
-          align: 'center'
+          key: 'incCondition'
         },
         {
           title: '总记录数',
           key: 'totalRows',
-          sortable: true,
-          align: 'center'
+          sortable: true
         },
         {
           title: '开始时间',
           key: 'startTime',
           sortable: true,
-          align: 'center'
+          ellipsis: true
         },
         {
           title: '结束时间',
           key: 'endTime',
-          sortable: true,
-          align: 'center'
+          sortable: true
         },
         {
           title: '耗时',
-          key: 'spendTime',
-          align: 'center'
+          key: 'spendTime'
         },
         {
           title: '抽取速度',
-          key: 'extractSpeed',
-          align: 'center'
+          key: 'extractSpeed'
         },
         {
           title: '调度状态',
           key: 'status',
           width: 150,
-          align: 'center',
           render: (h, params) => {
             if (params.row.status === 2) {
               return h('div', [
@@ -97,7 +90,7 @@ export default {
         {
           title: '备注',
           key: 'info',
-          align: 'center'
+          ellipsis: true
         }
       ],
       detailList: [

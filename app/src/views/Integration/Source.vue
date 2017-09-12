@@ -101,70 +101,64 @@ export default {
       ],
       columns: [
         {
-          type: 'selection',
-          align: 'center'
+          type: 'selection'
         },
         {
           type: 'index',
-          align: 'center',
           title: '序号',
           sortable: true
         },
         {
           title: '连接名称',
           key: 'connName',
-          align: 'center'
+          width: 100
         },
         {
           title: '数据库类型',
           key: 'dbType',
-          align: 'center'
+          width: 100
         },
         {
           title: 'IP',
           key: 'IP',
-          align: 'center'
+          ellipsis: true
         },
         {
           title: '数据库名',
           key: 'dbName',
           sortable: true,
-          align: 'center'
+          width: 110
         },
         {
           title: '端口',
-          key: '',
-          align: 'center'
+          key: 'port'
         },
         {
           title: '用户名',
-          key: 'userName',
-          align: 'center'
+          key: 'userName'
         },
         {
           title: '密码',
-          key: 'password',
-          align: 'center'
+          key: 'password'
         },
         {
           title: '连接类型',
           key: 'connType',
-          align: 'center'
+          width: 70
         },
         {
           title: '编码',
-          key: 'encoding',
-          align: 'center'
+          key: 'encoding'
         },
         {
           title: '创建时间',
           key: 'createTime',
-          align: 'center'
+          ellipsis: true,
+          width: 70
         },
         {
           title: '用户',
-          key: 'user',
-          align: 'center'
+          key: 'user'
         },
         {
           title: '操作',
