@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import { Api, polling } from '../../api/Api'
 
 export default {
   data () {
@@ -293,6 +292,10 @@ export default {
       return this.taskList.filter((task, i, arr) => {
         return task.progress > 0 && task.progress < 100
       })
+    },
+
+    taskList () {
+      return this.$store.getters.taskList
     }
   },
   methods: {
