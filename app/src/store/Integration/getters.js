@@ -1,5 +1,9 @@
 export default {
-  taskList ({ state }) {
-    return state.offline.list
+  // 离线导入
+  offImpList (state) {
+    return state.offimport.taskList
+  },
+  offImpPollingList (state) {
+    return state.offimport.pollingList
   }
 }

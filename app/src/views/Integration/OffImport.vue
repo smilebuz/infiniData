@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -256,7 +257,7 @@ export default {
           }
         }
       ],
-      taskList: [],
+      // taskList: [],
       statusList: {
         '0': '不运行',
         '1': '待运行',
@@ -288,27 +289,18 @@ export default {
     }
   },
   computed: {
-    pollingList () {
-      return this.taskList.filter((task, i, arr) => {
-        return task.progress > 0 && task.progress < 100
-      })
-    },
-
-    taskList () {
-      return this.$store.getters.taskList
-    }
+    ...mapGetters({
+      taskList: 'offImpList',
+      pollingList: 'offImpPollingList'
+    })
   },
   methods: {
+    ...mapActions([
+      'getOffImpList', 'pollingListStatus', 'stopPolling'
+    ]),
     search () {
       let params = {}
-      Api.fullQuery.post(params).then(data => {
-        this.taskList = [...data.data]
-        this.pageInfo.currentPage = data.pageNum
-        this.pageInfo.totalPage = data.totalPage
-        this.pageInfo.pageSize = data.pageSize
-        this.pageInfo.totalCount = data.totalCount
-        this.pollingListStatus()
-      })
+      this.getOffImpList(params)
     },
     opStyle (imgUrl) {
       return {
@@ -333,8 +325,8 @@ export default {
     editTask () {},
     cancelEdit () {},
     goSearch (params) {
-      debugger
-    },
+    }
+    /*
     pollingListStatus () {
       this.stopPolling()
       if (!this.taskList.length) {
@@ -359,6 +351,7 @@ export default {
         clearTimeout(task.timer)
       })
     }
+    */
   },
   mounted () {
     this.search()

@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    <Navbar v-show="this.$router.history.current.name !== 'Login'"></Navbar>
-    <router-view class="container">
-    </router-view>
+    <Navbar v-if="needNav"></Navbar>
+    <router-view class="container"></router-view>
   </div>
 </template>
 
@@ -11,6 +10,11 @@ import Navbar from './components/Nav'
 
 export default {
   name: 'app',
+  computed: {
+    needNav () {
+      return this.$route.name !== 'Login'
+    }
+  },
   components: {
     Navbar
   }
