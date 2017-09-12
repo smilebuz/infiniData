@@ -34,22 +34,22 @@
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <div class="radiogroup">
-            <div class="radiogroup__item">
-              <Radio label="手动" class="radio"></Radio>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="定时" class="radio"></Radio>
+          <RadioGroup v-model="editForm.scheduleMode" vertical>
+            <Radio label="手动">
+              <span>手动</span>
+            </Radio>
+            <Radio label="定时">
+              <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="周期" class="radio"></Radio>
+            </Radio>
+            <Radio label="周期">
+              <span>周期</span>
               <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="失效" class="radio"></Radio>
-            </div>
-          </div>
+            </Radio>
+            <Radio label="失效">
+              <span>失效</span>
+            </Radio>
+          </RadioGroup>
         </div>
       </Modal>
       <div class="pagination">
@@ -163,7 +163,7 @@ export default {
         },
         {
           title: '调度时间',
-          key: 'scheduleDate'
+          key: 'scheduleCorn'
         },
         {
           title: '调度状态',
@@ -197,19 +197,32 @@ export default {
       ],
       taskList: [
         {
-          'scheduleState': 1,
-          'tbName': 'tb_ocrtask',
+          'taskId': 123,
+          'dbType': 'Informix',
           'IP': '192.168.1.11',
           'dbName': 'ocr',
-          'dbType': 'Informix',
+          'tbName': 'tb_ocrtask',
           'priKey': 'uuid',
           'incField': 'age',
+          'incCondition': '2017-09-01 12:00:00,2017-10-01 12:00:00',
           'scheduleMode': 0,
-          'scheduleDate': '',
-          'user': 'admin',
-          'schedulePeriod': '12:00:00',
-          'taskId': 123,
-          'incCondition': '2017-09-01 12:00:00,2017-10-01 12:00:00'
+          'scheduleCorn': '',
+          'scheduleState': 1,
+          'user': 'admin'
+        },
+        {
+          'taskId': 456,
+          'dbType': 'Informix',
+          'IP': '192.168.1.21',
+          'dbName': 'ocr',
+          'tbName': 'tb_task',
+          'priKey': 'uuid',
+          'incField': 'age',
+          'incCondition': '2017-09-01 12:00:00,2017-10-01 12:00:00',
+          'scheduleMode': 1,
+          'scheduleCorn': '2017-09-01 12:00:00',
+          'scheduleState': 1,
+          'user': 'admin'
         }
       ],
       pageInfo: {
@@ -220,6 +233,9 @@ export default {
       editModal: {
         show: false,
         title: '任务编辑'
+      },
+      editForm: {
+        scheduleMode: ''
       }
     }
   },
@@ -242,6 +258,7 @@ export default {
     },
     openEditModal (taskId) {
       this.editModal.show = true
+      this.editForm.taskId = taskId
     },
     editTask () {},
     cancelEdit () {}
@@ -253,28 +270,8 @@ export default {
   .modal__content {
     display: flex;
   }
-  .radiogroup {
-    display: flex;
-    flex-direction: column;
-  }
-  .radio {
-    min-width: 60px;
-  }
-  .radiogroup__item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-left: 10px;
-  }
-  .radiogroup__select {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-  }
-  .radiogroup__item-label {
-    min-width: 40px;
-  }
-  .select {
-    max-width: 120px;
+  .edit__label {
+    padding-top: 7px;
+    margin-right: 10px;
   }
 </style>

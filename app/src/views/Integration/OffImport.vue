@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="offimport">
     <div class="form-inline">
-      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" inline>
+      <Form ref="filterForm" :model="filterForm" :label-width="80" inline>
         <FormItem prop="taskId" label="任务编号" class="form__item">
           <Input type="text" v-model="filterForm.taskId"></Input>
         </FormItem>
@@ -34,18 +34,18 @@
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <div class="radiogroup">
-            <div class="radiogroup__item">
-              <Radio label="手动" class="radio"></Radio>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="定时" class="radio"></Radio>
+          <RadioGroup v-model="editForm.scheduleMode" vertical>
+            <Radio label="手动">
+              <span>手动</span>
+            </Radio>
+            <Radio label="定时">
+              <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
-            </div>
-            <div class="radiogroup__item">
-              <Radio label="失效" class="radio"></Radio>
-            </div>
-          </div>
+            </Radio>
+            <Radio label="失效">
+              <span>失效</span>
+            </Radio>
+          </RadioGroup>
         </div>
       </Modal>
       <div class="pagination">
@@ -70,7 +70,6 @@ export default {
         tableName: '',
         taskStatus: ''
       },
-      labelWidth: 80,
       operations: [
         {
           value: 'run',
@@ -163,7 +162,7 @@ export default {
         },
         {
           title: '调度时间',
-          key: 'scheduleDate',
+          key: 'scheduleCorn',
           width: 90,
           ellipsis: true
         },
@@ -283,6 +282,9 @@ export default {
       editModal: {
         show: false,
         title: '任务编辑'
+      },
+      editForm: {
+        scheduleMode: ''
       }
     }
   },
@@ -323,6 +325,7 @@ export default {
     },
     openEditModal (taskId) {
       this.editModal.show = true
+      this.editForm.taskId = taskId
     },
     editTask () {},
     cancelEdit () {},
@@ -371,26 +374,9 @@ export default {
   .modal__content {
     display: flex;
   }
-  .radiogroup {
-    display: flex;
-    flex-direction: column;
-  }
-  .radio {
-    min-width: 60px;
-  }
-  .radiogroup__item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-left: 10px;
-  }
-  .radiogroup__select {
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-  }
-  .radiogroup__item-label {
-    min-width: 40px;
+  .edit__label {
+    padding-top: 7px;
+    margin-right: 15px;
   }
   .select {
     max-width: 120px;
