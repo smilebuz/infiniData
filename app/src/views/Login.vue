@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -29,7 +31,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'updateUser'
+    ]),
     login () {
+      this.updateUser()
       this.$router.push('/Integration/Dashboard')
     }
   }

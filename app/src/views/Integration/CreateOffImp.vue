@@ -68,6 +68,7 @@
 
 <script>
 import { Api } from '../../api/Api'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -142,8 +143,14 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   methods: {
     createTask () {
+      alert(this.user)
       let params = {}
       Api.createFull.post(params).then(data => {
         this.$router.push('OffImport')
