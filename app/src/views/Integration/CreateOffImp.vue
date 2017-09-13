@@ -150,7 +150,7 @@ export default {
   },
   methods: {
     createTask () {
-      alert(this.user)
+      alert(this.user.name)
       let params = {}
       Api.createFull.post(params).then(data => {
         this.$router.push('OffImport')

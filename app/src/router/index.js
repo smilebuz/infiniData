@@ -21,9 +21,11 @@ import Handle from '../views/Handle'
 import Manage from '../views/Manage'
 import Op from '../views/Op'
 
+import store from '../store'
+
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/',
@@ -38,53 +40,66 @@ export default new Router({
       path: '/Integration',
       name: 'Integration',
       component: Integration,
+      meta: { requiresAuth: true },
       children: [
         {
           path: 'Dashboard',
+          meta: { requiresAuth: true },
           component: Dashboard
         },
         {
           path: 'OffImport',
+          meta: { requiresAuth: true },
           component: OffImport
         },
         {
           path: 'OffImpDetail/:taskId',
+          meta: { requiresAuth: true },
           component: OffImpDetail
         },
         {
           path: 'CreateOffImp',
+          meta: { requiresAuth: true },
           component: CreateOffImp
         },
         {
           path: 'IncImport',
+          meta: { requiresAuth: true },
           component: IncImport
         },
         {
           path: 'IncImpDetail',
+          meta: { requiresAuth: true },
           component: IncImpDetail
         },
         {
           path: 'CreateIncImp',
+          meta: { requiresAuth: true },
           component: CreateIncImp
         },
         {
           path: 'OffExport',
+          meta: { requiresAuth: true },
           component: OffExport
         },
         {
           path: 'OffExpDetail',
+          meta: { requiresAuth: true },
           component: OffExpDetail
         },
         {
           path: 'CreateOffExp',
+          meta: { requiresAuth: true },
           component: CreateOffExp
         },
         {
           path: 'Source',
+          meta: { requiresAuth: true },
           component: Source
         },
         {
           path: 'CreateSource',
+          meta: { requiresAuth: true },
           component: CreateSource
         }
       ]
@@ -92,17 +107,39 @@ export default new Router({
     {
       path: '/Handle',
       name: 'Handle',
+      meta: { requiresAuth: true },
       component: Handle
     },
     {
       path: '/Manage',
       name: 'Manage',
+      meta: { requiresAuth: true },
       component: Manage
     },
     {
       path: '/Op',
       name: 'Op',
+      meta: { requiresAuth: true },
       component: Op
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!store.getters.user.name) {
+      next({
+        path: '/Login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // 确保一定要调用 next()
+  }
+})
+
+export default router

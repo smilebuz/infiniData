@@ -4,7 +4,7 @@ import mutations from './mutations'
 
 export default {
   state: {
-    user: ''
+    user: {}
   },
   actions,
   getters,

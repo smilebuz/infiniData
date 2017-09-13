@@ -13,7 +13,7 @@
         <p class="user__info-name">{{ user.name }}</p>
         <p class="user__info-position">{{ user.position }}</p>
       </div>
-      <div class="user__logout">
+      <div class="user__logout" @click="logout">
         <Icon type="power" />
         <span>退出</span>
       </div>
@@ -22,13 +22,15 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
       menu: [
         {
           name: '数据集成',
-          path: '/Integration'
+          path: '/Integration/Dashboard'
         },
         {
           name: '数据处理',
@@ -42,12 +44,18 @@ export default {
           name: '运维管理',
           path: '/Op'
         }
-      ],
-      user: {
-        name: '李瑞平',
-        position: 'UI设计师'
-      }
+      ]
     }
+  },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'logout'
+    ])
   }
 }
 </script>
