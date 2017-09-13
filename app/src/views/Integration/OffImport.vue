@@ -351,6 +351,9 @@ export default {
         case 'delete':
           this.deleteOffImpTask({taskIds: this.selectTasks})
           break
+        case 'run':
+          this.startTask(this.selectTasks)
+          break
         default:
           break
       }

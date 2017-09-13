@@ -95,7 +95,14 @@ export default {
           key: 'info',
           ellipsis: true
         }
-      ]
+      ],
+      searchParams: {
+        taskId: this.$route.params.taskId,
+        orderBy: '',
+        sort: '',
+        pageNum: -1,
+        pageSize: -1
+      }
     }
   },
   computed: {
@@ -105,18 +112,26 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      getTaskDetail: 'getOffImpDetail'
-    }),
+    ...mapActions([
+      'getOffImpDetail'
+    ]),
     changePageNum (pageNum) {
-      console.log(pageNum)
+      this.searchParams.pageNum = pageNum
     },
     changePageSize (pageSize) {
-      console.log(pageSize)
+      this.searchParams.pageSize = pageSize
+    }
+  },
+  watch: {
+    searchParams: {
+      handler: function (params) {
+        this.getOffImpDetail(params)
+      },
+      deep: true
     }
   },
   mounted () {
-    this.getTaskDetail()
+    this.getOffImpDetail(this.searchParams)
   }
 }
 </script>

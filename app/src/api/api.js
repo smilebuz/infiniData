@@ -49,7 +49,8 @@ const Apilist = {
   'runSql': '/api/dataprocess/runsql', // post
 
   // polling
-  'getProgress': '/api/task/full/progress' // post
+  'getFullProgress': '/api/task/full/progress', // post
+  'getFullDetailProgress': '/api/task/full/progress/detail' // post
 }
 
 export const Api = ((apilist) => {
@@ -58,7 +59,7 @@ export const Api = ((apilist) => {
     list[api] = {
       get: (params) => {
         console.log(apilist[api])
-        return axios.get(apilist[api], {params: params})
+        return axios.get(apilist[api], {params})
           .then(data => {
             if (data.data.response === 1) {
               return Promise.resolve(data.data)
@@ -89,14 +90,13 @@ export const Api = ((apilist) => {
   return list
 })(Apilist)
 
-export const polling = (params, update, ref) => {
-  return axios.get(Apilist.getProgress, {params})
+export const polling = (pollingUrl, params, update, ref) => {
+  return axios.get(Apilist[pollingUrl], {params})
     .then(data => {
-      console.log('polling')
       if (data.data.response === 1) {
         if (data.data.progress > 0 && data.data.progress < 100) {
           let timer = setTimeout(() => {
-            polling(params, update, ref)
+            polling(pollingUrl, params, update, ref)
           }, 5000)
 
           if (ref) {

@@ -11,6 +11,8 @@ const actions = {
   },
   pollingListStatus ({ commit, getters }) {
     actions.stopPolling({ commit, getters })
+    let list = getters.offImpPollingList
+    /*
     let taskList = getters.offImpList
     if (!taskList.length) {
       return null
@@ -18,11 +20,12 @@ const actions = {
     let list = taskList.filter((task, i, arr) => {
       return task.progress > 0 && task.progress < 100
     })
+    */
     list.forEach((task) => {
       let params = {
         taskId: task.taskId
       }
-      polling(params, (data) => {
+      polling('getFullProgress', params, (data) => {
         commit(type.SET_OFFIMP_TASK_STATUS, {
           task: task,
           data: data
@@ -32,7 +35,6 @@ const actions = {
     })
   },
   stopPolling ({ commit }) {
-    // let pollingList = getters.offImpPollingList
     commit(type.CLEAR_OFFIMP_TIMER)
   },
   startOffImpTask ({ commit, getters }, params) {
@@ -55,15 +57,36 @@ const actions = {
       actions.getOffImpList({ commit, getters })
     })
   },
-  getOffImpDetail ({ commit, getters }, params) {
-    Api.fullDetail.post(params).then(data => {
-      commit(type.SET_OFFIMP_DETAIL_LIST, data)
-    })
-  },
   editOffImpTask ({ commit, getters }, params) {
     Api.editFull.post(params).then(data => {
       actions.getOffImpDetail({ commit, getters })
     })
+  },
+  getOffImpDetail ({ commit, getters }, params) {
+    actions.stopImpDetailPolling({ commit, getters })
+    Api.fullDetail.post(params).then(data => {
+      commit(type.SET_OFFIMP_DETAIL_LIST, data)
+      actions.pollingDetailListStatus({ commit, getters })
+    })
+  },
+  pollingDetailListStatus ({ commit, getters }) {
+    actions.stopImpDetailPolling({ commit })
+    let list = getters.offImpDetailPollingList
+    list.forEach((task) => {
+      let params = {
+        taskId: task.taskId
+      }
+      polling('getFullDetailProgress', params, (data) => {
+        commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
+          task: task,
+          data: data
+        })
+        console.log('任务id:', task.taskId, '任务timer:', task.timer)
+      }, task)
+    })
+  },
+  stopImpDetailPolling ({ commit }) {
+    commit(type.CLEAR_OFFIMP_DETAIL_TIMER)
   }
 }
 

@@ -12,6 +12,9 @@ export default {
   offImpDetailList (state) {
     return state.offimport.detail.detailList
   },
+  offImpDetailPollingList (state) {
+    return state.offimport.detail.pollingList
+  },
   offImpDetailPageInfo (state) {
     return state.offimport.detail.pageInfo
   }

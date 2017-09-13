@@ -15,6 +15,7 @@ export default {
       },
       detail: {
         detailList: [],
+        pollingList: [],
         pageInfo: {
           pageNum: -1,
           pageSize: -1,
@@ -22,7 +23,10 @@ export default {
           totalCount: -1
         }
       }
-    }
+    },
+    incimport: {},
+    offexport: {},
+    source: {}
   },
   actions,
   getters,
