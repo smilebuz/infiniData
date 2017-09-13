@@ -2,10 +2,12 @@ import type from '../mutation-type'
 
 export default {
   [type.SET_OFFIMP_LIST] (state, data) {
-    state.offimport.taskList = data
-    state.offimport.pollingList = data.filter((task) => {
+    state.offimport.taskList = data.data
+    state.offimport.pollingList = data.data.filter((task) => {
       return task.progress > 0 && task.progress < 100
     })
+    state.offimport.pageInfo.pageNum = data.pageNum
+    state.offimport.pageInfo.pageSize = data.pageSize
   },
   [type.SET_OFFIMP_TASK_STATUS] (state, payload) {
     payload.task.progress = payload.data.progress
@@ -18,5 +20,8 @@ export default {
         clearTimeout(task.timer)
       })
     }
+  },
+  [type.SET_OFFIMP_DETAIL_LIST] (state, data) {
+    state.offimport.detailList = data
   }
 }

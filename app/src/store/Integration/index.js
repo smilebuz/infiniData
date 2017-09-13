@@ -6,7 +6,14 @@ export default {
   state: {
     offimport: {
       taskList: [],
-      pollingList: []
+      pollingList: [],
+      detailList: [],
+      pageInfo: {
+        pageNum: -1,
+        pageSize: -1,
+        totalPage: -1,
+        totalCount: -1
+      }
     }
   },
   actions,

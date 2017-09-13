@@ -12,11 +12,10 @@
           <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
         <FormItem prop="status" label="任务状态" class="form__item">
-          <Select v-model="filterForm.status" placeholder="请选择">
-            <Option value=1>运行中</Option>
-            <Option value=2>已完成</Option>
-            <Option value=3>已失败</Option>
-            <Option value=4>待运行</Option>
+          <Select v-model="filterForm.status" placeholder="请选择" style="width: 120px;">
+            <Option v-for="(value, key) in statusList" :value="key" :key="key">
+              {{ value }}
+            </Option>
           </Select>
         </FormItem>
         <FormItem class="form__item">
@@ -33,16 +32,20 @@
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
         <div class="modal__content">
+          <span class="edit__label">分片设置</span>
+          <Input v-model="editForm.blocks" size="small" class="modal__input" number></Input>
+        </div>
+        <div class="modal__content">
           <span class="edit__label">调度设置</span>
           <RadioGroup v-model="editForm.scheduleMode" vertical>
-            <Radio label="手动">
+            <Radio label="1">
               <span>手动</span>
             </Radio>
-            <Radio label="定时">
+            <Radio label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <DatePicker type="datetime" style="width: 200px;" :transfer="true" v-model="editForm.scheduleCorn"></DatePicker>
             </Radio>
-            <Radio label="失效">
+            <Radio label="-1">
               <span>失效</span>
             </Radio>
           </RadioGroup>
@@ -50,9 +53,10 @@
       </Modal>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator on-change="goSearch(params)"></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
@@ -110,8 +114,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    // alert(params.row.taskId)
-                    this.$router.push('OffImpDetail')
+                    this.$router.push('/Integration/OffImpDetail/' + params.row.taskId)
                   }
                 }
               }, params.row.taskId)
@@ -263,10 +266,13 @@ export default {
       ],
       selectTasks: [],
       statusList: {
-        '0': '不运行',
-        '1': '待运行',
-        '4': '已完成',
-        '99': '已失败'
+        0: '不运行',
+        1: '待运行',
+        2: '抽取数据',
+        3: '生成parquet',
+        4: '已完成',
+        5: '已停止',
+        9: '已失败'
       },
       scheduleModeList: {
         '1': '手动',
@@ -277,38 +283,39 @@ export default {
         '0': '已失效',
         '1': '生效中'
       },
-      pageInfo: {
-        currentPage: 0,
-        totalPage: 0,
-        pageSize: 0,
-        totalCount: 0
-      },
       searchParams: {
         taskId: '',
+        dbType: '',
         dbName: '',
         tbName: '',
         status: '',
-        currentPage: '',
-        pageSize: ''
+        pageSize: -1,
+        pageNum: -1,
+        orderBy: '',
+        sort: ''
       },
       editModal: {
         show: false,
         title: '任务编辑'
       },
       editForm: {
-        scheduleMode: ''
+        taskId: -1,
+        blocks: '',
+        scheduleMode: '',
+        scheduleCorn: '',
+        scheduleState: -2
       }
     }
   },
   computed: {
     ...mapGetters({
       taskList: 'offImpList',
-      pollingList: 'offImpPollingList'
+      pageInfo: 'offImpPageInfo'
     })
   },
   methods: {
     ...mapActions([
-      'getOffImpList', 'pollingListStatus', 'stopPolling', 'startOffImpTask', 'deleteOffImpTask', 'restartOffImpTask', 'stopOffImpTask'
+      'getOffImpList', 'stopPolling', 'startOffImpTask', 'deleteOffImpTask', 'restartOffImpTask', 'stopOffImpTask', 'editOffImpTask'
     ]),
     search () {
       this.getOffImpList(this.searchParams)
@@ -348,13 +355,28 @@ export default {
       this.editModal.show = true
       this.editForm.taskId = taskId
     },
-    editTask () {},
+    editTask () {
+      this.editForm.scheduleMode = parseInt(this.editForm.scheduleMode)
+      if (this.editForm.scheduleMode === -1) {
+        this.editForm.scheduleState = 1
+      } else {
+        this.editForm.scheduleState = 0
+      }
+      let params = this.editForm
+      this.editOffImpTask(params)
+    },
     cancelEdit () {},
     startTask (taskIds) {
       let params = {
         taskIds: taskIds
       }
       this.startOffImpTask(params)
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
     }
   },
   watch: {
@@ -381,12 +403,14 @@ export default {
   }
   .modal__content {
     display: flex;
+    margin-bottom: 10px;
+  }
+  .modal__input {
+    margin-top: 3px;
+    width: 30%;
   }
   .edit__label {
     padding-top: 7px;
     margin-right: 15px;
-  }
-  .select {
-    max-width: 120px;
   }
 </style>

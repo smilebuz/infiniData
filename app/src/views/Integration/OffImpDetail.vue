@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
@@ -29,7 +31,7 @@ export default {
         },
         {
           title: '调度时间',
-          key: 'scheduleDate',
+          key: 'scheduleCorn',
           ellipsis: true
         },
         {
@@ -80,7 +82,7 @@ export default {
               return h('div', [
                 h('Progress', {
                   props: {
-                    percent: parseFloat((params.row.progress * 100).toFixed(2))
+                    percent: params.row.progress
                   }
                 })
               ])
@@ -93,42 +95,25 @@ export default {
           ellipsis: true
         }
       ],
-      detailList: [
-        {
-          'firstRow': 1,
-          'lastRow': 1000,
-          'IP': '192.168.1.1',
-          'scheduleDate': '2017-09-01 12:00:00',
-          'progress': 0.99,
-          'startTime': '2017-09-01 12:00:00',
-          'totalRows': 10000,
-          'endTime': '',
-          'extractSpeed': '50000',
-          'spendTime': '',
-          'status': 1,
-          'info': ''
-        },
-        {
-          'firstRow': 1,
-          'lastRow': 1000,
-          'IP': '192.168.1.1',
-          'scheduleDate': '2017-09-01 12:00:00',
-          'progress': 0.85,
-          'startTime': '2017-09-01 12:00:00',
-          'totalRows': 10000,
-          'endTime': '',
-          'extractSpeed': '50000',
-          'spendTime': '',
-          'status': 2,
-          'info': '失败原因'
-        }
-      ],
       pageInfo: {
         currentPage: 1,
         totalPage: 17,
         pageSize: 10
       }
     }
+  },
+  computed: {
+    ...mapGetters({
+      detailList: 'offImpDetailList'
+    })
+  },
+  methods: {
+    ...mapActions({
+      getTaskDetail: 'getOffImpDetail'
+    })
+  },
+  mounted () {
+    this.getTaskDetail()
   }
 }
 </script>

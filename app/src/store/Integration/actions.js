@@ -5,15 +5,8 @@ const actions = {
   getOffImpList ({ commit, getters }, params) {
     actions.stopPolling({ commit, getters })
     Api.fullQuery.post(params).then(data => {
-      commit(type.SET_OFFIMP_LIST, data.data)
+      commit(type.SET_OFFIMP_LIST, data)
       actions.pollingListStatus({ commit, getters })
-      /*
-      this.pageInfo.currentPage = data.pageNum
-      this.pageInfo.totalPage = data.totalPage
-      this.pageInfo.pageSize = data.pageSize
-      this.pageInfo.totalCount = data.totalCount
-      this.pollingListStatus()
-      */
     })
   },
   pollingListStatus ({ commit, getters }) {
@@ -60,6 +53,16 @@ const actions = {
   stopOffImpTask ({ commit, getters }, params) {
     Api.stopFull.get(params).then(data => {
       actions.getOffImpList({ commit, getters })
+    })
+  },
+  getOffImpDetail ({ commit, getters }, params) {
+    Api.fullDetail.post(params).then(data => {
+      commit(type.SET_OFFIMP_DETAIL_LIST, data.data)
+    })
+  },
+  editOffImpTask ({ commit, getters }, params) {
+    Api.editFull.post(params).then(data => {
+      actions.getOffImpDetail({ commit, getters })
     })
   }
 }

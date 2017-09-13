@@ -52,7 +52,7 @@
             <Radio label="手动"></Radio>
             <Radio label="定时">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 200px;" :transfer="true"></DatePicker>
             </Radio>
             <Radio label="失效"></Radio>
           </RadioGroup>

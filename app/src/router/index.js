@@ -48,7 +48,7 @@ export default new Router({
           component: OffImport
         },
         {
-          path: 'OffImpDetail',
+          path: 'OffImpDetail/:taskId',
           component: OffImpDetail
         },
         {
