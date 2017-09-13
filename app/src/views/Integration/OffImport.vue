@@ -8,11 +8,11 @@
         <FormItem prop="dbName" label="库名" class="form__item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tableName" label="表名" class="form__item">
-          <Input type="text" v-model="filterForm.tableName"></Input>
+        <FormItem prop="tbName" label="表名" class="form__item">
+          <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
-        <FormItem prop="taskStatus" label="任务状态" class="form__item">
-          <Select v-model="filterForm.taskStatus" placeholder="请选择">
+        <FormItem prop="status" label="任务状态" class="form__item">
+          <Select v-model="filterForm.status" placeholder="请选择">
             <Option value=1>运行中</Option>
             <Option value=2>已完成</Option>
             <Option value=3>已失败</Option>
@@ -20,7 +20,7 @@
           </Select>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">筛选</Button>
+          <Button type="primary" @click="filterTask">筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+      <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
@@ -67,8 +67,8 @@ export default {
       filterForm: {
         taskId: '',
         dbName: '',
-        tableName: '',
-        taskStatus: ''
+        tbName: '',
+        status: ''
       },
       operations: [
         {
@@ -207,7 +207,8 @@ export default {
                     },
                     on: {
                       click: () => {
-                        console.log(params.row.status)
+                        let taskIds = [params.row.taskId]
+                        this.startTask(taskIds)
                       }
                     }
                   }, '启动'),
@@ -235,7 +236,10 @@ export default {
                     },
                     on: {
                       click: () => {
-                        console.log(params.row.status)
+                        let params = {
+                          taskId: params.row.taskId
+                        }
+                        this.stopOffImpTask(params)
                       }
                     }
                   }, '停止'),
@@ -257,7 +261,7 @@ export default {
           }
         }
       ],
-      // taskList: [],
+      selectTasks: [],
       statusList: {
         '0': '不运行',
         '1': '待运行',
@@ -279,6 +283,14 @@ export default {
         pageSize: 0,
         totalCount: 0
       },
+      searchParams: {
+        taskId: '',
+        dbName: '',
+        tbName: '',
+        status: '',
+        currentPage: '',
+        pageSize: ''
+      },
       editModal: {
         show: false,
         title: '任务编辑'
@@ -296,11 +308,10 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getOffImpList', 'pollingListStatus', 'stopPolling'
+      'getOffImpList', 'pollingListStatus', 'stopPolling', 'startOffImpTask', 'deleteOffImpTask', 'restartOffImpTask', 'stopOffImpTask'
     ]),
     search () {
-      let params = {}
-      this.getOffImpList(params)
+      this.getOffImpList(this.searchParams)
     },
     opStyle (imgUrl) {
       return {
@@ -309,10 +320,25 @@ export default {
         marginLeft: '20px'
       }
     },
+    filterTask () {
+      for (let key in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(key)) {
+          this.searchParams[key] = this.filterForm[key]
+        }
+      }
+    },
+    selectTask (selection) {
+      for (let task of selection) {
+        this.selectTasks.push(task.taskId)
+      }
+    },
     operateTask (opType) {
       switch (opType) {
         case 'create':
           this.$router.push('CreateOffImp')
+          break
+        case 'delete':
+          this.deleteOffImpTask({taskIds: this.selectTasks})
           break
         default:
           break
@@ -324,34 +350,20 @@ export default {
     },
     editTask () {},
     cancelEdit () {},
-    goSearch (params) {
-    }
-    /*
-    pollingListStatus () {
-      this.stopPolling()
-      if (!this.taskList.length) {
-        return null
+    startTask (taskIds) {
+      let params = {
+        taskIds: taskIds
       }
-      let list = this.taskList.filter((el, i, arr) => {
-        return el.progress > 0 && el.progress < 100
-      })
-      list.forEach((task, i, arr) => {
-        let params = {
-          taskId: task.taskId
-        }
-        polling(params, (data) => {
-          task.progress = data.progress
-          console.log('任务id:', task.taskId, '任务timer:', task.timer)
-        }, task)
-      })
-    },
-    stopPolling () {
-      this.pollingList.forEach((task, i, arr) => {
-        console.log('停止轮询', task.timer)
-        clearTimeout(task.timer)
-      })
+      this.startOffImpTask(params)
     }
-    */
+  },
+  watch: {
+    searchParams: {
+      handler: function (params) {
+        this.search()
+      },
+      deep: true
+    }
   },
   mounted () {
     this.search()

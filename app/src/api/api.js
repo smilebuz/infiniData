@@ -58,7 +58,7 @@ export const Api = ((apilist) => {
     list[api] = {
       get: (params) => {
         console.log(apilist[api])
-        return axios.get(apilist[api], params)
+        return axios.get(apilist[api], {params: params})
           .then(data => {
             if (data.data.response === 1) {
               return Promise.resolve(data.data)

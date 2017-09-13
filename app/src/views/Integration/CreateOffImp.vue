@@ -60,13 +60,15 @@
       </div>
     </div>
     <div class="btncontainer">
-      <Button type="primary" class="button">提交</Button>
+      <Button type="primary" class="button" @click="createTask">提交</Button>
       <router-link to="OffImport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { Api } from '../../api/Api'
+
 export default {
   data () {
     return {
@@ -138,6 +140,14 @@ export default {
         totalPage: 17,
         pageSize: 10
       }
+    }
+  },
+  methods: {
+    createTask () {
+      let params = {}
+      Api.createFull.post(params).then(data => {
+        this.$router.push('OffImport')
+      })
     }
   }
 }

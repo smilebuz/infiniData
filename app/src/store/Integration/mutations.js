@@ -10,10 +10,13 @@ export default {
   [type.SET_OFFIMP_TASK_STATUS] (state, payload) {
     payload.task.progress = payload.data.progress
   },
-  [type.CLEAR_OFFIMP_TIMER] (state, pollingList) {
-    pollingList.forEach((task, i, arr) => {
-      console.log('停止轮询', task.timer)
-      clearTimeout(task.timer)
-    })
+  [type.CLEAR_OFFIMP_TIMER] (state) {
+    let pollingList = state.offimport.pollingList
+    if (pollingList) {
+      pollingList.forEach((task, i, arr) => {
+        console.log('停止轮询', task.timer)
+        clearTimeout(task.timer)
+      })
+    }
   }
 }
