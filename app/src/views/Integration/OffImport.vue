@@ -155,6 +155,10 @@ export default {
                   }
                 })
               ])
+            } else {
+              return h('div', [
+                h('span', {}, this.statusList[params.row.status])
+              ])
             }
           }
         },

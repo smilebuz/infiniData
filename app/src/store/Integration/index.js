@@ -7,12 +7,20 @@ export default {
     offimport: {
       taskList: [],
       pollingList: [],
-      detailList: [],
       pageInfo: {
         pageNum: -1,
         pageSize: -1,
         totalPage: -1,
         totalCount: -1
+      },
+      detail: {
+        detailList: [],
+        pageInfo: {
+          pageNum: -1,
+          pageSize: -1,
+          totalPage: -1,
+          totalCount: -1
+        }
       }
     }
   },

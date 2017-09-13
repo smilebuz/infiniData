@@ -7,7 +7,9 @@ export default {
       return task.progress > 0 && task.progress < 100
     })
     state.offimport.pageInfo.pageNum = data.pageNum
+    state.offimport.pageInfo.totalPage = data.totalPage
     state.offimport.pageInfo.pageSize = data.pageSize
+    state.offimport.pageInfo.totalCount = data.totalCount
   },
   [type.SET_OFFIMP_TASK_STATUS] (state, payload) {
     payload.task.progress = payload.data.progress
@@ -22,6 +24,10 @@ export default {
     }
   },
   [type.SET_OFFIMP_DETAIL_LIST] (state, data) {
-    state.offimport.detailList = data
+    state.offimport.detail.detailList = data.data
+    state.offimport.detail.pageInfo.pageNum = data.pageNum
+    state.offimport.detail.pageInfo.totalPage = data.totalPage
+    state.offimport.detail.pageInfo.pageSize = data.pageSize
+    state.offimport.detail.pageInfo.totalCount = data.totalCount
   }
 }

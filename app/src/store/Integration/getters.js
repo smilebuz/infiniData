@@ -10,6 +10,9 @@ export default {
     return state.offimport.pageInfo
   },
   offImpDetailList (state) {
-    return state.offimport.detailList
+    return state.offimport.detail.detailList
+  },
+  offImpDetailPageInfo (state) {
+    return state.offimport.detail.pageInfo
   }
 }

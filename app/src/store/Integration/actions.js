@@ -57,7 +57,7 @@ const actions = {
   },
   getOffImpDetail ({ commit, getters }, params) {
     Api.fullDetail.post(params).then(data => {
-      commit(type.SET_OFFIMP_DETAIL_LIST, data.data)
+      commit(type.SET_OFFIMP_DETAIL_LIST, data)
     })
   },
   editOffImpTask ({ commit, getters }, params) {
