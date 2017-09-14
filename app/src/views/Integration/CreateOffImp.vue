@@ -4,7 +4,7 @@
       <Form ref="searchForm" :model="searchForm" :label-width="80" id="searchForm" inline>
         <FormItem prop="dataSource" label="数据源" class="form__item">
           <Select v-model="searchForm.dataSource" placeholder="请选择" style="width: 120px;">
-            <Option v-for="(source, index) in searchForm.dataSources" :key="source.connId" :value="source.connId">
+            <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
@@ -27,14 +27,14 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small" @on-selection-change="selectTable"></Table>
-        <div class="pagination">
+        <Table border stripe :columns="columns" :data="sourceTables" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <!--div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
           </div>
           <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
           @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
-        </div>
+        </div-->
       </div>
       <div class="setting">
         <Card>
@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import { Api } from '../../api/Api'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -81,8 +80,8 @@ export default {
       searchParams: {
         dataSource: '',
         tbName: '',
-        pageSize: '',
-        pageNum: ''
+        pageSize: 10,
+        pageNum: 1
       },
       columns: [
         {
@@ -112,7 +111,7 @@ export default {
           key: 'pk'
         }
       ],
-      sourceList: [
+      sourceTables: [
         {
           dbName: 'Informix',
           count: 3000,
@@ -132,11 +131,6 @@ export default {
         scheduleMode: 0,
         scheduleCorn: '',
         scheduleState: ''
-      },
-      pageInfo: {
-        pageNum: 1,
-        totalPage: 17,
-        pageSize: 10
       }
     }
   },
@@ -147,9 +141,11 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getDataSource', 'createOffImpTask'
+      'getDataSource', 'getSourceTable', 'createOffImpTask'
     ]),
-    search () {},
+    search () {
+      this.getSourceTable(this.searchParams)
+    },
     selectTable (selection) {
       this.selectTables = [...selection]
     },
@@ -177,13 +173,9 @@ export default {
         scheduleCorn: this.setting.scheduleCorn,
         scheduleState: this.setting.scheduleState
       }
-      Api.createFull.post(params).then(data => {
+      this.createOffImpTask(params).then(data => {
         this.$router.push('OffImport')
       })
-      /*
-      this.createOffImpTask(params)
-      this.$router.push('OffImport')
-      */
     }
   },
   watch: {
@@ -195,7 +187,7 @@ export default {
     }
   },
   mounted () {
-    this.getDataSource()
+    // this.getDataSource()
   }
 }
 </script>

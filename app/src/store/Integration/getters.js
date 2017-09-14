@@ -21,7 +21,10 @@ export default {
   dataSources (state) {
     return state.dataSources
   },
-  loglist (state) {
-    return state.Op.loglist
+  sourceTables (state) {
+    return state.sourceTables
+  },
+  createOffImpPageInfo (state) {
+    return state.offimport.createTask.pageInfo
   }
 }

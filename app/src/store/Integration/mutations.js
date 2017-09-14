@@ -45,7 +45,10 @@ export default {
       })
     }
   },
-  [type.GET_DATA_SOURCE] (state, dataSources) {
+  [type.SET_DATA_SOURCE] (state, dataSources) {
     state.dataSources = dataSources
+  },
+  [type.SET_SOURCE_TABLE] (state, data) {
+    state.sourceTables = data.data
   }
 }

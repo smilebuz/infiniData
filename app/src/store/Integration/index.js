@@ -22,17 +22,23 @@ export default {
           totalPage: -1,
           totalCount: -1
         }
+      },
+      createTask: {
+        pageInfo: {
+          pageNum: -1,
+          pageSize: -1,
+          totalPage: -1,
+          totalCount: -1
+        }
       }
     },
     incimport: {},
     offexport: {},
     source: {},
-    dataSources: []
+    dataSources: [],
+    sourceTables: []
   },
   actions,
   getters,
-  mutations,
-  Op: {
-    loglist: []
-  }
+  mutations
 }

@@ -63,7 +63,12 @@ const actions = {
     })
   },
   createOffImpTask (params) {
-    Api.createFull.post(params).then(data => {
+    return new Promise((resolve, reject) => {
+      Api.createFull.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
   getOffImpDetail ({ commit, getters }, params) {
@@ -94,12 +99,12 @@ const actions = {
   },
   getDataSource ({ commit }) {
     Api.sourceGet.get().then(data => {
-      commit(type.GET_DATA_SOURCE, data.dataSources)
+      commit(type.SET_DATA_SOURCE, data.dataSources)
     })
   },
-  getLogList ({ commit }) {
-    Api.logGet.get().then(data => {
-      // commit
+  getSourceTable ({ commit }, params) {
+    Api.sourceTable.post(params).then(data => {
+      commit(type.SET_SOURCE_TABLE, data)
     })
   }
 }

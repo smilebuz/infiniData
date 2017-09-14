@@ -36,7 +36,6 @@ const Apilist = {
 
   // datasource
   'sourceQuery': '/datasource/query', // post
-  'sourceGet': '/api/task/get/datasource', // post
   'createSource': '/api/datasource/create', // post
   'editSource': '/api/datasource/edit', // post
   'deleteSource': '/api/datasource/delete', // get
@@ -47,6 +46,10 @@ const Apilist = {
   'tbList': '/api/hive/platformdb/tbs', // get
   'tbInfo': '/api/hive/platformdb/tbinfo', // get
   'runSql': '/api/dataprocess/runsql', // post
+
+  // general
+  'sourceGet': '/api/task/get/datasource', // post
+  'sourceTable': '/api/schema/tableScan', // post
 
   // polling
   'getFullProgress': '/api/task/full/progress', // post

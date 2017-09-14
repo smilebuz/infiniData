@@ -165,7 +165,12 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 90
+          width: 90,
+          render: (h, params) => {
+            return h('div', [
+              h('span', {}, this.scheduleModeList[params.row.scheduleMode])
+            ])
+          }
         },
         {
           title: '调度时间',
@@ -176,7 +181,12 @@ export default {
         {
           title: '调度状态',
           key: 'scheduleState',
-          width: 90
+          width: 90,
+          render: (h, params) => {
+            return h('div', [
+              h('span', {}, this.scheduleStateList[params.row.scheduleState])
+            ])
+          }
         },
         {
           title: '用户',
@@ -186,22 +196,54 @@ export default {
           title: '操作',
           key: '',
           width: 140,
+          align: 'center',
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        console.log(params)
+                if (params.row.scheduleMode === 1) {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px'
+                      },
+                      on: {
+                        click: () => {
+                          let taskIds = [params.row.taskId]
+                          this.startTask(taskIds)
+                        }
                       }
-                    }
-                  }, '编辑')
-                ])
+                    }, '启动'),
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.openEditModal(params.row.taskId)
+                        }
+                      }
+                    }, '编辑')
+                  ])
+                } else {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.openEditModal(params.row.taskId)
+                        }
+                      }
+                    }, '编辑')
+                  ])
+                }
               case 2:
                 return h('div', [
                   h('Button', {
@@ -209,27 +251,12 @@ export default {
                       type: 'primary',
                       size: 'small'
                     },
-                    style: {
-                      marginRight: '5px'
-                    },
                     on: {
                       click: () => {
-                        let taskIds = [params.row.taskId]
-                        this.startTask(taskIds)
+                        this.stopOffImpTask({taskId: params.row.taskId})
                       }
                     }
-                  }, '启动'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row.taskId)
-                      }
-                    }
-                  }, '编辑')
+                  }, '停止')
                 ])
               case 3:
                 return h('div', [
@@ -243,13 +270,55 @@ export default {
                     },
                     on: {
                       click: () => {
-                        let params = {
-                          taskId: params.row.taskId
-                        }
-                        this.stopOffImpTask(params)
+                        this.stopOffImpTask({taskId: params.row.taskId})
                       }
                     }
                   }, '停止'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditModal(params.row.taskId)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              case 4:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditModal(params.row.taskId)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              case 99:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.restartOffImpTask({taskId: params.row.taskId})
+                      }
+                    }
+                  }, '重启'),
                   h('Button', {
                     props: {
                       type: 'primary',
@@ -276,7 +345,7 @@ export default {
         3: '生成parquet',
         4: '已完成',
         5: '已停止',
-        9: '已失败'
+        99: '已失败'
       },
       scheduleModeList: {
         '1': '手动',
@@ -284,8 +353,8 @@ export default {
         '3': '周期'
       },
       scheduleStateList: {
-        '0': '已失效',
-        '1': '生效中'
+        '0': '有效',
+        '1': '无效'
       },
       searchParams: {
         taskId: '',
