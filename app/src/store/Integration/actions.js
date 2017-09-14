@@ -98,8 +98,13 @@ const actions = {
     commit(type.CLEAR_OFFIMP_DETAIL_TIMER)
   },
   getDataSource ({ commit }) {
-    Api.sourceGet.get().then(data => {
-      commit(type.SET_DATA_SOURCE, data.dataSources)
+    return new Promise((resolve, reject) => {
+      Api.sourceGet.get().then(data => {
+        commit(type.SET_DATA_SOURCE, data.dataSources)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
   getSourceTable ({ commit }, params) {

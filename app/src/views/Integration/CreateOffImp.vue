@@ -111,20 +111,6 @@ export default {
           key: 'pk'
         }
       ],
-      sourceTables: [
-        {
-          dbName: 'Informix',
-          count: 3000,
-          pk: 'ID',
-          tbName: 'export'
-        },
-        {
-          dbName: 'Informix',
-          count: 4000,
-          pk: 'ID',
-          tbName: 'export'
-        }
-      ],
       selectTables: [],
       setting: {
         blocks: 0,
@@ -136,7 +122,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user', 'dataSources'
+      'user', 'dataSources', 'sourceTables'
     ])
   },
   methods: {
@@ -187,7 +173,9 @@ export default {
     }
   },
   mounted () {
-    // this.getDataSource()
+    this.getDataSource().then(data => {
+      this.filterForm.dataSource = this.dataSources[0]
+    })
   }
 }
 </script>
