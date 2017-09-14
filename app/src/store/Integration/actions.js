@@ -96,6 +96,11 @@ const actions = {
     Api.sourceGet.get().then(data => {
       commit(type.GET_DATA_SOURCE, data.dataSources)
     })
+  },
+  getLogList ({ commit }) {
+    Api.logGet.get().then(data => {
+      // commit
+    })
   }
 }
 

@@ -31,5 +31,8 @@ export default {
   },
   actions,
   getters,
-  mutations
+  mutations,
+  Op: {
+    loglist: []
+  }
 }

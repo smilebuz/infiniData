@@ -20,5 +20,8 @@ export default {
   },
   dataSources (state) {
     return state.dataSources
+  },
+  loglist (state) {
+    return state.Op.loglist
   }
 }

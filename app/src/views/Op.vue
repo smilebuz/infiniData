@@ -1,11 +1,16 @@
 <template lang="html">
   <div class="">
-    运维管理
+    <Sidebar></Sidebar>
   </div>
 </template>
 
 <script>
+import Sidebar from '../components/Sidebar'
+
 export default {
+  components: {
+    Sidebar
+  }
 }
 </script>
 
