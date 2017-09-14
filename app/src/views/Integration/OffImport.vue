@@ -38,14 +38,14 @@
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
           <RadioGroup v-model="editForm.scheduleMode" vertical>
-            <Radio label="1">
+            <Radio :label="1">
               <span>手动</span>
             </Radio>
-            <Radio label="2">
+            <Radio :label="2">
               <span>定时</span>
               <DatePicker type="datetime" style="width: 200px;" :transfer="true" v-model="editForm.scheduleCorn"></DatePicker>
             </Radio>
-            <Radio label="-1">
+            <Radio :label="-1">
               <span>失效</span>
             </Radio>
           </RadioGroup>
@@ -363,7 +363,6 @@ export default {
       this.editForm.taskId = taskId
     },
     editTask () {
-      this.editForm.scheduleMode = parseInt(this.editForm.scheduleMode)
       if (this.editForm.scheduleMode === -1) {
         this.editForm.scheduleState = 1
       } else {

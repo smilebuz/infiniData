@@ -10,7 +10,7 @@ const actions = {
     })
   },
   pollingListStatus ({ commit, getters }) {
-    actions.stopPolling({ commit, getters })
+    // actions.stopPolling({ commit, getters })
     let list = getters.offImpPollingList
     /*
     let taskList = getters.offImpList
@@ -62,6 +62,10 @@ const actions = {
       actions.getOffImpDetail({ commit, getters })
     })
   },
+  createOffImpTask (params) {
+    Api.createFull.post(params).then(data => {
+    })
+  },
   getOffImpDetail ({ commit, getters }, params) {
     actions.stopImpDetailPolling({ commit, getters })
     Api.fullDetail.post(params).then(data => {
@@ -87,6 +91,11 @@ const actions = {
   },
   stopImpDetailPolling ({ commit }) {
     commit(type.CLEAR_OFFIMP_DETAIL_TIMER)
+  },
+  getDataSource ({ commit }) {
+    Api.sourceGet.get().then(data => {
+      commit(type.GET_DATA_SOURCE, data.dataSources)
+    })
   }
 }
 

@@ -44,5 +44,8 @@ export default {
         clearTimeout(task.timer)
       })
     }
+  },
+  [type.GET_DATA_SOURCE] (state, dataSources) {
+    state.dataSources = dataSources
   }
 }

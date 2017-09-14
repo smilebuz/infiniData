@@ -26,7 +26,8 @@ export default {
     },
     incimport: {},
     offexport: {},
-    source: {}
+    source: {},
+    dataSources: []
   },
   actions,
   getters,

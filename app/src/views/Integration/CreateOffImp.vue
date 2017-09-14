@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="createOffImp">
     <div class="form-inline">
-      <Form ref="searchForm" :model="searchForm" :label-width="labelWidth" id="searchForm" inline>
+      <Form ref="searchForm" :model="searchForm" :label-width="80" id="searchForm" inline>
         <FormItem prop="dataSource" label="数据源" class="form__item">
-          <Select v-model="searchForm.dataSource" placeholder="请选择">
+          <Select v-model="searchForm.dataSource" placeholder="请选择" style="width: 120px;">
             <Option v-for="(source, index) in searchForm.dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
@@ -13,7 +13,7 @@
           <Input type="text" v-model="searchForm.tbName"></Input>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">查询</Button>
+          <Button type="primary" @click="changeSearchParams">查询</Button>
         </FormItem>
       </Form>
     </div>
@@ -27,12 +27,13 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
+        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small" @on-selection-change="selectTable"></Table>
         <div class="pagination">
           <div>
-            当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+            当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
           </div>
-          <Page :total='100'></Page>
+          <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+          @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
         </div>
       </div>
       <div class="setting">
@@ -41,7 +42,7 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <Input v-model="setting.blocks"></Input>
+          <Input v-model="setting.blocks" number></Input>
         </Card>
         <Card>
           <p slot="title">调度设置</p>
@@ -49,12 +50,12 @@
             <Icon type="gear-b"></Icon>
           </p>
           <RadioGroup vertical v-model="setting.scheduleMode" class="radiogroup">
-            <Radio label="手动"></Radio>
-            <Radio label="定时">
+            <Radio :label="1">手动</Radio>
+            <Radio :label="2">
               <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 200px;" :transfer="true"></DatePicker>
             </Radio>
-            <Radio label="失效"></Radio>
+            <Radio :label="-1">失效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -68,26 +69,21 @@
 
 <script>
 import { Api } from '../../api/Api'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
     return {
       searchForm: {
         dataSource: '',
-        dataSources: [
-          {
-            'dbName': '社保库',
-            'connId': '1234'
-          },
-          {
-            'dbName': '人保库',
-            'connId': '2345'
-          }
-        ],
         tbName: ''
       },
-      labelWidth: 80,
+      searchParams: {
+        dataSource: '',
+        tbName: '',
+        pageSize: '',
+        pageNum: ''
+      },
       columns: [
         {
           type: 'selection',
@@ -121,23 +117,24 @@ export default {
           dbName: 'Informix',
           count: 3000,
           pk: 'ID',
-          table_name: 'export'
+          tbName: 'export'
         },
         {
           dbName: 'Informix',
           count: 4000,
           pk: 'ID',
-          table_name: 'export'
+          tbName: 'export'
         }
       ],
+      selectTables: [],
       setting: {
         blocks: 0,
         scheduleMode: 0,
-        scheduleDate: '',
+        scheduleCorn: '',
         scheduleState: ''
       },
       pageInfo: {
-        currentPage: 1,
+        pageNum: 1,
         totalPage: 17,
         pageSize: 10
       }
@@ -145,17 +142,60 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
+      'user', 'dataSources'
     ])
   },
   methods: {
+    ...mapActions([
+      'getDataSource', 'createOffImpTask'
+    ]),
+    search () {},
+    selectTable (selection) {
+      this.selectTables = [...selection]
+    },
+    changeSearchParams () {
+      this.searchParams.dataSource = this.filterForm.dataSource
+      this.searchParams.tbName = this.filterForm.tbName
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
+    },
     createTask () {
-      alert(this.user.name)
-      let params = {}
+      if (this.setting.scheduleMode === -1) {
+        this.setting.scheduleState = 1
+      }
+      let params = {
+        connId: -1,
+        tbInfos: this.selectTables,
+        user: this.user.name,
+        blocks: this.setting.blocks,
+        priority: -1,
+        scheduleMode: this.setting.scheduleMode,
+        scheduleCorn: this.setting.scheduleCorn,
+        scheduleState: this.setting.scheduleState
+      }
       Api.createFull.post(params).then(data => {
         this.$router.push('OffImport')
       })
+      /*
+      this.createOffImpTask(params)
+      this.$router.push('OffImport')
+      */
     }
+  },
+  watch: {
+    searchParams: {
+      handler: function (newParams) {
+        this.search()
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getDataSource()
   }
 }
 </script>

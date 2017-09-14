@@ -17,5 +17,8 @@ export default {
   },
   offImpDetailPageInfo (state) {
     return state.offimport.detail.pageInfo
+  },
+  dataSources (state) {
+    return state.dataSources
   }
 }

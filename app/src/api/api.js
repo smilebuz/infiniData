@@ -35,8 +35,8 @@ const Apilist = {
   'exportDetail': '/api/task/export/detail', // post
 
   // datasource
-  'sourceGet': '/datasource/query', // post
-  'sourceQuery': '/api/task/get/datasource', // post
+  'sourceQuery': '/datasource/query', // post
+  'sourceGet': '/api/task/get/datasource', // post
   'createSource': '/api/datasource/create', // post
   'editSource': '/api/datasource/edit', // post
   'deleteSource': '/api/datasource/delete', // get
