@@ -113,7 +113,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getOffImpDetail'
+      'getOffImpDetail', 'stopImpDetailPolling'
     ]),
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum
@@ -132,6 +132,9 @@ export default {
   },
   mounted () {
     this.getOffImpDetail(this.searchParams)
+  },
+  beforeDestroy () {
+    this.stopImpDetailPolling()
   }
 }
 </script>
