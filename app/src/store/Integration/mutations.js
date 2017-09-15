@@ -46,12 +46,6 @@ export default {
       })
     }
   },
-  [type.SET_DATA_SOURCE] (state, dataSources) {
-    state.dataSources = dataSources
-  },
-  [type.SET_SOURCE_TABLE] (state, data) {
-    state.sourceTables = data.data
-  },
 
   // 定时导入
   [type.SET_INCIMP_LIST] (state, data) {
@@ -90,5 +84,23 @@ export default {
     if (state.incimport.timer) {
       clearTimeout(state.incimport.timer)
     }
+  },
+
+  // 数据源
+  [type.SET_SOURCE_LIST] (state, data) {
+    state.source.sourceList = data.data
+    for (let prop in state.source.pageInfo) {
+      if (state.source.pageInfo.hasOwnProperty(prop)) {
+        state.source.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+
+  // 通用
+  [type.SET_DATA_SOURCE] (state, dataSources) {
+    state.dataSources = dataSources
+  },
+  [type.SET_SOURCE_TABLE] (state, data) {
+    state.sourceTables = data.data
   }
 }

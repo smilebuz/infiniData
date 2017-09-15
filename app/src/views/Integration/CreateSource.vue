@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -81,31 +83,44 @@ export default {
         encoding: '',
         host: '',
         port: '',
+        dbType: '',
         dbName: '',
         userName: '',
         password: ''
       },
       modals: {
         connModal: false
-      },
-      createParams: {
-        dbType: '',
-        connName: ''
       }
     }
   },
   methods: {
+    ...mapActions({
+      createSource: 'createSource',
+      testSourceConn: 'testSourceConn'
+    }),
     selectSourceType (sourcetype) {
-      this.createParams.dbType = sourcetype
+      this.configForm.dbType = sourcetype
       this.currentStep = 2
     },
     testConn () {
       // 测试请求
-      this.modals.connModal = true
+      let connParams = {
+        type: this.configForm.dbType,
+        host: this.configForm.host,
+        port: this.configForm.port,
+        database_name: this.configForm.dbName,
+        user_name: this.configForm.userName,
+        password: this.configForm.password
+      }
+      this.testSourceConn(connParams).then(data => {
+        this.modals.connModal = true
+      })
     },
     saveConfig () {
       // 保存请求
-      this.$router.push('Source')
+      this.createSource(this.configForm).then(data => {
+        this.$router.push('Source')
+      })
     },
     cancelConfig () {
       this.$router.push('Source')

@@ -57,7 +57,17 @@ export default {
       }
     },
     offexport: {},
-    source: {},
+    // 数据源
+    source: {
+      sourceList: [],
+      pageInfo: {
+        pageNum: -1,
+        pageSize: -1,
+        totalPage: -1,
+        totalCount: -1
+      }
+    },
+    // 通用
     dataSources: [],
     sourceTables: []
   },

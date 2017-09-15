@@ -144,6 +144,46 @@ const actions = {
     commit(type.CLEAR_INCIMP_DETAIL_TIMER)
   },
 
+  // 数据源
+  getSourceList ({ commit }, params) {
+    Api.sourceQuery.post(params).then(data => {
+      commit(type.SET_SOURCE_LIST, data)
+    })
+  },
+  deleteSource ({ commit }, params) {
+    Api.deleteSource.post(params).then(data => {
+      actions.getSourceList({ commit })
+    })
+  },
+  editSource ({ commit }, params) {
+    return new Promise((resolve, reject) => {
+      Api.editSource.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  testSourceConn ({ commit }, params) {
+    return new Promise((resolve, reject) => {
+      Api.testSource.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  createSource ({ commit }, params) {
+    debugger
+    return new Promise((resolve, reject) => {
+      Api.createSource.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
   // 通用
   getDataSource ({ commit }) {
     return new Promise((resolve, reject) => {

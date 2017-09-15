@@ -18,12 +18,6 @@ export default {
   offImpDetailPageInfo (state) {
     return state.offimport.detail.pageInfo
   },
-  dataSources (state) {
-    return state.dataSources
-  },
-  sourceTables (state) {
-    return state.sourceTables
-  },
   createOffImpPageInfo (state) {
     return state.offimport.createTask.pageInfo
   },
@@ -49,5 +43,21 @@ export default {
   },
   incImpDetailPageInfo (state) {
     return state.incimport.detail.pageInfo
+  },
+
+  // 数据源
+  sourceList (state) {
+    return state.source.sourceList
+  },
+  sourcePageInfo (state) {
+    return state.source.pageInfo
+  },
+
+  // 通用
+  dataSources (state) {
+    return state.dataSources
+  },
+  sourceTables (state) {
+    return state.sourceTables
   }
 }

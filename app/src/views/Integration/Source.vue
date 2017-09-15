@@ -1,26 +1,29 @@
 <template lang="html">
   <div class="source">
     <div class="form-inline">
-      <Form ref="filterForm" :model="filterForm" :label-width="labelWidth" inline>
-        <FormItem prop="taskId" label="任务编号" class="form__item">
-          <Input type="text" v-model="filterForm.taskId"></Input>
+      <Form ref="filterForm" :model="filterForm" :label-width="80" inline>
+        <FormItem prop="connName" label="连接名称" class="form__item">
+          <Input type="text" v-model="filterForm.connName"></Input>
         </FormItem>
         <FormItem prop="dbName" label="库名" class="form__item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tableName" label="表名" class="form__item">
-          <Input type="text" v-model="filterForm.tableName"></Input>
+        <FormItem prop="dbType" label="数据库类型" class="form__item">
+          <Select v-model="filterForm.dbType" placeholder="请选择" style="width:120px;">
+            <Option v-for="(item, index) in dbList" :key="item.type" :value="item.type">
+              {{ item.type }}
+            </Option>
+          </Select>
         </FormItem>
-        <FormItem prop="taskStatus" label="任务状态" class="form__item">
-          <Select v-model="filterForm.taskStatus" placeholder="请选择">
-            <Option value=1>运行中</Option>
-            <Option value=2>已完成</Option>
-            <Option value=3>已失败</Option>
-            <Option value=4>待运行</Option>
+        <FormItem prop="connState" label="数据源状态" class="form__item">
+          <Select v-model="filterForm.connState" placeholder="请选择" style="width:100px;">
+            <Option v-for="(value, key) in connStateList" :key="key" :value="key">
+              {{ value }}
+            </Option>
           </Select>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">筛选</Button>
+          <Button type="primary" @click="changeSearchParams">筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -30,7 +33,7 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+      <Table border stripe :columns="columns" :data="sourceList" class="table" size="default" @on-selection-change="selectSource"></Table>
       <Modal v-model="editModal.show" :title="editModal.title">
         <div class="modal__content">
           <Form :model="configForm" :label-width="80" class="configform">
@@ -62,31 +65,58 @@
         </div>
         <div slot="footer" class="buttongroup">
           <Button type="primary" @click="testConn">测试连接</Button>
-          <Button type="info" @click="editSource">保存</Button>
+          <Button type="info" @click="saveEdit">保存</Button>
           <Button @click="cancelEdit">取消</Button>
         </div>
       </Modal>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total='100'></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
-      filterForm: {
-        taskId: '',
+      searchParams: {
+        connName: '',
+        dbType: '',
         dbName: '',
-        tableName: '',
-        taskStatus: ''
+        connState: 0,
+        pageNum: 1,
+        pageSize: 10,
+        orderBy: '',
+        sort: ''
       },
-      labelWidth: 80,
+      filterForm: {
+        connName: '',
+        dbType: '',
+        dbName: '',
+        connState: ''
+      },
+      connStateList: {
+        '0': '生效',
+        '1': '失效'
+      },
+      dbList: [
+        {
+          type: 'informix'
+        },
+        {
+          type: 'db2'
+        },
+        {
+          type: 'mysql'
+        }
+      ],
       operations: [
         {
           value: 'create',
@@ -174,7 +204,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.editModal.show = true
+                    this.openEditModal(params.row)
                   }
                 }
               }, '编辑')
@@ -182,28 +212,8 @@ export default {
           }
         }
       ],
-      taskList: [
-        {
-          'password': '123456',
-          'connType': 'JDBC',
-          'createTime': '2018-02-02 12:00:00',
-          'connState': 0,
-          'connName': '用户库',
-          'IP': '192.168.1.11',
-          'dbName': 'ocr',
-          'connId': 123,
-          'dbType': 'Informix',
-          'userName': 'root',
-          'encoding': 'UTF-8',
-          'user': 'admin'
-        }
-      ],
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
-      },
       configForm: {
+        connId: '',
         connName: '',
         encoding: '',
         host: '',
@@ -215,10 +225,36 @@ export default {
       editModal: {
         show: false,
         title: '数据源编辑'
-      }
+      },
+      selectedSourceIds: []
     }
   },
+  computed: {
+    ...mapGetters({
+      sourceList: 'sourceList',
+      pageInfo: 'sourcePageInfo'
+    })
+  },
   methods: {
+    ...mapActions({
+      getSourceList: 'getSourceList',
+      deleteSource: 'deleteSource',
+      editSource: 'editSource',
+      testSourceConn: 'testSourceConn'
+    }),
+    changeSearchParams () {
+      for (let prop in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.filterForm[prop]
+        }
+      }
+    },
+    selectSource (selection) {
+      this.selectedSourceIds.splice(0, this.selectedSourceIds.length)
+      for (let source of selection) {
+        this.selectedSourceIds.push(source.connId)
+      }
+    },
     opStyle (imgUrl) {
       return {
         background: 'url(' + imgUrl + ') no-repeat left center',
@@ -231,24 +267,63 @@ export default {
         case 'create':
           this.$router.push('CreateSource')
           break
+        case 'delete':
+          this.deleteSource({connIds: this.selectedSourceIds})
+          break
         default:
           break
       }
     },
-    openEditModal (taskId) {
+    openEditModal (source) {
       this.editModal.show = true
+      this.configForm.host = source.IP
+      for (let prop in this.configForm) {
+        if (this.configForm.hasOwnProperty(prop) && prop !== 'host') {
+          this.configForm[prop] = source[prop]
+        }
+      }
     },
-    editSource () {
+    saveEdit () {
       // 编辑请求
-      this.$router.push('Source')
+      this.editSource(this.configForm).then(data => {
+        this.editModal.show = false
+        this.getSourceList(this.searchParams)
+      })
     },
     cancelEdit () {
-      this.$router.push('Source')
+      this.editModal.show = false
     },
     testConn () {
       // 测试请求
-      this.modals.connModal = true
+      let connParams = {
+        type: this.configForm.dbType,
+        host: this.configForm.host,
+        port: this.configForm.port,
+        database_name: this.configForm.dbName,
+        user_name: this.configForm.userName,
+        password: this.configForm.password
+      }
+      this.testSourceConn(connParams).then(data => {
+        alert(data.message)
+      })
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
     }
+  },
+  watch: {
+    searchParams: {
+      handler: function (newParams) {
+        this.getSourceList(newParams)
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getSourceList(this.searchParams)
   }
 }
 </script>
@@ -283,8 +358,7 @@ export default {
     display: flex;
   }
   .configform {
-    width: 80%;
+    width: 70%;
     margin: 0 auto;
-    overflow: auto;
   }
 </style>
