@@ -263,8 +263,20 @@ export default {
       }
     },
     openEditModal (task) {
+      debugger
       this.editModal.show = true
       this.editForm.taskId = task.taskId
+      if (task.scheduleState) {
+        this.editForm.scheduleMode = -1
+      } else {
+        this.editForm.scheduleMode = task.scheduleMode
+        if (task.scheduleMode === 2) {
+          this.editForm.scheduleCornTiming = task.scheduleCorn
+        }
+        if (task.scheduleMode === 3) {
+          this.editForm.scheduleCornPeriod = task.scheduleCorn
+        }
+      }
     },
     resetEditModal () {
 
