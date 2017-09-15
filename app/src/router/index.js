@@ -68,7 +68,7 @@ let router = new Router({
           component: IncImport
         },
         {
-          path: 'IncImpDetail',
+          path: 'IncImpDetail/:taskId',
           meta: { requiresAuth: true },
           component: IncImpDetail
         },

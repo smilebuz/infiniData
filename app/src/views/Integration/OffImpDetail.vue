@@ -97,7 +97,7 @@ export default {
         }
       ],
       searchParams: {
-        taskId: this.$route.params.taskId,
+        taskId: '',
         orderBy: '',
         sort: '',
         pageNum: -1,
@@ -131,7 +131,8 @@ export default {
     }
   },
   mounted () {
-    this.getOffImpDetail(this.searchParams)
+    this.searchParams.taskId = this.$route.params.taskId
+    // this.getOffImpDetail(this.searchParams)
   },
   beforeDestroy () {
     this.stopImpDetailPolling()

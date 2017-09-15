@@ -54,12 +54,41 @@ export default {
   },
 
   // 定时导入
-  [type.SET_INCINMP_LIST] (state, data) {
+  [type.SET_INCIMP_LIST] (state, data) {
     state.incimport.taskList = data.data
+    state.incimport.detail.pollingList = data.data.filter((task) => {
+      return task.progress > 0 && task.progress < 100
+    })
     for (let prop in state.incimport.pageInfo) {
       if (state.incimport.pageInfo.hasOwnProperty(prop)) {
         state.incimport.pageInfo[prop] = data[prop]
       }
+    }
+  },
+  [type.SET_INCIMP_DETAIL_LIST] (state, data) {
+    state.incimport.detail.taskList = data.data
+    for (let prop in state.incimport.detail.detailInfo) {
+      if (state.incimport.detail.detailInfo.hasOwnProperty(prop)) {
+        state.incimport.detail.detailInfo[prop] = data[prop]
+      }
+    }
+    for (let prop in state.incimport.detail.pageInfo) {
+      if (state.incimport.detail.pageInfo.hasOwnProperty(prop)) {
+        state.incimport.detail.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+  [type.SET_INCIMP_DETAIL_STATUS] (state, data) {
+    for (let task of data.data) {
+      let targetTask = state.pollingList.find((el) => {
+        return el.taskId === task.taskId
+      })
+      targetTask.progress = task.progress
+    }
+  },
+  [type.CLEAR_INCIMP_DETAIL_TIMER] (state) {
+    if (state.incimport.timer) {
+      clearTimeout(state.incimport.timer)
     }
   }
 }

@@ -50,10 +50,12 @@ const Apilist = {
   // general
   'sourceGet': '/api/task/get/datasource', // post
   'sourceTable': '/api/schema/tableScan', // post
+  'tableFields': '/api/schema/getAllFields', // post
 
   // polling
   'getFullProgress': '/api/task/full/progress', // post
-  'getFullDetailProgress': '/api/task/full/progress/detail' // post
+  'getFullDetailProgress': '/api/task/full/progress/detail', // post
+  'getIncDetailProgress': '/api/task/inc/progress' // post
 }
 
 export const Api = ((apilist) => {

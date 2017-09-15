@@ -98,6 +98,53 @@ const actions = {
   stopImpDetailPolling ({ commit }) {
     commit(type.CLEAR_OFFIMP_DETAIL_TIMER)
   },
+
+  // 定时导入
+  getIncImpList ({ commit }, params) {
+    Api.incQuery.post(params).then(data => {
+      commit(type.SET_INCIMP_LIST, data)
+    })
+  },
+  editIncImpTask ({ commit }, params) {
+    Api.editInc.post(params).then(data => {
+      actions.getIncImpList({ commit })
+    })
+  },
+  deleteIncImpTask ({ commit }, params) {
+    Api.deleteInc.post(params).then(data => {
+      actions.getIncImpList({ commit })
+    })
+  },
+  startIncImpTask ({ commit }, params) {
+    Api.startInc.post(params).then(data => {
+      actions.getIncImpList({ commit })
+    })
+  },
+  getIncImpDetail ({ commit, getters }, params) {
+    Api.incDetail.post(params).then(data => {
+      commit(type.SET_INCIMP_DETAIL_LIST, data)
+      actions.pollingIncImpDetail({ commit, getters })
+    })
+  },
+  pollingIncImpDetail ({ commit, getters }) {
+    actions.stopIncImpDetailPolling({ commit })
+    let pollingList = getters.incImpDetailPollingList
+    let params = []
+    pollingList.forEach((task) => {
+      params.push(task.taskId) // 子任务id
+    })
+    polling('IncDetailProgress', params, (data) => {
+      commit(type.SET_INCIMP_DETAIL_STATUS, {
+        data: data
+      })
+      console.log('任务timer:', getters.incImpDetail.timer)
+    }, getters.incImpDetail)
+  },
+  stopIncImpDetailPolling ({ commit }) {
+    commit(type.CLEAR_INCIMP_DETAIL_TIMER)
+  },
+
+  // 通用
   getDataSource ({ commit }) {
     return new Promise((resolve, reject) => {
       Api.sourceGet.get().then(data => {
@@ -113,18 +160,7 @@ const actions = {
       commit(type.SET_SOURCE_TABLE, data)
     })
   },
-
-  // 定时导入
-  getIncImpList ({ commit }, params) {
-    Api.incQuery.post(params).then(data => {
-      commit(type.SET_INCINMP_LIST, data)
-    })
-  },
-  editIncImpTask ({ commit }, params) {
-    Api.editInc.post(params).then(data => {
-      actions.getIncImpList({ commit })
-    })
-  }
+  getFields ({ commit }, params) {}
 }
 
 export default actions

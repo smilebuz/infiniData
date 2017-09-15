@@ -408,6 +408,7 @@ export default {
       }
     },
     selectTask (selection) {
+      this.selectTasks.splic(0, this.selectTasks.length)
       for (let task of selection) {
         this.selectTasks.push(task.taskId)
       }

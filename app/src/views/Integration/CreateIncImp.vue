@@ -1,19 +1,19 @@
 <template lang="html">
   <div class="createIncImp">
     <div class="form-inline">
-      <Form ref="searchForm" :model="searchForm" :label-width="labelWidth" id="searchForm" inline>
+      <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
         <FormItem prop="dataSource" label="数据源" class="form__item">
-          <Select v-model="searchForm.dataSource" placeholder="请选择">
-            <Option v-for="(source, index) in searchForm.dataSources" :key="source.connId" :value="source.connId">
+          <Select v-model="filterForm.dataSource" placeholder="请选择">
+            <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
         </FormItem>
         <FormItem prop="tbName" label="表名" class="form__item">
-          <Input type="text" v-model="searchForm.tbName"></Input>
+          <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">查询</Button>
+          <Button type="primary" @click="changeSearchParams">查询</Button>
         </FormItem>
       </Form>
     </div>
@@ -27,13 +27,7 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
-        <div class="pagination">
-          <div>
-            当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
-          </div>
-          <Page :total='100'></Page>
-        </div>
+        <Table border stripe :columns="columns" :data="sourceTables" class="table" size="small"></Table>
       </div>
       <div class="setting">
         <Card>
@@ -57,31 +51,28 @@
       </div>
     </div>
     <div class="btncontainer">
-      <Button type="primary" class="button">提交</Button>
+      <Button type="primary" class="button" @click="createTask">提交</Button>
       <router-link to="IncImport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
-      searchForm: {
-        dataSource: '',
-        dataSources: [
-          {
-            'dbName': '社保库',
-            'connId': '1234'
-          },
-          {
-            'dbName': '人保库',
-            'connId': '2345'
-          }
-        ],
+      searchParams: {
+        conn_id: -1,
+        tables: '',
+        pageSize: 10,
+        pageNum: 1
+      },
+      filterForm: {
+        dataSource: -1, // connId
         tbName: ''
       },
-      labelWidth: 80,
       columns: [
         {
           type: 'selection',
@@ -106,14 +97,17 @@ export default {
         },
         {
           title: '增量字段',
-          key: ''
+          key: '',
+          render: (h, params) => {
+            return this.buildSelects(h, params)
+          }
         },
         {
           title: '增量条件',
           key: ''
         }
       ],
-      sourceList: [
+      sourceTables: [
         {
           dbName: 'Informix',
           count: 3000,
@@ -131,13 +125,67 @@ export default {
         scheduleMode: 0,
         scheduleDate: '',
         scheduleState: ''
-      },
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'user', 'dataSources'// , 'sourceTables'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'getDataSource', 'getSourceTable'
+    ]),
+    changeSearchParams () {
+      this.searchParams.conn_id = this.filterForm.dataSource
+      this.searchParams.tables = this.filterForm.tbName
+    },
+    buildSelects (h, params) {
+      return h('Select', {
+        props: {
+          size: 'small'
+        }
+      }, this.buildOptions(h, params.row))
+    },
+    buildOptions (h, table) {
+      /*
+      let params = {
+        conn_id: this.searchParams.conn_id,
+        tables: '' // 所有表
+      }
+      */
+      let options = [
+        h('Option', {
+          props: {
+            value: '1'
+          }
+        }, 'aaa'),
+        h('Option', {
+          props: {
+            value: '2'
+          }
+        }, 'bbb')
+      ]
+      return options
+    },
+    createTask () {
+
+    }
+  },
+  watch: {
+    searchParams: {
+      hander: function () {
+        this.getSourceTable()
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getDataSource().then(data => {
+      this.filterForm.conn_id = this.dataSources[0].connId
+      this.changeSearchParams()
+    })
   }
 }
 </script>

@@ -31,5 +31,23 @@ export default {
   // 定时导入
   incImpList (state) {
     return state.incimport.taskList
+  },
+  incImpPageInfo (state) {
+    return state.incimport.pageInfo
+  },
+  incImpDetail (state) {
+    return state.incimport.detail
+  },
+  incImpDetailList (state) {
+    return state.incimport.detail.taskList
+  },
+  incImpDetailPollingList (state) {
+    return state.incimport.detail.pollingList
+  },
+  incImpDetailInfo (state) {
+    return state.incimport.detail.detailInfo
+  },
+  incImpDetailPageInfo (state) {
+    return state.incimport.detail.pageInfo
   }
 }

@@ -39,6 +39,21 @@ export default {
         pageSize: -1,
         totalPage: -1,
         totalCount: -1
+      },
+      detail: {
+        detailList: [],
+        pollingList: [],
+        detailInfo: {
+          dbName: '',
+          tbName: '',
+          taskId: ''
+        },
+        pageInfo: {
+          pageNum: -1,
+          pageSize: -1,
+          totalPage: -1,
+          totalCount: -1
+        }
       }
     },
     offexport: {},

@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
+      <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="saveEdit" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
@@ -54,9 +54,10 @@
       </Modal>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total='100'></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
@@ -130,7 +131,7 @@ export default {
                 on: {
                   click: () => {
                     // alert(params.row.taskId)
-                    this.$router.push('IncImpDetail')
+                    this.$router.push('/Integration/IncImpDetail/' + params.row.taskId)
                   }
                 }
               }, params.row.taskId)
@@ -212,11 +213,7 @@ export default {
           }
         }
       ],
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
-      },
+      selectTasks: [],
       editModal: {
         show: false,
         title: '任务编辑'
@@ -231,19 +228,28 @@ export default {
   },
   computed: {
     ...mapGetters({
-      taskList: 'incImpList'
+      taskList: 'incImpList',
+      pageInfo: 'incImpPageInfo'
     })
   },
   methods: {
     ...mapActions({
       getTaskList: 'getIncImpList',
-      editTask: 'editIncImpTask'
+      editTask: 'editIncImpTask',
+      deleteTask: 'deleteIncImpTask',
+      startTask: 'startIncImpTask'
     }),
     changeSearchParams () {
       for (let prop in this.filterForm) {
         if (this.filterForm.hasOwnProperty(prop)) {
           this.searchParams[prop] = this.filterForm[prop]
         }
+      }
+    },
+    selectTask (selection) {
+      this.selectTasks.splice(0, this.selectTasks.length)
+      for (let task of selection) {
+        this.selectTasks.push(task.taskId)
       }
     },
     opStyle (imgUrl) {
@@ -257,6 +263,12 @@ export default {
       switch (opType) {
         case 'create':
           this.$router.push('CreateIncImp')
+          break
+        case 'delete':
+          this.deleteTask({taskIds: this.selectTasks})
+          break
+        case 'run':
+          this.startTask({taskIds: this.selectTasks})
           break
         default:
           break
@@ -309,7 +321,13 @@ export default {
       debugger
       this.editTask(editParams)
     },
-    cancelEdit () {}
+    cancelEdit () {},
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
+    }
   },
   watch: {
     searchParams: {
