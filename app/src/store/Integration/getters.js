@@ -26,5 +26,10 @@ export default {
   },
   createOffImpPageInfo (state) {
     return state.offimport.createTask.pageInfo
+  },
+
+  // 定时导入
+  incImpList (state) {
+    return state.incimport.taskList
   }
 }

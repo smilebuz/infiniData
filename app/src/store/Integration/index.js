@@ -32,7 +32,15 @@ export default {
         }
       }
     },
-    incimport: {},
+    incimport: {
+      taskList: [],
+      pageInfo: {
+        pageNum: -1,
+        pageSize: -1,
+        totalPage: -1,
+        totalCount: -1
+      }
+    },
     offexport: {},
     source: {},
     dataSources: [],

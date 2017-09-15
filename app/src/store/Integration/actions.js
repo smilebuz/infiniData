@@ -83,7 +83,8 @@ const actions = {
     let list = getters.offImpDetailPollingList
     list.forEach((task) => {
       let params = {
-        taskId: task.taskId
+        taskId: task.taskId,
+        workderId: []
       }
       polling('getFullDetailProgress', params, (data) => {
         commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
@@ -110,6 +111,18 @@ const actions = {
   getSourceTable ({ commit }, params) {
     Api.sourceTable.post(params).then(data => {
       commit(type.SET_SOURCE_TABLE, data)
+    })
+  },
+
+  // 定时导入
+  getIncImpList ({ commit }, params) {
+    Api.incQuery.post(params).then(data => {
+      commit(type.SET_INCINMP_LIST, data)
+    })
+  },
+  editIncImpTask ({ commit }, params) {
+    Api.editInc.post(params).then(data => {
+      actions.getIncImpList({ commit })
     })
   }
 }

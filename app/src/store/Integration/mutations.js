@@ -1,6 +1,7 @@
 import type from '../mutation-type'
 
 export default {
+  // 离线导入
   [type.SET_OFFIMP_LIST] (state, data) {
     state.offimport.taskList = data.data
     state.offimport.pollingList = data.data.filter((task) => {
@@ -50,5 +51,15 @@ export default {
   },
   [type.SET_SOURCE_TABLE] (state, data) {
     state.sourceTables = data.data
+  },
+
+  // 定时导入
+  [type.SET_INCINMP_LIST] (state, data) {
+    state.incimport.taskList = data.data
+    for (let prop in state.incimport.pageInfo) {
+      if (state.incimport.pageInfo.hasOwnProperty(prop)) {
+        state.incimport.pageInfo[prop] = data[prop]
+      }
+    }
   }
 }
