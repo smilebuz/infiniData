@@ -7,22 +7,27 @@
       <Table :columns="columns" :data="detailList"></Table>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total='100'></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
-      detailInfo: {
-        dbName: 'ocr',
-        tbName: 'tb_ocrtask',
-        taskId: '1234'
+      searchParams: {
+        taskId: '',
+        orderBy: '',
+        sort: '',
+        pageNum: 1,
+        pageSize: 10
       },
       columns: [
         {
@@ -85,37 +90,41 @@ export default {
           key: 'info',
           ellipsis: true
         }
-      ],
-      detailList: [
-        {
-          'scheduleDate': '2017-09-01 12:00:00',
-          'progress': 0.99,
-          'startTime': '2017-09-01 12:00:00',
-          'totalRows': 10000,
-          'endTime': '',
-          'extractSpeed': '50000',
-          'spendTime': '',
-          'status': 1,
-          'info': ''
-        },
-        {
-          'scheduleDate': '2017-09-01 12:00:00',
-          'progress': 0.85,
-          'startTime': '2017-09-01 12:00:00',
-          'totalRows': 10000,
-          'endTime': '',
-          'extractSpeed': '50000',
-          'spendTime': '',
-          'status': 2,
-          'info': '失败原因'
-        }
-      ],
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
-      }
+      ]
     }
+  },
+  computed: {
+    ...mapGetters({
+      detailInfo: 'offExpDetailInfo',
+      detailList: 'offExpDetailList',
+      pageInfo: 'offExpDetailPageInfo',
+      stopPolling: 'stopOffExpDetailPolling'
+    })
+  },
+  methods: {
+    ...mapActions({
+      getDetailList: 'getOffExpDetailList'
+    }),
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
+    }
+  },
+  watch: {
+    searchParams: {
+      handler: function (newParams) {
+        this.getDetailList(newParams)
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.searchParams.taskId = this.$route.params.taskId
+  },
+  beforeDestroy () {
+    this.stopPolling()
   }
 }
 </script>

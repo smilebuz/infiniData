@@ -144,6 +144,65 @@ const actions = {
     commit(type.CLEAR_INCIMP_DETAIL_TIMER)
   },
 
+  // 离线导出
+  getOffExpList ({ commit }, params) {
+    Api.exportQuery.post(params).then(data => {
+      commit(type.SET_OFFEXP_LIST, data)
+    })
+  },
+  createOffExpTask ({ commit }, params) {
+    return new Promise((resolve, reject) => {
+      Api.createExport.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  deleteOffExpTask ({ commit }, params) {
+    Api.deleteExport.post(params).then(data => {
+      actions.getOffExpList({ commit })
+    })
+  },
+  startOffExpTask ({ commit }, params) {
+    Api.startExport.post(params).then(data => {
+      actions.getOffExpList({ commit })
+    })
+  },
+  stopOffExpTask ({ commit }, params) {
+    Api.stopExport.get(params).then(data => {
+      actions.getOffExpList({ commit })
+    })
+  },
+  editOffExpTask ({ commit }, params) {
+    Api.editExport.post(params).then(data => {
+      actions.getOffExpList({ commit })
+    })
+  },
+  getOffExpDetailList ({ commit, getters }, params) {
+    Api.exportDetail.post(params).then(data => {
+      commit(type.SET_OFFEXP_DETAIL_LIST, params)
+      actions.pollingOffExpDetail({ commit, getters })
+    })
+  },
+  pollingOffExpDetail ({ commit, getters }, params) {
+    actions.stopOffExpDetailPolling({ commit, getters })
+    let pollingList = getters.offExpDetailPollingList
+    let taskIds = []
+    for (let task of pollingList) {
+      taskIds.push(task.taskId)
+    }
+    polling('getOffExpDetailProgress', taskIds, (data) => {
+      commit(type.SET_OFFEXP_DETAIL_STATUS, {
+        data: data
+      })
+      console.log('任务timer:', getters.incImpDetail.timer)
+    }, getters.offExpDetail)
+  },
+  stopOffExpDetailPolling ({ commit }) {
+    commit(type.CLEAR_OffEXP_DETAIL_TIMER)
+  },
+
   // 数据源
   getSourceList ({ commit }, params) {
     Api.sourceQuery.post(params).then(data => {
@@ -174,7 +233,6 @@ const actions = {
     })
   },
   createSource ({ commit }, params) {
-    debugger
     return new Promise((resolve, reject) => {
       Api.createSource.post(params).then(data => {
         resolve(data)

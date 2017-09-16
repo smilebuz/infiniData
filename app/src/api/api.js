@@ -55,7 +55,8 @@ const Apilist = {
   // polling
   'getFullProgress': '/api/task/full/progress', // post
   'getFullDetailProgress': '/api/task/full/progress/detail', // post
-  'getIncDetailProgress': '/api/task/inc/progress' // post
+  'getIncDetailProgress': '/api/task/inc/progress', // post
+  'getOffExpDetailProgress': '/api/task/export/progress' // post
 }
 
 export const Api = ((apilist) => {

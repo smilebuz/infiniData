@@ -83,7 +83,7 @@ let router = new Router({
           component: OffExport
         },
         {
-          path: 'OffExpDetail',
+          path: 'OffExpDetail/:taskId',
           meta: { requiresAuth: true },
           component: OffExpDetail
         },

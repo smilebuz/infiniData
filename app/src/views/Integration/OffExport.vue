@@ -8,19 +8,18 @@
         <FormItem prop="dbName" label="库名" class="form__item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tableName" label="表名" class="form__item">
-          <Input type="text" v-model="filterForm.tableName"></Input>
+        <FormItem prop="tbeName" label="表名" class="form__item">
+          <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
-        <FormItem prop="taskStatus" label="任务状态" class="form__item">
-          <Select v-model="filterForm.taskStatus" placeholder="请选择">
-            <Option value=1>运行中</Option>
-            <Option value=2>已完成</Option>
-            <Option value=3>已失败</Option>
-            <Option value=4>待运行</Option>
+        <FormItem prop="status" label="任务状态" class="form__item">
+          <Select v-model="filterForm.status" placeholder="请选择" style="width: 80px;">
+            <Option v-for="(value, key) in statusList" :key="key" :value="key">
+              {{ value }}
+            </Option>
           </Select>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">筛选</Button>
+          <Button type="primary" @click="changeSearchParams">筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -30,19 +29,19 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default"></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
+      <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
+      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">导出目标</span>
-          <RadioGroup v-model="editForm.exportTarget" vertical>
-            <Radio label="CSV" class="radio-custom">
+          <RadioGroup v-model="editParams.type" vertical>
+            <Radio :label="1" class="radio-custom">
               <span class="radio__label">CSV</span>
               <span class="radiogroup__item-label">编码</span>
               <Select class="select"></Select>
               <span class="radiogroup__item-label">分隔符</span>
               <Select class="select"></Select>
             </Radio>
-            <Radio label="数据库" class="radio-custom">
+            <Radio :label="2" class="radio-custom">
               <span class="radio__label">数据库</span>
               <span class="radiogroup__item-label">数据源</span>
               <Select class="select"></Select>
@@ -51,19 +50,19 @@
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editForm.scheduleMode" vertical>
-            <Radio label="手动">
+          <RadioGroup v-model="editParams.scheduleMode" vertical>
+            <Radio :label="1">
               <span>手动</span>
             </Radio>
-            <Radio label="定时">
+            <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 150px;" v-model="scheduleCornTiming" transfer></DatePicker>
             </Radio>
-            <Radio label="周期">
+            <Radio :label="3">
               <span>周期</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <TimePicker size="small" style="width: 150px;" v-model="scheduleCornPeriod" transfer></TimePicker>
             </Radio>
-            <Radio label="失效">
+            <Radio :label="-1">
               <span>失效</span>
             </Radio>
           </RadioGroup>
@@ -71,23 +70,38 @@
       </Modal>
       <div class="pagination">
         <div>
-          当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total='100'></Page>
+        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
+
 export default {
   data () {
     return {
+      searchParams: {
+        taskId: '',
+        dbType: '',
+        dbName: '',
+        tbName: '',
+        status: '',
+        pageNum: 1,
+        pageSize: 10,
+        orderBy: '',
+        sort: ''
+      },
       filterForm: {
         taskId: '',
         dbName: '',
-        tableName: '',
-        taskStatus: ''
+        tbName: '',
+        status: ''
       },
       operations: [
         {
@@ -130,7 +144,7 @@ export default {
                 on: {
                   click: () => {
                     // alert(params.row.taskId)
-                    this.$router.push('OffExpDetail')
+                    this.$router.push('/Integration/OffExpDetail/' + params.row.taskId)
                   }
                 }
               }, params.row.taskId)
@@ -138,20 +152,9 @@ export default {
           }
         },
         {
-          title: '数据库类型',
-          key: 'dbType',
-          width: 100
-        },
-        {
-          title: 'IP',
-          key: 'IP',
-          width: 80,
-          ellipsis: true
-        },
-        {
-          title: '库名',
+          title: '平台库名',
           key: 'dbName',
-          sortable: true
+          width: 100
         },
         {
           title: '表名',
@@ -161,7 +164,10 @@ export default {
         },
         {
           title: '类型',
-          key: 'type'
+          key: 'type',
+          render: (h, params) => {
+            return h('div', this.typeList[params.row.type])
+          }
         },
         {
           title: '目标位置',
@@ -172,7 +178,10 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 70
+          width: 70,
+          render: (h, params) => {
+            return h('div', this.scheduleModeList[params.row.scheduleMode])
+          }
         },
         {
           title: '调度时间',
@@ -183,7 +192,10 @@ export default {
         {
           title: '调度状态',
           key: 'scheduleState',
-          width: 70
+          width: 70,
+          render: (h, params) => {
+            return h('div', this.scheduleStateList[params.row.scheduleState])
+          }
         },
         {
           title: '用户',
@@ -195,99 +207,60 @@ export default {
           width: 140,
           align: 'center',
           render: (h, params) => {
-            switch (params.row.status) {
-              case 1:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        console.log(params.row.status)
-                      }
-                    }
-                  }, '下载'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row.taskId)
-                      }
-                    }
-                  }, '编辑')
-                ])
-              default:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row.taskId)
-                      }
-                    }
-                  }, '编辑')
-                ])
-            }
+            return this.renderOperationButtons(h, params)
           }
         }
       ],
-      taskList: [
-        {
-          'taskId': 123,
-          'connId': 1234,
-          'dbType': 'Informix',
-          'dbName': 'ocr',
-          'tbName': 'tb_ocrtask',
-          'type': 1,
-          'targetPath': 'HDFS://infinidata/export/xxx.csv.zip',
-          'status': 2,
-          'scheduleMode': 0,
-          'scheduleCorn': '',
-          'scheduleState': 1,
-          'user': 'admin'
-        },
-        {
-          'taskId': 456,
-          'connId': 1234,
-          'dbType': 'Informix',
-          'dbName': 'ocr',
-          'tbName': 'tb_task',
-          'type': 2,
-          'targetPath': 'informix:prpclain@192.168.1.1',
-          'status': 2,
-          'scheduleMode': 1,
-          'scheduleCorn': '2017-09-01 12:00:00',
-          'scheduleState': 1,
-          'user': 'admin'
-        }
-      ],
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
-      },
       editModal: {
         show: false,
         title: '任务编辑'
       },
-      editForm: {
-        scheduleMode: '',
-        exportTarget: ''
+      editParams: {
+        taskId: '',
+        type: '',
+        scheduleMode: 0,
+        scheduleCorn: '',
+        scheduleState: -1
+      },
+      scheduleCornTiming: '',
+      scheduleCornPeriod: '',
+      selectedTaskIds: [],
+      scheduleStateList: {
+        '0': '有效',
+        '1': '失效'
+      },
+      scheduleModeList: {
+        '1': '手动',
+        '2': '定时',
+        '3': '周期'
+      },
+      statusList: {
+        '0': '不运行',
+        '1': '待运行',
+        '2': '运行中',
+        '3': '成功',
+        '99': '失败'
+      },
+      typeList: {
+        '1': 'CSV',
+        '2': '数据库'
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      taskList: 'offExpList',
+      pageInfo: 'offExpPageInfo'
+    })
+  },
   methods: {
+    ...mapActions({
+      getTaskList: 'getOffExpList',
+      deleteTask: 'deleteOffExpTask',
+      editTask: 'editOffExpTask',
+      startTask: 'startOffExpTask',
+      stopTask: 'stopOffExpTask'
+    }),
     opStyle (imgUrl) {
       return {
         background: 'url(' + imgUrl + ') no-repeat left center',
@@ -295,23 +268,140 @@ export default {
         marginLeft: '20px'
       }
     },
+    renderOperationButtons (h, params) {
+      switch (params.row.status) {
+        case 1:
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  console.log(params.row.status)
+                }
+              }
+            }, '下载'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.openEditModal(params.row)
+                }
+              }
+            }, '编辑')
+          ])
+        default:
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.openEditModal(params.row)
+                }
+              }
+            }, '编辑')
+          ])
+      }
+    },
     operateTask (opType) {
       switch (opType) {
         case 'create':
           this.$router.push('CreateOffExp')
           break
+        case 'delete':
+          this.deleteTask({taskIds: this.selectedTaskIds})
+          break
         default:
           break
       }
     },
-    openEditModal (taskId) {
+    openEditModal (task) {
       this.editModal.show = true
-      this.editForm.taskId = taskId
+      this.editParams.taskId = task.taskId
+      this.editParams.type = task.type
+      if (task.scheduleState) {
+        // 失效
+        this.editParams.scheduleMode = -1
+      } else {
+        this.editParams.scheduleMode = task.scheduleMode
+        switch (task.scheduleMode) {
+          case 2:
+            this.scheduleCornTiming = task.scheduleCorn
+            break
+          case 3:
+            this.scheduleCornPeriod = task.scheduleCorn
+            break
+          default:
+            break
+        }
+      }
     },
-    editTask () {
+    submitEditParams () {
+      switch (this.editParams.scheduleMode) {
+        case 1:
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = ''
+          break
+        case 2:
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          break
+        case 3:
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          break
+        case -1:
+          this.editParams.scheduleState = 1
+          this.editParams.scheduleCorn = ''
+          break
+        default:
+          break
+      }
+      this.editTask(this.editParams)
     },
     cancelEdit () {
+    },
+    selectTask (selection) {
+      this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
+      for (let task of selection) {
+        this.selectedTaskIds.push(task.taskId)
+      }
+    },
+    changeSearchParams () {
+      for (let prop in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.filterForm[prop]
+        }
+      }
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
     }
+  },
+  watch: {
+    searchParams: {
+      handler: function (newParams) {
+        this.getTaskList(newParams)
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getTaskList(this.searchParams)
   }
 }
 </script>

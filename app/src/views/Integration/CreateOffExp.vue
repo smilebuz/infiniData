@@ -1,19 +1,19 @@
 <template lang="html">
   <div class="createOffImp">
     <div class="form-inline">
-      <Form ref="searchForm" :model="searchForm" :label-width="labelWidth" id="searchForm" inline>
+      <Form ref="searchForm" :model="searchForm" :label-width="80" id="searchForm" inline>
         <FormItem prop="dataSource" label="数据源" class="form__item">
-          <Select v-model="searchForm.dataSource" placeholder="请选择">
-            <Option v-for="(source, index) in searchForm.dataSources" :key="source.connId" :value="source.connId">
+          <Select v-model="searchForm.conn_id" placeholder="请选择">
+            <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
         </FormItem>
         <FormItem prop="tbName" label="表名" class="form__item">
-          <Input type="text" v-model="searchForm.tbName"></Input>
+          <Input type="text" v-model="searchForm.tables"></Input>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="">查询</Button>
+          <Button type="primary" @click="changeSearchParams">查询</Button>
         </FormItem>
       </Form>
     </div>
@@ -27,12 +27,13 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="sourceList" class="table" size="small"></Table>
+        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
         <div class="pagination">
           <div>
-            当前第{{ pageInfo.currentPage }}页 共{{ pageInfo.totalPage }}页
+            当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
           </div>
-          <Page :total='100'></Page>
+          <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+          @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
         </div>
       </div>
       <div class="setting">
@@ -41,8 +42,8 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical class="radiogroup">
-            <Radio label="CSV"></Radio>
+          <RadioGroup vertical class="radiogroup" v-model="createParams.type">
+            <Radio :label="1">CSV</Radio>
             <div class="setting__group">
               <span class="setting__group-label">编码</span>
               <Select class="setting__group-select">
@@ -53,7 +54,7 @@
               <Select class="setting__group-select">
               </Select>
             </div>
-            <Radio label="数据库"></Radio>
+            <Radio :label="2">数据库</Radio>
             <div class="setting__group">
               <span class="setting__group-label">数据源</span>
               <Select class="setting__group-select">
@@ -66,47 +67,45 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical v-model="setting.scheduleMode" class="radiogroup">
-            <Radio label="手动"></Radio>
-            <Radio label="定时">
+          <RadioGroup vertical v-model="createParams.scheduleMode" class="radiogroup">
+            <Radio :label="1">手动</Radio>
+            <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 120px;" transfer v-model="scheduleCornTiming"></DatePicker>
             </Radio>
-            <Radio label="周期">
+            <Radio :label="3">
               <span>周期</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <TimePicker size="small" style="width: 120px;" transfer v-model="scheduleCornPeriod"></TimePicker>
             </Radio>
-            <Radio label="失效"></Radio>
+            <Radio :label="-1">失效</Radio>
           </RadioGroup>
         </Card>
       </div>
     </div>
     <div class="btncontainer">
-      <Button type="primary" class="button">提交</Button>
+      <Button type="primary" class="button" @click="submitCreateParams">提交</Button>
       <router-link to="OffExport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
+
 export default {
   data () {
     return {
-      searchForm: {
-        dataSource: '',
-        dataSources: [
-          {
-            'dbName': '社保库',
-            'connId': '1234'
-          },
-          {
-            'dbName': '人保库',
-            'connId': '2345'
-          }
-        ],
-        tbName: ''
+      searchParams: {
+        conn_id: '',
+        tables: '',
+        pageSize: 10,
+        pageNum: 1
       },
-      labelWidth: 80,
+      searchForm: {
+        conn_id: '',
+        tables: ''
+      },
       columns: [
         {
           type: 'selection',
@@ -139,18 +138,88 @@ export default {
           key: ''
         }
       ],
-      sourceList: [],
-      setting: {
+      createParams: {
+        type: '',
+        connId: '',
+        tbInfos: [],
         scheduleMode: 0,
-        scheduleDate: '',
-        scheduleState: ''
+        scheduleState: '',
+        scheduleCorn: ''
       },
-      pageInfo: {
-        currentPage: 1,
-        totalPage: 17,
-        pageSize: 10
-      }
+      scheduleCornTiming: '',
+      scheduleCornPeriod: ''
     }
+  },
+  computed: {
+    ...mapGetters({
+      dataSources: 'dataSources',
+      tableList: 'sourceTables',
+      pageInfo: 'sourcePageInfo'
+    })
+  },
+  methods: {
+    ...mapActions({
+      getDataSource: 'getDataSource',
+      getTableList: 'getSourceTable',
+      createTask: 'createOffExpTask'
+    }),
+    selectTable (selection) {
+      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
+      for (let table of selection) {
+        this.createParams.tbInfos.push(table)
+      }
+    },
+    changeSearchParams () {
+      for (let prop in this.searchForm) {
+        if (this.searchForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.searchForm[prop]
+        }
+      }
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
+    },
+    submitCreateParams () {
+      switch (this.createParams.scheduleMode) {
+        case 1:
+          this.createParams.scheduleState = 0
+          this.editParams.scheduleCorn = ''
+          break
+        case 2:
+          this.createParams.scheduleState = 0
+          this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          break
+        case 3:
+          this.createParams.scheduleState = 0
+          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          break
+        case -1:
+          this.createParams.scheduleState = 1 // 失效
+          this.createParams.scheduleCorn = ''
+          break
+        default:
+          break
+      }
+      this.createTask(this.createParams).then(data => {
+        this.$router.push('OffExport')
+      })
+    }
+  },
+  watch: {
+    searchParams: {
+      handler: function (newParams) {
+        this.getTableList(newParams)
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getDataSource().then(data => {
+      this.searchParams.conn_id = data.dataSources[0]
+    })
   }
 }
 </script>
@@ -179,7 +248,7 @@ export default {
     min-width: 30px;
   }
   .setting__group-select {
-    max-width: 120px;
+    // max-width: 120px;
   }
   .btncontainer {
     padding: 30px;

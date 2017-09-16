@@ -74,7 +74,7 @@ export default {
   },
   [type.SET_INCIMP_DETAIL_STATUS] (state, data) {
     for (let task of data.data) {
-      let targetTask = state.pollingList.find((el) => {
+      let targetTask = state.incimport.detail.pollingList.find((el) => {
         return el.taskId === task.taskId
       })
       targetTask.progress = task.progress
@@ -83,6 +83,42 @@ export default {
   [type.CLEAR_INCIMP_DETAIL_TIMER] (state) {
     if (state.incimport.timer) {
       clearTimeout(state.incimport.timer)
+    }
+  },
+
+  // 离线导出
+  [type.SET_OFFEXP_LIST] (state, data) {
+    state.offexport.taskList = data.data
+    for (let prop in state.offexport.pageInfo) {
+      if (state.offexport.pageInfo.hasOwnProperty(prop)) {
+        state.offexport.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+  [type.SET_OFFEXP_DETAIL_LIST] (state, data) {
+    state.offexport.detail.detailList = data.data
+    for (let prop in state.offexport.detail.detailInfo) {
+      if (state.offexport.detail.detailInfo.hasOwnProperty(prop)) {
+        state.offexport.detail.detailInfo[prop] = data[prop]
+      }
+    }
+    for (let prop in state.offexport.detail.pageInfo) {
+      if (state.offexport.detail.pageInfo.hasOwnProperty(prop)) {
+        state.offexport.detail.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+  [type.SET_OFFEXP_DETAIL_STATUS] (state, data) {
+    for (let task of data.data) {
+      let targetTask = state.export.detail.pollingList.find((el) => {
+        return el.taskId === task.taskId
+      })
+      targetTask.progress = task.progress
+    }
+  },
+  [type.CLEAR_OFFEXP_DETAIL_TIMER] (state) {
+    if (state.offexport.timer) {
+      clearTimeout(state.offexport.timer)
     }
   },
 
@@ -102,5 +138,10 @@ export default {
   },
   [type.SET_SOURCE_TABLE] (state, data) {
     state.sourceTables = data.data
+    for (let prop in state.sourceTablePageInfo) {
+      if (state.sourceTablePageInfo.hasOwnProperty(prop)) {
+        state.sourceTablePageInfo[prop] = data[prop]
+      }
+    }
   }
 }

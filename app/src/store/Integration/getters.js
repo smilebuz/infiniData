@@ -33,7 +33,7 @@ export default {
     return state.incimport.detail
   },
   incImpDetailList (state) {
-    return state.incimport.detail.taskList
+    return state.incimport.detail.detailList
   },
   incImpDetailPollingList (state) {
     return state.incimport.detail.pollingList
@@ -43,6 +43,29 @@ export default {
   },
   incImpDetailPageInfo (state) {
     return state.incimport.detail.pageInfo
+  },
+
+  // 离线导出
+  offExpList (state) {
+    return state.offexport.taskList
+  },
+  offExpPageInfo (state) {
+    return state.offexport.pageInfo
+  },
+  offExpDetail (state) {
+    return state.offexport.detail
+  },
+  offExpDetailList (state) {
+    return state.offexport.detail.detailList
+  },
+  offExpDetailPollingList (state) {
+    return state.offexport.detail.pollingLis
+  },
+  offExpDetailInfo (state) {
+    return state.offexport.detail.detailInfo
+  },
+  offExpDetailPageInfo (state) {
+    return state.offexport.detail.pageInfo
   },
 
   // 数据源
@@ -59,5 +82,8 @@ export default {
   },
   sourceTables (state) {
     return state.sourceTables
+  },
+  sourceTablePageInfo (state) {
+    return state.sourceTablePageInfo
   }
 }

@@ -56,7 +56,30 @@ export default {
         }
       }
     },
-    offexport: {},
+    offexport: {
+      taskList: [],
+      pageInfo: {
+        pageNum: -1,
+        pageSize: -1,
+        totalPage: -1,
+        totalCount: -1
+      },
+      detail: {
+        detailList: [],
+        pollingList: [],
+        detailInfo: {
+          dbName: '',
+          tbName: '',
+          taskId: ''
+        },
+        pageInfo: {
+          pageNum: -1,
+          pageSize: -1,
+          totalPage: -1,
+          totalCount: -1
+        }
+      }
+    },
     // 数据源
     source: {
       sourceList: [],
@@ -69,7 +92,13 @@ export default {
     },
     // 通用
     dataSources: [],
-    sourceTables: []
+    sourceTables: [],
+    sourceTablePageInfo: {
+      pageNum: -1,
+      pageSize: -1,
+      totalPage: -1,
+      totalCount: -1
+    }
   },
   actions,
   getters,
