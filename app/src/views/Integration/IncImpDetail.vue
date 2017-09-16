@@ -103,8 +103,8 @@ export default {
   computed: {
     ...mapGetters({
       detailList: 'incImpDetailList',
-      pageInfo: 'incImpDetailPageInfo',
-      detailInfo: 'incImpDetailInfo'
+      detailInfo: 'incImpDetailInfo',
+      pageInfo: 'incImpDetailPageInfo'
     })
   },
   methods: {

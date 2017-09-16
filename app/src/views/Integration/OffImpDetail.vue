@@ -2,7 +2,7 @@
   <div class="offimpDetail">
     <div class="progressAll">
       <span>执行详情</span>
-      <Progress :percent="progressAll" class="progress"></Progress>
+      <Progress :percent="detailProgress" class="progress"></Progress>
     </div>
     <div class="tbcontainer">
       <Table :columns="columns" :data="detailList"></Table>
@@ -23,7 +23,6 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      progressAll: 80,
       columns: [
         {
           type: 'index',
@@ -108,13 +107,15 @@ export default {
   computed: {
     ...mapGetters({
       detailList: 'offImpDetailList',
+      detailProgress: 'offImpDetailProgress',
       pageInfo: 'offImpDetailPageInfo'
     })
   },
   methods: {
-    ...mapActions([
-      'getOffImpDetail', 'stopImpDetailPolling'
-    ]),
+    ...mapActions({
+      getDetailList: 'getOffImpDetail',
+      stopPolling: 'stopImpDetailPolling'
+    }),
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum
     },
@@ -125,17 +126,16 @@ export default {
   watch: {
     searchParams: {
       handler: function (params) {
-        this.getOffImpDetail(params)
+        this.getDetailList(params)
       },
       deep: true
     }
   },
   mounted () {
     this.searchParams.taskId = this.$route.params.taskId
-    // this.getOffImpDetail(this.searchParams)
   },
   beforeDestroy () {
-    this.stopImpDetailPolling()
+    this.stopPolling()
   }
 }
 </script>

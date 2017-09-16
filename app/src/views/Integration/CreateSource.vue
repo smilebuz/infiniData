@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -93,6 +93,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      user: 'user'
+    })
+  },
   methods: {
     ...mapActions({
       createSource: 'createSource',
@@ -125,6 +130,9 @@ export default {
     cancelConfig () {
       this.$router.push('Source')
     }
+  },
+  mounted () {
+    this.configForm.userName = this.user.name
   }
 }
 </script>

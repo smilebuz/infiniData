@@ -19,7 +19,7 @@
           </Select>
         </FormItem>
         <FormItem class="form__item">
-          <Button type="primary" @click="filterTask">筛选</Button>
+          <Button type="primary" @click="changeSearchParams">筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -30,20 +30,20 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="editTask" @on-cancel="cancelEdit">
+      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">分片设置</span>
-          <Input v-model="editForm.blocks" size="small" class="modal__input" number></Input>
+          <Input v-model="editParams.blocks" size="small" class="modal__input" number></Input>
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editForm.scheduleMode" vertical>
+          <RadioGroup v-model="editParams.scheduleMode" vertical>
             <Radio :label="1">
               <span>手动</span>
             </Radio>
             <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" style="width: 200px;" :transfer="true" v-model="editForm.scheduleCorn"></DatePicker>
+              <DatePicker type="datetime" style="width: 200px;" :transfer="true" v-model="editParams.scheduleCorn"></DatePicker>
             </Radio>
             <Radio :label="-1">
               <span>失效</span>
@@ -64,10 +64,22 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { dateFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
     return {
+      searchParams: {
+        taskId: '',
+        dbType: '',
+        dbName: '',
+        tbName: '',
+        status: '',
+        pageSize: 10,
+        pageNum: 1,
+        orderBy: '',
+        sort: ''
+      },
       filterForm: {
         taskId: '',
         dbName: '',
@@ -156,9 +168,7 @@ export default {
                 })
               ])
             } else {
-              return h('div', [
-                h('span', {}, this.statusList[params.row.status])
-              ])
+              return h('div', this.statusList[params.row.status])
             }
           }
         },
@@ -167,9 +177,7 @@ export default {
           key: 'scheduleMode',
           width: 90,
           render: (h, params) => {
-            return h('div', [
-              h('span', {}, this.scheduleModeList[params.row.scheduleMode])
-            ])
+            return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
         },
         {
@@ -183,9 +191,7 @@ export default {
           key: 'scheduleState',
           width: 90,
           render: (h, params) => {
-            return h('div', [
-              h('span', {}, this.scheduleStateList[params.row.scheduleState])
-            ])
+            return h('div', this.scheduleStateList[params.row.scheduleState])
           }
         },
         {
@@ -224,7 +230,7 @@ export default {
                       },
                       on: {
                         click: () => {
-                          this.openEditModal(params.row.taskId)
+                          this.openEditModal(params.row)
                         }
                       }
                     }, '编辑')
@@ -238,7 +244,7 @@ export default {
                       },
                       on: {
                         click: () => {
-                          this.openEditModal(params.row.taskId)
+                          this.openEditModal(params.row)
                         }
                       }
                     }, '编辑')
@@ -253,7 +259,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.stopOffImpTask({taskId: params.row.taskId})
+                        this.stopTask({taskId: params.row.taskId})
                       }
                     }
                   }, '停止')
@@ -270,7 +276,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.stopOffImpTask({taskId: params.row.taskId})
+                        this.stopask({taskId: params.row.taskId})
                       }
                     }
                   }, '停止'),
@@ -281,7 +287,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.openEditModal(params.row.taskId)
+                        this.openEditModal(params.row)
                       }
                     }
                   }, '编辑')
@@ -298,7 +304,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.openEditModal(params.row.taskId)
+                        this.openEditModal(params.row)
                       }
                     }
                   }, '编辑')
@@ -315,7 +321,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.restartOffImpTask({taskId: params.row.taskId})
+                        this.restartTask({taskId: params.row.taskId})
                       }
                     }
                   }, '重启'),
@@ -326,7 +332,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.openEditModal(params.row.taskId)
+                        this.openEditModal(params.row)
                       }
                     }
                   }, '编辑')
@@ -337,7 +343,18 @@ export default {
           }
         }
       ],
-      selectTasks: [],
+      selectedTaskIds: [],
+      editModal: {
+        show: false,
+        title: '任务编辑'
+      },
+      editParams: {
+        taskId: -1,
+        blocks: '',
+        scheduleMode: '',
+        scheduleCorn: '',
+        scheduleState: -2
+      },
       statusList: {
         0: '不运行',
         1: '待运行',
@@ -355,28 +372,6 @@ export default {
       scheduleStateList: {
         '0': '有效',
         '1': '无效'
-      },
-      searchParams: {
-        taskId: '',
-        dbType: '',
-        dbName: '',
-        tbName: '',
-        status: '',
-        pageSize: -1,
-        pageNum: -1,
-        orderBy: '',
-        sort: ''
-      },
-      editModal: {
-        show: false,
-        title: '任务编辑'
-      },
-      editForm: {
-        taskId: -1,
-        blocks: '',
-        scheduleMode: '',
-        scheduleCorn: '',
-        scheduleState: -2
       }
     }
   },
@@ -387,12 +382,15 @@ export default {
     })
   },
   methods: {
-    ...mapActions([
-      'getOffImpList', 'stopPolling', 'startOffImpTask', 'deleteOffImpTask', 'restartOffImpTask', 'stopOffImpTask', 'editOffImpTask'
-    ]),
-    search () {
-      this.getOffImpList(this.searchParams)
-    },
+    ...mapActions({
+      getTaskList: 'getOffImpList',
+      startTask: 'startOffImpTask',
+      stopTask: 'stopOffImpTask',
+      restartTask: 'restartOffImpTask',
+      deleteTask: 'deleteOffImpTask',
+      editTask: 'editOffImpTask',
+      stopPolling: 'stopOffImpPolling'
+    }),
     opStyle (imgUrl) {
       return {
         background: 'url(' + imgUrl + ') no-repeat left center',
@@ -400,17 +398,10 @@ export default {
         marginLeft: '20px'
       }
     },
-    filterTask () {
-      for (let key in this.filterForm) {
-        if (this.filterForm.hasOwnProperty(key)) {
-          this.searchParams[key] = this.filterForm[key]
-        }
-      }
-    },
     selectTask (selection) {
-      this.selectTasks.splic(0, this.selectTasks.length)
+      this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
       for (let task of selection) {
-        this.selectTasks.push(task.taskId)
+        this.selectedTaskIds.push(task.taskId)
       }
     },
     operateTask (opType) {
@@ -419,34 +410,55 @@ export default {
           this.$router.push('CreateOffImp')
           break
         case 'delete':
-          this.deleteOffImpTask({taskIds: this.selectTasks})
+          this.deleteTask({taskIds: this.selectedTaskIds})
           break
         case 'run':
-          this.startTask(this.selectTasks)
+          this.startTask({taskIds: this.selectedTaskIds})
           break
         default:
           break
       }
     },
-    openEditModal (taskId) {
+    openEditModal (task) {
       this.editModal.show = true
-      this.editForm.taskId = taskId
-    },
-    editTask () {
-      if (this.editForm.scheduleMode === -1) {
-        this.editForm.scheduleState = 1
+      this.editParams.taskId = task.taskId
+      this.editParams.blocks = task.blocks
+      if (task.scheduleState) {
+        // 失效
+        this.editParams.scheduleMode = -1
       } else {
-        this.editForm.scheduleState = 0
+        this.editParams.scheduleMode = task.scheduleMode
+        if (task.scheduleMode === 2) {
+          this.editParams.scheduleCorn = task.scheduleCorn
+        }
       }
-      let params = this.editForm
-      this.editOffImpTask(params)
+    },
+    submitEditParams () {
+      switch (this.editParams.scheduleMode) {
+        case 1:
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = ''
+          break
+        case 2:
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = dateFormatter(this.editParams.scheduleCorn)
+          break
+        case -1:
+          this.editParams.scheduleState = 1
+          this.editParams.scheduleCorn = ''
+          break
+        default:
+          break
+      }
+      this.editTask(this.editParams)
     },
     cancelEdit () {},
-    startTask (taskIds) {
-      let params = {
-        taskIds: taskIds
+    changeSearchParams () {
+      for (let key in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(key)) {
+          this.searchParams[key] = this.filterForm[key]
+        }
       }
-      this.startOffImpTask(params)
     },
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum
@@ -457,14 +469,14 @@ export default {
   },
   watch: {
     searchParams: {
-      handler: function (params) {
-        this.search()
+      handler: function (newParams) {
+        this.getTaskList(newParams)
       },
       deep: true
     }
   },
   mounted () {
-    this.search()
+    this.getTaskList(this.searchParams)
   },
   beforeDestroy () {
     this.stopPolling()

@@ -12,7 +12,7 @@
           <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
         <FormItem prop="scheduleState" label="调度状态" class="form__item">
-          <Select v-model="filterForm.scheduleState" placeholder="请选择" style="width:120px;">
+          <Select v-model="filterForm.scheduleState" placeholder="请选择" style="width:100px;">
             <Option v-for="(value, key) in scheduleStateList" :key="key" :value="key">
               {{ value }}
             </Option>
@@ -30,21 +30,21 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="saveEdit" @on-cancel="cancelEdit">
+      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editForm.scheduleMode" vertical>
+          <RadioGroup v-model="editParams.scheduleMode" vertical>
             <Radio :label="1">
               <span>手动</span>
             </Radio>
             <Radio :label="2">
               <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 200px;"
-              v-model="editForm.scheduleCornTiming" transfer></DatePicker>
+              v-model="scheduleCornTiming" transfer></DatePicker>
             </Radio>
             <Radio :label="3">
               <span>周期</span>
-              <TimePicker size="small" style="width: 120px;" v-model="editForm.scheduleCornPeriod" transfer></TimePicker>
+              <TimePicker size="small" style="width: 120px;" v-model="scheduleCornPeriod" transfer></TimePicker>
             </Radio>
             <Radio :label="-1">
               <span>失效</span>
@@ -86,10 +86,6 @@ export default {
         dbName: '',
         tbName: '',
         scheduleState: ''
-      },
-      scheduleStateList: {
-        '0': '有效',
-        '1': '无效'
       },
       operations: [
         {
@@ -177,7 +173,10 @@ export default {
         },
         {
           title: '调度类型',
-          key: 'scheduleMode'
+          key: 'scheduleMode',
+          render: (h, params) => {
+            return h('div', this.scheduleModeList[params.row.scheduleMode])
+          }
         },
         {
           title: '调度时间',
@@ -185,7 +184,10 @@ export default {
         },
         {
           title: '调度状态',
-          key: 'scheduleState'
+          key: 'scheduleState',
+          render: (h, params) => {
+            return h('div', this.scheduleStateList[params.row.scheduleState])
+          }
         },
         {
           title: '用户',
@@ -213,16 +215,27 @@ export default {
           }
         }
       ],
-      selectTasks: [],
+      selectedTaskIds: [],
       editModal: {
         show: false,
         title: '任务编辑'
       },
-      editForm: {
+      editParams: {
+        taskId: '',
         scheduleMode: -1,
         scheduleState: -1,
-        scheduleCornTiming: '',
-        scheduleCornPeriod: ''
+        scheduleCorn: ''
+      },
+      scheduleCornPeriod: '',
+      scheduleCornTiming: '',
+      scheduleModeList: {
+        '1': '手动',
+        '2': '定时',
+        '3': '周期'
+      },
+      scheduleStateList: {
+        '0': '有效',
+        '1': '无效'
       }
     }
   },
@@ -237,7 +250,8 @@ export default {
       getTaskList: 'getIncImpList',
       editTask: 'editIncImpTask',
       deleteTask: 'deleteIncImpTask',
-      startTask: 'startIncImpTask'
+      startTask: 'startIncImpTask',
+      stopTask: 'stopIncImpTask'
     }),
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -247,9 +261,9 @@ export default {
       }
     },
     selectTask (selection) {
-      this.selectTasks.splice(0, this.selectTasks.length)
+      this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
       for (let task of selection) {
-        this.selectTasks.push(task.taskId)
+        this.selectedTaskIds.push(task.taskId)
       }
     },
     opStyle (imgUrl) {
@@ -265,61 +279,52 @@ export default {
           this.$router.push('CreateIncImp')
           break
         case 'delete':
-          this.deleteTask({taskIds: this.selectTasks})
+          this.deleteTask({taskIds: this.selectedTaskIds})
           break
         case 'run':
-          this.startTask({taskIds: this.selectTasks})
+          this.startTask({taskIds: this.selectedTaskIds})
           break
         default:
           break
       }
     },
     openEditModal (task) {
-      debugger
       this.editModal.show = true
-      this.editForm.taskId = task.taskId
+      this.editParams.taskId = task.taskId
       if (task.scheduleState) {
-        this.editForm.scheduleMode = -1
+        this.editParams.scheduleMode = -1
       } else {
-        this.editForm.scheduleMode = task.scheduleMode
+        this.editParams.scheduleMode = task.scheduleMode
         if (task.scheduleMode === 2) {
-          this.editForm.scheduleCornTiming = task.scheduleCorn
+          this.scheduleCornTiming = task.scheduleCorn
         }
         if (task.scheduleMode === 3) {
-          this.editForm.scheduleCornPeriod = task.scheduleCorn
+          this.scheduleCornPeriod = task.scheduleCorn
         }
       }
     },
-    resetEditModal () {
-
-    },
-    saveEdit () {
-      let editParams = {
-        taskId: this.editForm.taskId.toString(),
-        scheduleMode: this.editForm.scheduleMode,
-        scheduleState: 0,
-        scheduleCorn: ''
-      }
-      switch (editParams.scheduleMode) {
+    submitEditParams () {
+      switch (this.editParams.scheduleMode) {
         case 1:
-          editParams.scheduleState = 0
+          this.editParams.scheduleState = 0
+          this.editParams.scheduleCorn = ''
           break
         case 2:
-          editParams.scheduleCorn = dateFormatter(this.editForm.scheduleCornTiming)
-          editParams.scheduleState = 0
+          this.editParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          this.editParams.scheduleState = 0
           break
         case 3:
-          editParams.scheduleCorn = timeFormatter(this.editForm.scheduleCornPeriod)
-          editParams.scheduleState = 0
+          this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          this.editParams.scheduleState = 0
           break
         case -1:
-          editParams.scheduleState = 1
+          this.editParams.scheduleState = 1
+          this.editParams.scheduleCorn = ''
           break
         default:
           break
       }
-      debugger
-      this.editTask(editParams)
+      this.editTask(this.editParams)
     },
     cancelEdit () {},
     changePageNum (pageNum) {

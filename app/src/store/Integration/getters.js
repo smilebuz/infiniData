@@ -9,6 +9,12 @@ export default {
   offImpPageInfo (state) {
     return state.offimport.pageInfo
   },
+  offImpDetail (state) {
+    return state.offimport.detail
+  },
+  offImpDetailProgress (state) {
+    return state.offimport.detail.progress
+  },
   offImpDetailList (state) {
     return state.offimport.detail.detailList
   },
@@ -17,9 +23,6 @@ export default {
   },
   offImpDetailPageInfo (state) {
     return state.offimport.detail.pageInfo
-  },
-  createOffImpPageInfo (state) {
-    return state.offimport.createTask.pageInfo
   },
 
   // 定时导入

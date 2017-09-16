@@ -16,6 +16,7 @@ export default {
       detail: {
         detailList: [],
         pollingList: [],
+        progress: 0,
         pageInfo: {
           pageNum: -1,
           pageSize: -1,

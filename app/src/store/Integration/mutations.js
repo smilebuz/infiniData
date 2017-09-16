@@ -24,6 +24,21 @@ export default {
       })
     }
   },
+  /*
+  [type.SET_OFFIMP_TASK_STATUS] (state, data) {
+    for (let task of data.data) {
+      let targetTask = state.offimport.pollingList.find((el) => {
+        return el.taskId === task.taskId
+      })
+      targetTask.progress = task.progress
+    }
+  },
+  [type.CLEAR_OFFIMP_TIMER] (state) {
+    if (state.offimport.timer) {
+      clearTimeout(state.offimport.timer)
+    }
+  },
+  */
   [type.SET_OFFIMP_DETAIL_LIST] (state, data) {
     state.offimport.detail.detailList = data.data
     state.offimport.detail.pollingList = data.data.filter((task) => {
@@ -34,16 +49,18 @@ export default {
     state.offimport.detail.pageInfo.pageSize = data.pageSize
     state.offimport.detail.pageInfo.totalCount = data.totalCount
   },
-  [type.SET_OFFIMP_DETAIL_TASK_STATUS] (state, payload) {
-    payload.task.progress = payload.data.progress
+  [type.SET_OFFIMP_DETAIL_TASK_STATUS] (state, data) {
+    state.offimport.detail.progress = data.data.taskProgress // 父任务进程
+    for (let task of data.data.workers) {
+      let targetTask = state.offimport.detail.pollingList.find((el) => {
+        return el.taskId === task.taskId
+      })
+      targetTask.progress = task.progress
+    }
   },
   [type.CLEAR_OFFIMP_DETAIL_TIMER] (state) {
-    let pollingList = state.offimport.detail.pollingList
-    if (pollingList) {
-      pollingList.forEach((task, i, arr) => {
-        console.log('停止轮询', task.timer)
-        clearTimeout(task.timer)
-      })
+    if (state.offimport.detail.timer) {
+      clearTimeout(state.offimport.detail.timer)
     }
   },
 
@@ -81,8 +98,8 @@ export default {
     }
   },
   [type.CLEAR_INCIMP_DETAIL_TIMER] (state) {
-    if (state.incimport.timer) {
-      clearTimeout(state.incimport.timer)
+    if (state.incimport.detail.timer) {
+      clearTimeout(state.incimport.detail.timer)
     }
   },
 
@@ -117,8 +134,8 @@ export default {
     }
   },
   [type.CLEAR_OFFEXP_DETAIL_TIMER] (state) {
-    if (state.offexport.timer) {
-      clearTimeout(state.offexport.timer)
+    if (state.offexport.detail.timer) {
+      clearTimeout(state.offexport.detail.timer)
     }
   },
 

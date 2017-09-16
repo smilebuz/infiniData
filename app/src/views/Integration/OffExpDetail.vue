@@ -97,13 +97,13 @@ export default {
     ...mapGetters({
       detailInfo: 'offExpDetailInfo',
       detailList: 'offExpDetailList',
-      pageInfo: 'offExpDetailPageInfo',
-      stopPolling: 'stopOffExpDetailPolling'
+      pageInfo: 'offExpDetailPageInfo'
     })
   },
   methods: {
     ...mapActions({
-      getDetailList: 'getOffExpDetailList'
+      getDetailList: 'getOffExpDetailList',
+      stopPolling: 'stopOffExpDetailPolling'
     }),
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum

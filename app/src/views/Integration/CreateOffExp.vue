@@ -2,7 +2,7 @@
   <div class="createOffImp">
     <div class="form-inline">
       <Form ref="searchForm" :model="searchForm" :label-width="80" id="searchForm" inline>
-        <FormItem prop="dataSource" label="数据源" class="form__item">
+        <FormItem prop="conn_id" label="数据源" class="form__item">
           <Select v-model="searchForm.conn_id" placeholder="请选择">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
@@ -71,7 +71,7 @@
             <Radio :label="1">手动</Radio>
             <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;" transfer v-model="scheduleCornTiming"></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 200px;" transfer v-model="scheduleCornTiming"></DatePicker>
             </Radio>
             <Radio :label="3">
               <span>周期</span>
@@ -141,6 +141,7 @@ export default {
       createParams: {
         type: '',
         connId: '',
+        user: '',
         tbInfos: [],
         scheduleMode: 0,
         scheduleState: '',
@@ -154,7 +155,8 @@ export default {
     ...mapGetters({
       dataSources: 'dataSources',
       tableList: 'sourceTables',
-      pageInfo: 'sourcePageInfo'
+      pageInfo: 'sourcePageInfo',
+      user: 'user'
     })
   },
   methods: {
@@ -218,7 +220,9 @@ export default {
   },
   mounted () {
     this.getDataSource().then(data => {
+      this.createParams.user = this.user.name
       this.searchParams.conn_id = data.dataSources[0]
+      this.changeSearchParams()
     })
   }
 }

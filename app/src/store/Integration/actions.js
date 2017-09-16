@@ -3,15 +3,15 @@ import type from '../mutation-type'
 
 const actions = {
   getOffImpList ({ commit, getters }, params) {
-    actions.stopPolling({ commit, getters })
+    actions.stopOffImpPolling({ commit, getters })
     Api.fullQuery.post(params).then(data => {
       commit(type.SET_OFFIMP_LIST, data)
-      actions.pollingListStatus({ commit, getters })
+      actions.pollingOffImp({ commit, getters })
     })
   },
-  pollingListStatus ({ commit, getters }) {
+  pollingOffImp ({ commit, getters }) {
     // actions.stopPolling({ commit, getters })
-    let list = getters.offImpPollingList
+    let pollinglist = getters.offImpPollingList
     /*
     let taskList = getters.offImpList
     if (!taskList.length) {
@@ -21,7 +21,19 @@ const actions = {
       return task.progress > 0 && task.progress < 100
     })
     */
-    list.forEach((task) => {
+    /*
+    let taskIds = []
+    for (let task of pollinglist) {
+      taskIds.push(task.taskId)
+    }
+    polling('getFullProgress', {taskId: taskIds}, (data) => {
+      commit(type.SET_OFFIMP_TASK_STATUS, {
+        data: data
+      })
+      console.log('任务timer:', getters.offimport.timer)
+    }, getters.offimport)
+    */
+    pollinglist.forEach((task) => {
       let params = {
         taskId: task.taskId
       }
@@ -34,7 +46,7 @@ const actions = {
       }, task)
     })
   },
-  stopPolling ({ commit }) {
+  stopOffImpPolling ({ commit }) {
     commit(type.CLEAR_OFFIMP_TIMER)
   },
   startOffImpTask ({ commit, getters }, params) {
@@ -62,7 +74,7 @@ const actions = {
       actions.getOffImpDetail({ commit, getters })
     })
   },
-  createOffImpTask (params) {
+  createOffImpTask ({ commit }, params) {
     return new Promise((resolve, reject) => {
       Api.createFull.post(params).then(data => {
         resolve(data)
@@ -72,30 +84,30 @@ const actions = {
     })
   },
   getOffImpDetail ({ commit, getters }, params) {
-    actions.stopImpDetailPolling({ commit, getters })
+    actions.stopOffImpDetailPolling({ commit, getters })
     Api.fullDetail.post(params).then(data => {
       commit(type.SET_OFFIMP_DETAIL_LIST, data)
-      actions.pollingDetailListStatus({ commit, getters })
+      actions.pollingOffImpDetail({ commit, getters }, data.taskId)
     })
   },
-  pollingDetailListStatus ({ commit, getters }) {
-    actions.stopImpDetailPolling({ commit })
-    let list = getters.offImpDetailPollingList
-    list.forEach((task) => {
-      let params = {
-        taskId: task.taskId,
-        workderId: []
-      }
-      polling('getFullDetailProgress', params, (data) => {
-        commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
-          task: task,
-          data: data
-        })
-        console.log('任务id:', task.taskId, '任务timer:', task.timer)
-      }, task)
-    })
+  pollingOffImpDetail ({ commit, getters }, taskId) {
+    actions.stopOffImpDetailPolling({ commit })
+    let pollinglist = getters.offImpDetailPollingList
+    let params = {
+      taskId: taskId,
+      workderId: []
+    }
+    for (let task of pollinglist) {
+      params.workderId.push(task.taskId) // 子任务id
+    }
+    polling('getFullDetailProgress', params, (data) => {
+      commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
+        data: data
+      })
+      console.log('任务timer:', getters.offImpDetail.timer)
+    }, getters.offImpDetail)
   },
-  stopImpDetailPolling ({ commit }) {
+  stopOffImpDetailPolling ({ commit }) {
     commit(type.CLEAR_OFFIMP_DETAIL_TIMER)
   },
 
@@ -120,6 +132,11 @@ const actions = {
       actions.getIncImpList({ commit })
     })
   },
+  stopIncImpTask ({ commit }, params) {
+    Api.stopInc.get(params).then(data => {
+      actions.getIncImpList({ commit })
+    })
+  },
   getIncImpDetail ({ commit, getters }, params) {
     Api.incDetail.post(params).then(data => {
       commit(type.SET_INCIMP_DETAIL_LIST, data)
@@ -129,11 +146,11 @@ const actions = {
   pollingIncImpDetail ({ commit, getters }) {
     actions.stopIncImpDetailPolling({ commit })
     let pollingList = getters.incImpDetailPollingList
-    let params = []
+    let taskIds = []
     pollingList.forEach((task) => {
-      params.push(task.taskId) // 子任务id
+      taskIds.push(task.taskId) // 子任务id
     })
-    polling('IncDetailProgress', params, (data) => {
+    polling('IncDetailProgress', taskIds, (data) => {
       commit(type.SET_INCIMP_DETAIL_STATUS, {
         data: data
       })
