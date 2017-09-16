@@ -142,8 +142,11 @@ export default {
       this.createParams.tbInfos = [...selection]
     },
     changeSearchParams () {
-      this.searchParams.dataSource = this.filterForm.dataSource
-      this.searchParams.tbName = this.filterForm.tbName
+      for (let prop in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.filterForm[prop]
+        }
+      }
     },
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum

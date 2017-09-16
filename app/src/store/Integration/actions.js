@@ -117,6 +117,16 @@ const actions = {
       commit(type.SET_INCIMP_LIST, data)
     })
   },
+  createIncImpTask ({ commit }, params) {
+    debugger
+    return new Promise((resolve, reject) => {
+      Api.createInc.post(params).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   editIncImpTask ({ commit }, params) {
     Api.editInc.post(params).then(data => {
       actions.getIncImpList({ commit })

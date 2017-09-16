@@ -2,15 +2,15 @@
   <div class="createIncImp">
     <div class="form-inline">
       <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
-        <FormItem prop="dataSource" label="数据源" class="form__item">
-          <Select v-model="filterForm.dataSource" placeholder="请选择">
+        <FormItem prop="conn_id" label="数据源" class="form__item">
+          <Select v-model="filterForm.conn_id" placeholder="请选择">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
         </FormItem>
-        <FormItem prop="tbName" label="表名" class="form__item">
-          <Input type="text" v-model="filterForm.tbName"></Input>
+        <FormItem prop="tables" label="表名" class="form__item">
+          <Input type="text" v-model="filterForm.tables"></Input>
         </FormItem>
         <FormItem class="form__item">
           <Button type="primary" @click="changeSearchParams">查询</Button>
@@ -27,7 +27,14 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="sourceTables" class="table" size="small"></Table>
+        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <div class="pagination">
+          <div>
+            当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
+          </div>
+          <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
+          @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+        </div>
       </div>
       <div class="setting">
         <Card>
@@ -35,23 +42,23 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical v-model="setting.scheduleMode" class="radiogroup">
-            <Radio label="手动"></Radio>
-            <Radio label="定时">
+          <RadioGroup vertical v-model="createParams.scheduleMode" class="radiogroup">
+            <Radio :label="1">手动</Radio>
+            <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 200px;" v-model="scheduleCornTiming" transfer></DatePicker>
             </Radio>
-            <Radio label="周期">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 120px;"></DatePicker>
+            <Radio :label="3">
+              <span>周期</span>
+              <TimePicker size="small" style="width: 120px;" v-model="scheduleCornPeriod"></TimePicker>
             </Radio>
-            <Radio label="失效"></Radio>
+            <Radio :label="-1">无效</Radio>
           </RadioGroup>
         </Card>
       </div>
     </div>
     <div class="btncontainer">
-      <Button type="primary" class="button" @click="createTask">提交</Button>
+      <Button type="primary" class="button" @click="submitCreateParams">提交</Button>
       <router-link to="IncImport" tag="Button" class="button">取消</router-link>
     </div>
   </div>
@@ -59,19 +66,20 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
     return {
       searchParams: {
-        conn_id: -1,
+        conn_id: '',
         tables: '',
         pageSize: 10,
         pageNum: 1
       },
       filterForm: {
-        dataSource: -1, // connId
-        tbName: ''
+        conn_id: '',
+        tables: ''
       },
       columns: [
         {
@@ -80,8 +88,8 @@ export default {
         },
         {
           type: 'index',
-          align: 'center',
-          title: '序号'
+          title: '序号',
+          width: 80
         },
         {
           title: '库名',
@@ -99,15 +107,19 @@ export default {
           title: '增量字段',
           key: '',
           render: (h, params) => {
-            return this.buildSelects(h, params)
+            return this.buildIncFiledSelect(h, params)
           }
         },
         {
           title: '增量条件',
-          key: ''
+          key: '',
+          width: 380,
+          render: (h, params) => {
+            return this.buildConditionSelect(h, params)
+          }
         }
       ],
-      sourceTables: [
+      tableList: [
         {
           dbName: 'Informix',
           count: 3000,
@@ -118,72 +130,213 @@ export default {
           dbName: 'Informix',
           count: 4000,
           pk: 'ID',
-          table_name: 'export'
+          table_name: 'import'
         }
       ],
-      setting: {
-        scheduleMode: 0,
-        scheduleDate: '',
+      tableParams: [
+        {
+          table_name: 'export',
+          incField: '',
+          condition1: '',
+          condition2: ''
+        },
+        {
+          table_name: 'import',
+          incField: '',
+          condition1: '',
+          condition2: ''
+        }
+      ],
+      createParams: {
+        connId: '',
+        tbInfos: [],
+        user: '',
+        scheduleMode: '',
+        scheduleCorn: '',
         scheduleState: ''
-      }
+      },
+      scheduleCornTiming: '',
+      scheduleCornPeriod: ''
     }
   },
   computed: {
-    ...mapGetters([
-      'user', 'dataSources'// , 'sourceTables'
-    ])
+    ...mapGetters({
+      dataSources: 'dataSources',
+      // tableList: 'sourceTables',
+      pageInfo: 'sourcePageInfo',
+      user: 'user'
+    })
   },
   methods: {
-    ...mapActions([
-      'getDataSource', 'getSourceTable'
-    ]),
-    changeSearchParams () {
-      this.searchParams.conn_id = this.filterForm.dataSource
-      this.searchParams.tables = this.filterForm.tbName
-    },
-    buildSelects (h, params) {
+    ...mapActions({
+      getDataSource: 'getDataSource',
+      getTableList: 'getSourceTable',
+      createTask: 'createIncImpTask'
+    }),
+    buildIncFiledSelect (h, params) {
+      // let self = this
       return h('Select', {
         props: {
           size: 'small'
+        },
+        on: {
+          input: (value) => {
+            let targetTable = this.tableParams.find((el) => {
+              return el.table_name === params.row.table_name
+            })
+            targetTable.incField = value
+            // params.row.incField = value
+            /*
+            let targetTable = this.tableList.find((el) => {
+              return el.table_name === params.row.table_name
+            })
+            targetTable.incField = value // 问题 每次改变tableList中的值 就会重新渲染表
+            */
+          }
         }
-      }, this.buildOptions(h, params.row))
+      }, this.buildIncFieldOption(h, params.row))
     },
-    buildOptions (h, table) {
+    buildIncFieldOption (h, table) {
       /*
       let params = {
         conn_id: this.searchParams.conn_id,
         tables: '' // 所有表
       }
       */
-      let options = [
-        h('Option', {
-          props: {
-            value: '1'
-          }
-        }, 'aaa'),
-        h('Option', {
-          props: {
-            value: '2'
-          }
-        }, 'bbb')
-      ]
+      let options = []
+      if (table.table_name === 'export') {
+        options = [
+          h('Option', {
+            props: {
+              value: 'a'
+            }
+          }, 'aaa')
+        ]
+      } else {
+        options = [
+          h('Option', {
+            props: {
+              value: 'b'
+            }
+          }, 'bbb')
+        ]
+      }
       return options
     },
-    createTask () {
-
+    buildConditionSelect (h, params) {
+      return h('div', {}, [
+        h('DatePicker', {
+          props: {
+            size: 'small',
+            type: 'datetime',
+            transer: true
+          },
+          style: {
+            width: '160px'
+          },
+          on: {
+            input: (value) => {
+              if (value) {
+                let targetTable = this.tableParams.find((el) => {
+                  return el.table_name === params.row.table_name
+                })
+                targetTable.condition1 = dateFormatter(value)
+              }
+            }
+          }
+        }),
+        h('span', {}, '至'),
+        h('DatePicker', {
+          props: {
+            size: 'small',
+            type: 'datetime',
+            transer: true
+          },
+          style: {
+            width: '160px'
+          },
+          on: {
+            input: (value) => {
+              if (value) {
+                let targetTable = this.tableParams.find((el) => {
+                  return el.table_name === params.row.table_name
+                })
+                targetTable.condition2 = dateFormatter(value)
+              }
+            }
+          }
+        })
+      ])
+    },
+    selectTable (selection) {
+      this.createParams.tbInfos = [...selection]
+    },
+    changeSearchParams () {
+      for (let prop in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.filterForm[prop]
+        }
+      }
+    },
+    changePageNum (pageNum) {
+      this.searchParams.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.searchParams.pageSize = pageSize
+    },
+    submitCreateParams () {
+      for (let table of this.createParams.tbInfos) {
+        let targetTable = this.tableParams.find((el) => {
+          return el.table_name === table.table_name
+        })
+        for (let prop in targetTable) {
+          if (targetTable.hasOwnProperty(prop)) {
+            table[prop] = targetTable[prop]
+          }
+        }
+        /*
+        table.incField = targetTable.incField
+        table.condition1 = targetTable.condition1
+        table.condition2 = targetTable.condition2
+        */
+      }
+      switch (this.createParams.scheduleMode) {
+        case 1:
+          this.createParams.scheduleState = 0
+          this.createParams.scheduleCorn = ''
+          break
+        case 2:
+          this.createParams.scheduleState = 0
+          this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          break
+        case 3:
+          this.createParams.scheduleState = 0
+          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          break
+        case -1:
+          this.createParams.scheduleState = 1 // 失效
+          this.createParams.scheduleCorn = ''
+          break
+        default:
+          break
+      }
+      this.createTask(this.createParams).then(data => {
+        this.$router.push('IncImport')
+      })
     }
   },
   watch: {
     searchParams: {
-      hander: function () {
-        this.getSourceTable()
+      handler: function (newParams) {
+        this.getTableList(newParams)
       },
       deep: true
     }
   },
   mounted () {
     this.getDataSource().then(data => {
-      this.filterForm.conn_id = this.dataSources[0].connId
+      this.createParams.user = this.user.name
+      this.searchParams.conn_id = data.dataSources[0]
       this.changeSearchParams()
     })
   }

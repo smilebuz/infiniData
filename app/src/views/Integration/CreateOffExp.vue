@@ -1,16 +1,16 @@
 <template lang="html">
   <div class="createOffImp">
     <div class="form-inline">
-      <Form ref="searchForm" :model="searchForm" :label-width="80" id="searchForm" inline>
+      <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
         <FormItem prop="conn_id" label="数据源" class="form__item">
-          <Select v-model="searchForm.conn_id" placeholder="请选择">
+          <Select v-model="filterForm.conn_id" placeholder="请选择">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
           </Select>
         </FormItem>
         <FormItem prop="tbName" label="表名" class="form__item">
-          <Input type="text" v-model="searchForm.tables"></Input>
+          <Input type="text" v-model="filterForm.tables"></Input>
         </FormItem>
         <FormItem class="form__item">
           <Button type="primary" @click="changeSearchParams">查询</Button>
@@ -102,7 +102,7 @@ export default {
         pageSize: 10,
         pageNum: 1
       },
-      searchForm: {
+      filterForm: {
         conn_id: '',
         tables: ''
       },
@@ -172,9 +172,9 @@ export default {
       }
     },
     changeSearchParams () {
-      for (let prop in this.searchForm) {
-        if (this.searchForm.hasOwnProperty(prop)) {
-          this.searchParams[prop] = this.searchForm[prop]
+      for (let prop in this.filterForm) {
+        if (this.filterForm.hasOwnProperty(prop)) {
+          this.searchParams[prop] = this.filterForm[prop]
         }
       }
     },
