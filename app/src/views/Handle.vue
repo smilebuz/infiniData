@@ -52,14 +52,14 @@
         </div>
       </div>
       <div class="sqlpad__mainPad">
-        <Tabs type="card" v-model="currentTabId">
+        <Tabs type="card" v-model="currentTabId" class="sqlpad__mainPad-editorPad">
           <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name" :name="tab.id">
             <!--textarea :rows="sqlEditor.rows" v-model="tab.content" placeholder="请输入" class="sqlEditor" :id="tab.id"></textarea-->
             <!--Input type="textarea" :rows="sqlEditor.rows" v-model="sqlEditor.content" placeholder="请输入..."></Input-->
             <div :id="tab.id" class="sqlEditor" v-model='tab.content'></div>
           </TabPane>
         </Tabs>
-        <Tabs type="card">
+        <Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="数据" class="tabpane">
             <Table border stripe :columns="dataColumns" :data="dataList"></Table>
           </TabPane>
@@ -379,9 +379,12 @@ export default {
     margin-left: 5px;
     align-items: center;
   }
+  .tree {
+    margin-left: 5px;
+    margin-bottom: 50px;
+  }
   .radios {
     display: flex;
-    margin-top: 50px;
   }
   .radio-div {
     flex: 1;
@@ -390,9 +393,6 @@ export default {
     text-align: center;
     cursor: pointer;
     background: #dcdcdc;
-  }
-  .tree {
-    margin-left: 5px;
   }
   .tbInfo__title {
     background: #f8f8f8;
@@ -431,6 +431,9 @@ export default {
   }
   .sqlpad__mainPad {
     padding: 1em;
+  }
+  .sqlpad__mainPad-editorPad {
+    margin-bottom: 1em;
   }
   .sqlEditor {
     width: 100%;

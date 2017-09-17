@@ -3,7 +3,6 @@ import type from '../mutation-type'
 
 const actions = {
   getDBList ({ commit }, params) {
-    debugger
     return new Promise((resolve, reject) => {
       Api.handledbList.get(params).then(data => {
         commit(type.HANDLE_SET_DB_LIST, data)
@@ -14,7 +13,6 @@ const actions = {
     })
   },
   getTBList ({ commit }, params) {
-    debugger
     return new Promise((resolve, reject) => {
       Api.handletbList.get(params).then(data => {
         commit(type.HANDLE_SET_TB_LIST, data)
@@ -25,9 +23,13 @@ const actions = {
     })
   },
   getTBInfo ({ commit }, params) {
-    debugger
     Api.handletbInfo.get(params).then(data => {
       commit(type.HANDLE_SET_TB_INFO, data)
+    })
+  },
+  runSql ({ commit }, params) {
+    Api.handlerunSql.post(params).then(data => {
+      commit(type.HANDLE_RUN_SQL, data)
     })
   }
 }

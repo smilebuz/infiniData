@@ -9,7 +9,8 @@ export default {
     tbInfo: {
       fieldList: [],
       partitionList: []
-    }
+    },
+    logs: []
   },
   actions,
   getters,
