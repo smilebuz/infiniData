@@ -10,7 +10,11 @@ export default {
       fieldList: [],
       partitionList: []
     },
-    logs: []
+    logs: [],
+    runSqlInfo: {
+      time_consum: '',
+      count: ''
+    }
   },
   actions,
   getters,

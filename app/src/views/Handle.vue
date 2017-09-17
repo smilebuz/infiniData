@@ -59,6 +59,9 @@
             <div :id="tab.id" class="sqlEditor" v-model='tab.content'></div>
           </TabPane>
         </Tabs>
+        <p class="sqlpad__mainPad-sqlInfo" v-show="executeSql">
+          运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
+        </p>
         <Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="数据" class="tabpane">
             <Table border stripe :columns="dataColumns" :data="dataList"></Table>
@@ -164,6 +167,7 @@ export default {
       sqlEditor: {
         rows: 5
       },
+      executeSql: false,
       schemaInfo: {
         fuzzy: {
           tbl_user: [
@@ -245,14 +249,16 @@ export default {
       tbList: 'tbList',
       tbInfo: 'tbInfo',
       fields: 'fieldList',
-      partitions: 'partitionList'
+      partitions: 'partitionList',
+      sqlInfo: 'runSqlInfo'
     })
   },
   methods: {
     ...mapActions({
       getDBList: 'getDBList',
       getTBList: 'getTBList',
-      getTBInfo: 'getTBInfo'
+      getTBInfo: 'getTBInfo',
+      runSql: 'runSql'
     }),
     radioChecked (checked) {
       if (checked) {
@@ -281,7 +287,15 @@ export default {
           let targetTab = this.sqlTabs.find((tab) => {
             return tab.id === this.currentTabId
           })
-          alert(targetTab.editor.getValue())
+          let params = {
+            sql: targetTab.editor.getValue()
+          }
+          this.runSql(params).then(data => {
+            this.executeSql = true
+          })
+          break
+        case 'stop':
+
           break
         case 'new':
           let newSqlTab = {
@@ -293,6 +307,12 @@ export default {
           this.$nextTick(function () {
             this.setBrace(newSqlTab)
           })
+          break
+        case 'save':
+
+          break
+        case 'export':
+
           break
         default:
           break
@@ -433,6 +453,10 @@ export default {
     padding: 1em;
   }
   .sqlpad__mainPad-editorPad {
+    margin-bottom: 1em;
+  }
+  .sqlpad__mainPad-sqlInfo {
+    text-align: left;
     margin-bottom: 1em;
   }
   .sqlEditor {

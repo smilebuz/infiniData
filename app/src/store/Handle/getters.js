@@ -13,5 +13,8 @@ export default {
   },
   partitionList (state) {
     return state.tbInfo.partitionList
+  },
+  runSqlInfo (state) {
+    return state.runSqlInfo
   }
 }

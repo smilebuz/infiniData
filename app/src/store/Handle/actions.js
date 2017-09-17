@@ -28,8 +28,13 @@ const actions = {
     })
   },
   runSql ({ commit }, params) {
-    Api.handlerunSql.post(params).then(data => {
-      commit(type.HANDLE_RUN_SQL, data)
+    return new Promise((resolve, reject) => {
+      Api.handlerunSql.post(params).then(data => {
+        commit(type.HANDLE_RUN_SQL, data)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   }
 }

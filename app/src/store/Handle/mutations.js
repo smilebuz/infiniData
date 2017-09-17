@@ -13,5 +13,7 @@ export default {
   },
   [type.HANDLE_RUN_SQL] (state, data) {
     state.logs = data.log
+    state.runSqlInfo.time_consum = data.time_consum
+    state.runSqlInfo.count = data.count
   }
 }
