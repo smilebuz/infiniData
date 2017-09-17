@@ -2,14 +2,14 @@
   <div class="handle">
     <div class="side">
       <div class="dbSelect">
-        <Select style="width: 140px;" size="small">
-          <Option v-for="(db, index) in dbs" :key="db.id" :value="db.pdbName">
+        <Select style="width: 140px;" size="small" v-model="selectedpdbId" @on-change="selectDb">
+          <Option v-for="(db, index) in dbList" :key="db.pdbId" :value="db.pdbId">
             {{ db.pdbName }}
           </Option>
         </Select>
         <Button type="text" shape="circle" icon="refresh"></Button>
       </div>
-      <Tree :data="tables" class="tree"></Tree>
+      <Tree :data="tables" class="tree" @on-select-change="selectTable"></Tree>
       <div class="radios">
         <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
           {{ value.label }}
@@ -52,12 +52,11 @@
         </div>
       </div>
       <div class="sqlpad__mainPad">
-        <Tabs type="card">
-          <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name">
+        <Tabs type="card" v-model="currentTabId">
+          <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name" :name="tab.id">
             <!--textarea :rows="sqlEditor.rows" v-model="tab.content" placeholder="请输入" class="sqlEditor" :id="tab.id"></textarea-->
             <!--Input type="textarea" :rows="sqlEditor.rows" v-model="sqlEditor.content" placeholder="请输入..."></Input-->
             <div :id="tab.id" class="sqlEditor" v-model='tab.content'></div>
-            <Button @click="showSql(tab.content)">测试brace</Button>
           </TabPane>
         </Tabs>
         <Tabs type="card">
@@ -79,6 +78,7 @@
 
 <script>
 import updateCompletions from '../utils/updateCompletions.js'
+import { mapGetters, mapActions } from 'vuex'
 
 let ace = require('brace')
 require('brace/mode/sql')
@@ -89,32 +89,21 @@ ace.acequire('ace/ext/language_tools')
 export default {
   data () {
     return {
-      dbs: [
-        {
-          'pdbId': 1,
-          'pdbName': 'ocr'
-        },
-        {
-          'pdbId': 2,
-          'pdbName': 'ocr'
-        },
-        {
-          'pdbId': 3,
-          'pdbName': 'ocr'
-        }
-      ],
+      selectedpdbId: '',
+      tbParams: {
+        pdbId: '',
+        pageSize: '',
+        tbName: '' // 为什么有这个字段
+      },
+      tbInfoParams: {
+        pdbId: '',
+        tbId: ''
+      },
       tables: [
         {
           expand: true,
           title: 'ocr',
-          children: [
-            {
-              title: 'user_list'
-            },
-            {
-              title: 'user_list'
-            }
-          ]
+          children: [] // 树子节点
         }
       ],
       radios: {
@@ -127,30 +116,6 @@ export default {
           checked: false
         }
       },
-      fields: [
-        {
-          fieldName: 'Id',
-          fieldType: 'int'
-        },
-        {
-          fieldName: 'name',
-          fieldType: 'STRING'
-        },
-        {
-          fieldName: 'age',
-          fieldType: 'int'
-        }
-      ],
-      partitions: [
-        {
-          partitionName: 'name',
-          partitionNum: 2
-        },
-        {
-          partitionName: 'age',
-          partitionNum: 3
-        }
-      ],
       operations: [
         {
           name: '运行',
@@ -195,6 +160,7 @@ export default {
           content: ''
         }
       ],
+      currentTabId: 'sql-build',
       sqlEditor: {
         rows: 5
       },
@@ -273,7 +239,21 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters({
+      dbList: 'dbList',
+      tbList: 'tbList',
+      tbInfo: 'tbInfo',
+      fields: 'fieldList',
+      partitions: 'partitionList'
+    })
+  },
   methods: {
+    ...mapActions({
+      getDBList: 'getDBList',
+      getTBList: 'getTBList',
+      getTBInfo: 'getTBInfo'
+    }),
     radioChecked (checked) {
       if (checked) {
         return {
@@ -297,28 +277,31 @@ export default {
     },
     operate (action) {
       switch (action) {
+        case 'run':
+          let targetTab = this.sqlTabs.find((tab) => {
+            return tab.id === this.currentTabId
+          })
+          alert(targetTab.editor.getValue())
+          break
         case 'new':
-          let newSql = {
+          let newSqlTab = {
             id: 'sql' + new Date().getTime(),
             name: '新建语句',
             content: ''
           }
-          this.sqlTabs.push(newSql)
+          this.sqlTabs.push(newSqlTab)
           this.$nextTick(function () {
-            this.setBrace(newSql.id)
+            this.setBrace(newSqlTab)
           })
           break
         default:
           break
       }
     },
-    showSql (sql) {
-      alert(sql)
-      // this.setBraces()
-    },
-    setBrace (id) {
+    setBrace (newSqlTab) {
       updateCompletions(this.schemaInfo)
-      let editor = ace.edit(id)
+      let editor = ace.edit(newSqlTab.id)
+      newSqlTab.editor = editor
       editor.getSession().setMode('ace/mode/sql')
       editor.setTheme('ace/theme/chrome')
       editor.setOptions({
@@ -331,6 +314,7 @@ export default {
       updateCompletions(this.schemaInfo)
       for (let tab of this.sqlTabs) {
         let editor = ace.edit(tab.id)
+        tab.editor = editor
         editor.getSession().setMode('ace/mode/sql')
         editor.setTheme('ace/theme/chrome')
         editor.setOptions({
@@ -339,17 +323,47 @@ export default {
           enableLiveAutocompletion: true
         })
       }
+    },
+    selectDb (pdbId) {
+      this.tbParams.pdbId = pdbId
+    },
+    selectTable (selection) {
+      if (selection[0].tbId) {
+        this.tbInfoParams.tbId = selection[0].tbId
+      }
     }
   },
-  /*
   watch: {
+    /*
     sqlTabs: function (newTabs) {
       this.setBraces()
     }
+    */
+    tbParams: {
+      handler: function (newParams) {
+        this.getTBList(newParams).then(data => {
+          // 填充this.tables.children 改变this.tbInfoParams
+          for (let table of this.tbList) {
+            this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+          }
+          this.tbInfoParams.pdbId = this.selectedpdbId
+          this.tbInfoParams.tbId = this.tbList[0].tbId
+        })
+      },
+      deep: true
+    },
+    tbInfoParams: {
+      handler: function (newParams) {
+        this.getTBInfo(newParams)
+      },
+      deep: true
+    }
   },
-  */
   mounted () {
     this.setBraces()
+    this.getDBList().then(data => {
+      this.selectedpdbId = this.dbList[0].pdbId
+    })
   }
 }
 </script>

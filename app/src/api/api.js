@@ -41,12 +41,6 @@ const Apilist = {
   'deleteSource': '/api/datasource/delete', // get
   'testSource': '/api/schema/databaseConn_test', // get
 
-  // handle
-  'dbList': '/api/hive/platformdb/all', // get
-  'tbList': '/api/hive/platformdb/tbs', // get
-  'tbInfo': '/api/hive/platformdb/tbinfo', // get
-  'runSql': '/api/dataprocess/runsql', // post
-
   // general
   'sourceGet': '/api/task/get/datasource', // post
   'sourceTable': '/api/schema/tableScan', // post
@@ -56,7 +50,13 @@ const Apilist = {
   'getFullProgress': '/api/task/full/progress', // post
   'getFullDetailProgress': '/api/task/full/progress/detail', // post
   'getIncDetailProgress': '/api/task/inc/progress', // post
-  'getOffExpDetailProgress': '/api/task/export/progress' // post
+  'getOffExpDetailProgress': '/api/task/export/progress', // post
+
+  // handle
+  'handledbList': '/api/hive/platformdb/all', // get
+  'handletbList': '/api/hive/platformdb/tbs', // get
+  'handletbInfo': '/api/hive/platformdb/tbinfo', // get
+  'handlerunSql': '/api/dataprocess/runsql' // post
 }
 
 export const Api = ((apilist) => {
