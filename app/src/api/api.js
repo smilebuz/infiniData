@@ -65,17 +65,31 @@ export const Api = ((apilist) => {
     list[api] = {
       get: (params) => {
         console.log(apilist[api])
-        return axios.get(apilist[api], {params})
-          .then(data => {
-            if (data.data.response === 1) {
-              return Promise.resolve(data.data)
-            } else {
-              console.log('response is 0')
-            }
-          })
-          .catch(error => {
-            console.log('error happens', error)
-          })
+        if (params) {
+          return axios.get(apilist[api], {params: params})
+            .then(data => {
+              if (data.data.response === 1) {
+                return Promise.resolve(data.data)
+              } else {
+                console.log('response is 0')
+              }
+            })
+            .catch(error => {
+              console.log('error happens', error)
+            })
+        } else {
+          return axios.get(apilist[api])
+            .then(data => {
+              if (data.data.response === 1) {
+                return Promise.resolve(data.data)
+              } else {
+                console.log('response is 0')
+              }
+            })
+            .catch(error => {
+              console.log('error happens', error)
+            })
+        }
       },
       post: (params) => {
         console.log(apilist[api])
@@ -97,7 +111,7 @@ export const Api = ((apilist) => {
 })(Apilist)
 
 export const polling = (pollingUrl, params, update, ref) => {
-  return axios.get(Apilist[pollingUrl], {params})
+  return axios.get(Apilist[pollingUrl], {params: params})
     .then(data => {
       if (data.data.response === 1) {
         if (data.data.progress > 0 && data.data.progress < 100) {

@@ -3,23 +3,15 @@ import type from '../mutation-type'
 
 const actions = {
   getDBList ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.handledbList.get(params).then(data => {
-        commit(type.HANDLE_SET_DB_LIST, data)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.handledbList.get(params).then(data => {
+      commit(type.HANDLE_SET_DB_LIST, data)
+      return Promise.resolve(data)
     })
   },
   getTBList ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.handletbList.get(params).then(data => {
-        commit(type.HANDLE_SET_TB_LIST, data)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.handletbList.get(params).then(data => {
+      commit(type.HANDLE_SET_TB_LIST, data)
+      return Promise.resolve(data)
     })
   },
   getTBInfo ({ commit }, params) {
@@ -28,13 +20,9 @@ const actions = {
     })
   },
   runSql ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.handlerunSql.post(params).then(data => {
-        commit(type.HANDLE_RUN_SQL, data)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.handlerunSql.post(params).then(data => {
+      commit(type.HANDLE_RUN_SQL, data)
+      return Promise.resolve(data)
     })
   }
 }

@@ -75,12 +75,8 @@ const actions = {
     })
   },
   createOffImpTask ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.createFull.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.createFull.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   getOffImpDetail ({ commit, getters }, params) {
@@ -118,13 +114,8 @@ const actions = {
     })
   },
   createIncImpTask ({ commit }, params) {
-    debugger
-    return new Promise((resolve, reject) => {
-      Api.createInc.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.createInc.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   editIncImpTask ({ commit }, params) {
@@ -178,12 +169,8 @@ const actions = {
     })
   },
   createOffExpTask ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.createExport.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.createExport.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   deleteOffExpTask ({ commit }, params) {
@@ -242,42 +229,26 @@ const actions = {
     })
   },
   editSource ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.editSource.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.editSource.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   testSourceConn ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.testSource.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.testSource.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   createSource ({ commit }, params) {
-    return new Promise((resolve, reject) => {
-      Api.createSource.post(params).then(data => {
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.createSource.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
 
   // 通用
   getDataSource ({ commit }) {
-    return new Promise((resolve, reject) => {
-      Api.sourceGet.get().then(data => {
-        commit(type.SET_DATA_SOURCE, data.dataSources)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+    return Api.sourceGet.get().then(data => {
+      commit(type.SET_DATA_SOURCE, data.dataSources)
+      return Promise.resolve(data)
     })
   },
   getSourceTable ({ commit }, params) {
