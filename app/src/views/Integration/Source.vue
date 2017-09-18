@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import bus from '../../bus'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -131,12 +132,14 @@ export default {
       ],
       columns: [
         {
-          type: 'selection'
+          type: 'selection',
+          width: 200
         },
         {
           type: 'index',
           title: '序号',
-          sortable: true
+          sortable: true,
+          width: 200
         },
         {
           title: '连接名称',
@@ -151,7 +154,8 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          ellipsis: true
+          ellipsis: true,
+          width: 200
         },
         {
           title: '数据库名',
@@ -161,15 +165,18 @@ export default {
         },
         {
           title: '端口',
-          key: 'port'
+          key: 'port',
+          width: 200
         },
         {
           title: '用户名',
-          key: 'userName'
+          key: 'userName',
+          width: 200
         },
         {
           title: '密码',
-          key: 'password'
+          key: 'password',
+          width: 200
         },
         {
           title: '连接类型',
@@ -178,7 +185,8 @@ export default {
         },
         {
           title: '编码',
-          key: 'encoding'
+          key: 'encoding',
+          width: 200
         },
         {
           title: '创建时间',
@@ -188,7 +196,8 @@ export default {
         },
         {
           title: '用户',
-          key: 'user'
+          key: 'user',
+          width: 200
         },
         {
           title: '操作',
@@ -226,14 +235,21 @@ export default {
         show: false,
         title: '数据源编辑'
       },
-      selectedSourceIds: []
+      selectedSourceIds: [],
+      showMenu: true,
+      tableWidth: 0
     }
   },
   computed: {
     ...mapGetters({
       sourceList: 'sourceList',
       pageInfo: 'sourcePageInfo'
-    })
+    }),
+    sourceStyle () {
+      return {
+        'max-width': this.tableWidth + 'px'
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -322,8 +338,15 @@ export default {
       deep: true
     }
   },
+  created () {
+    bus.$on('triggerMenu', function (showMenu) {
+      let totalWidth = window.screen.availWidth
+      this.tableWidth = showMenu ? (totalWidth - 170) : (totalWidth - 70)
+    })
+  },
   mounted () {
     this.getSourceList(this.searchParams)
+    this.tableWidth = window.screen.availWidth - 170
   }
 }
 </script>
@@ -350,9 +373,11 @@ export default {
   .tbcontainer {
     padding: 15px 10px;
     background: #f0f0f0;
+    width: 100%;
+    overflow: scroll;
   }
   .table {
-    width: 100%;
+    max-width: 100%;
   }
   .modal__content {
     display: flex;

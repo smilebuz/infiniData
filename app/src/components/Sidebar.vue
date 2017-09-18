@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import bus from '../bus'
+
 export default {
   data () {
     return {
@@ -61,6 +63,7 @@ export default {
   methods: {
     triggerMenu () {
       this.showMenu = !this.showMenu
+      bus.$emit('triggerMenu', this.showMenu)
     }
   }
 }

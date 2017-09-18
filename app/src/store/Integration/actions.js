@@ -91,10 +91,10 @@ const actions = {
     let pollinglist = getters.offImpDetailPollingList
     let params = {
       taskId: taskId,
-      workderId: []
+      workerIds: []
     }
-    for (let task of pollinglist) {
-      params.workderId.push(task.taskId) // 子任务id
+    for (let worker of pollinglist) {
+      params.workerIds.push(worker.workerId) // 子任务id
     }
     polling('getFullDetailProgress', params, (data) => {
       commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
@@ -114,6 +114,7 @@ const actions = {
     })
   },
   createIncImpTask ({ commit }, params) {
+    debugger
     return Api.createInc.post(params).then(data => {
       return Promise.resolve(data)
     })
@@ -147,11 +148,11 @@ const actions = {
   pollingIncImpDetail ({ commit, getters }) {
     actions.stopIncImpDetailPolling({ commit })
     let pollingList = getters.incImpDetailPollingList
-    let taskIds = []
-    pollingList.forEach((task) => {
-      taskIds.push(task.taskId) // 子任务id
+    let workerIds = []
+    pollingList.forEach((worker) => {
+      workerIds.push(worker.workerId) // 子任务id
     })
-    polling('IncDetailProgress', taskIds, (data) => {
+    polling('IncDetailProgress', workerIds, (data) => {
       commit(type.SET_INCIMP_DETAIL_STATUS, {
         data: data
       })
@@ -202,11 +203,11 @@ const actions = {
   pollingOffExpDetail ({ commit, getters }, params) {
     actions.stopOffExpDetailPolling({ commit, getters })
     let pollingList = getters.offExpDetailPollingList
-    let taskIds = []
-    for (let task of pollingList) {
-      taskIds.push(task.taskId)
+    let workerIds = []
+    for (let worker of pollingList) {
+      workerIds.push(worker.workerId)
     }
-    polling('getOffExpDetailProgress', taskIds, (data) => {
+    polling('getOffExpDetailProgress', workerIds, (data) => {
       commit(type.SET_OFFEXP_DETAIL_STATUS, {
         data: data
       })
@@ -252,8 +253,9 @@ const actions = {
     })
   },
   getSourceTable ({ commit }, params) {
-    Api.sourceTable.post(params).then(data => {
+    return Api.sourceTable.post(params).then(data => {
       commit(type.SET_SOURCE_TABLE, data)
+      return Promise.resolve(data)
     })
   },
   getFields ({ commit }, params) {}

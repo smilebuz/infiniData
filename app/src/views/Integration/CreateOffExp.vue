@@ -2,8 +2,8 @@
   <div class="createOffImp">
     <div class="form-inline">
       <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
-        <FormItem prop="conn_id" label="数据源" class="form__item">
-          <Select v-model="filterForm.conn_id" placeholder="请选择">
+        <FormItem prop="connId" label="数据源" class="form__item">
+          <Select v-model="filterForm.connId" placeholder="请选择">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
@@ -97,13 +97,13 @@ export default {
   data () {
     return {
       searchParams: {
-        conn_id: '',
+        connId: '',
         tables: '',
         pageSize: 10,
         pageNum: 1
       },
       filterForm: {
-        conn_id: '',
+        connId: '',
         tables: ''
       },
       columns: [
@@ -122,7 +122,7 @@ export default {
         },
         {
           title: '表名',
-          key: 'table_name'
+          key: 'tbName'
         },
         {
           title: '总记录数',
@@ -221,7 +221,7 @@ export default {
   mounted () {
     this.getDataSource().then(data => {
       this.createParams.user = this.user.name
-      this.searchParams.conn_id = data.dataSources[0]
+      this.filterForm.connId = data.dataSources[0].connId
       this.changeSearchParams()
     })
   }

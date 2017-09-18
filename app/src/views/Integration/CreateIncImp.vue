@@ -2,8 +2,8 @@
   <div class="createIncImp">
     <div class="form-inline">
       <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
-        <FormItem prop="conn_id" label="数据源" class="form__item">
-          <Select v-model="filterForm.conn_id" placeholder="请选择">
+        <FormItem prop="connId" label="数据源" class="form__item">
+          <Select v-model="filterForm.connId" placeholder="请选择">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
@@ -72,13 +72,13 @@ export default {
   data () {
     return {
       searchParams: {
-        conn_id: '',
+        connId: '',
         tables: '',
         pageSize: 10,
         pageNum: 1
       },
       filterForm: {
-        conn_id: '',
+        connId: '',
         tables: ''
       },
       columns: [
@@ -97,11 +97,11 @@ export default {
         },
         {
           title: '表名',
-          key: 'table_name'
+          key: 'tbName'
         },
         {
           title: '主键字段',
-          key: 'pk'
+          key: 'priKey'
         },
         {
           title: '增量字段',
@@ -121,32 +121,19 @@ export default {
       ],
       tableList: [
         {
-          dbName: 'Informix',
-          count: 3000,
-          pk: 'ID',
-          table_name: 'export'
+          totalRows: 3000,
+          priKey: 'ID',
+          tbName: 'export',
+          fields: ['name', 'id']
         },
         {
-          dbName: 'Informix',
-          count: 4000,
-          pk: 'ID',
-          table_name: 'import'
+          totalRows: 4000,
+          priKey: 'ID',
+          tbName: 'import',
+          fields: ['age', 'sex']
         }
       ],
-      tableParams: [
-        {
-          table_name: 'export',
-          incField: '',
-          condition1: '',
-          condition2: ''
-        },
-        {
-          table_name: 'import',
-          incField: '',
-          condition1: '',
-          condition2: ''
-        }
-      ],
+      tableParams: [],
       createParams: {
         connId: '',
         tbInfos: [],
@@ -182,13 +169,13 @@ export default {
         on: {
           input: (value) => {
             let targetTable = this.tableParams.find((el) => {
-              return el.table_name === params.row.table_name
+              return el.tbName === params.row.tbName
             })
             targetTable.incField = value
             // params.row.incField = value
             /*
             let targetTable = this.tableList.find((el) => {
-              return el.table_name === params.row.table_name
+              return el.tbName === params.row.tbName
             })
             targetTable.incField = value // 问题 每次改变tableList中的值 就会重新渲染表
             */
@@ -197,30 +184,19 @@ export default {
       }, this.buildIncFieldOption(h, params.row))
     },
     buildIncFieldOption (h, table) {
-      /*
-      let params = {
-        conn_id: this.searchParams.conn_id,
-        tables: '' // 所有表
-      }
-      */
       let options = []
-      if (table.table_name === 'export') {
-        options = [
-          h('Option', {
-            props: {
-              value: 'a'
-            }
-          }, 'aaa')
-        ]
-      } else {
-        options = [
-          h('Option', {
-            props: {
-              value: 'b'
-            }
-          }, 'bbb')
-        ]
-      }
+      // 真逻辑!!!
+      let targetTableFields = this.tableList.find((el) => {
+        return el.tbName === table.tbName
+      }).fields
+      targetTableFields.forEach(field => {
+        let option = h('Option', {
+          props: {
+            value: field
+          }
+        }, field)
+        options.push(option)
+      })
       return options
     },
     buildConditionSelect (h, params) {
@@ -229,7 +205,8 @@ export default {
           props: {
             size: 'small',
             type: 'datetime',
-            transer: true
+            transer: true,
+            placeholder: 'null'
           },
           style: {
             width: '160px'
@@ -238,19 +215,25 @@ export default {
             input: (value) => {
               if (value) {
                 let targetTable = this.tableParams.find((el) => {
-                  return el.table_name === params.row.table_name
+                  return el.tbName === params.row.tbName
                 })
                 targetTable.condition1 = dateFormatter(value)
               }
             }
           }
         }),
-        h('span', {}, '至'),
+        h('span', {
+          style: {
+            marginLeft: '5px',
+            marginRight: '5px'
+          }
+        }, '至'),
         h('DatePicker', {
           props: {
             size: 'small',
             type: 'datetime',
-            transer: true
+            transer: true,
+            placeholder: 'null'
           },
           style: {
             width: '160px'
@@ -259,7 +242,7 @@ export default {
             input: (value) => {
               if (value) {
                 let targetTable = this.tableParams.find((el) => {
-                  return el.table_name === params.row.table_name
+                  return el.tbName === params.row.tbName
                 })
                 targetTable.condition2 = dateFormatter(value)
               }
@@ -287,7 +270,7 @@ export default {
     submitCreateParams () {
       for (let table of this.createParams.tbInfos) {
         let targetTable = this.tableParams.find((el) => {
-          return el.table_name === table.table_name
+          return el.tbName === table.tbName
         })
         for (let prop in targetTable) {
           if (targetTable.hasOwnProperty(prop)) {
@@ -328,15 +311,33 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTableList(newParams)
+        this.getTableList(newParams).then(data => {
+          // 填充tableParams
+          for (let table of this.tableList) {
+            this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
+          }
+        })
+      },
+      deep: true
+    },
+    createParams: {
+      handler: function (newParams) {
+        if (newParams.scheduleMode === 2) {
+          alert(newParams.scheduleMode)
+        }
       },
       deep: true
     }
   },
   mounted () {
+    // 测试用 调试时取消
+    for (let table of this.tableList) {
+      this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
+    }
+    // 保留
     this.getDataSource().then(data => {
       this.createParams.user = this.user.name
-      this.searchParams.conn_id = data.dataSources[0]
+      this.filterForm.connId = data.dataSources[0].connId
       this.changeSearchParams()
     })
   }
