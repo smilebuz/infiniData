@@ -205,7 +205,7 @@ export default {
           props: {
             size: 'small',
             type: 'datetime',
-            transer: true,
+            transfer: true,
             placeholder: 'null'
           },
           style: {
@@ -232,7 +232,7 @@ export default {
           props: {
             size: 'small',
             type: 'datetime',
-            transer: true,
+            transfer: true,
             placeholder: 'null'
           },
           style: {
