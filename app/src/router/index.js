@@ -19,7 +19,11 @@ import CreateSource from '../views/Integration/CreateSource'
 
 import Handle from '../views/Handle'
 import Manage from '../views/Manage'
-import Op from '../views/Op'
+
+import Op from '../views/Op/Op'
+import LogManage from '../views/Op/LogManage'
+import UserManage from '../views/Op/UserManage'
+import SystemResource from '../views/Op/SystemResource'
 
 import store from '../store'
 
@@ -120,7 +124,26 @@ let router = new Router({
       path: '/Op',
       name: 'Op',
       meta: { requiresAuth: true },
-      component: Op
+      component: Op,
+      children: [
+        {
+          path: 'LogManage',
+          name: 'LogManage',
+          component: LogManage
+        },
+        {
+          path: 'UserManage',
+          name: 'UserManage',
+          meta: { requiresAuth: true },
+          component: UserManage
+        },
+        {
+          path: 'SystemResource',
+          name: 'SystemResource',
+          meta: { requiresAuth: true },
+          component: SystemResource
+        }
+      ]
     }
   ]
 })

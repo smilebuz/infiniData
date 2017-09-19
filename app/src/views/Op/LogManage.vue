@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="">
-    数据管理
+  <div class="logmanage">
+    日志管理
   </div>
 </template>
 
@@ -12,5 +12,5 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss" scoped>
 </style>

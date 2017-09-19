@@ -1,6 +1,6 @@
-<template>
-  <div class="integration">
-    <Sidebar></Sidebar>
+<template lang="html">
+  <div class="op">
+    <OpSidebar></OpSidebar>
     <router-view class="content"></router-view>
   </div>
 </template>
@@ -9,21 +9,21 @@
 import '../../assets/css/common.scss'
 import '../../assets/css/pagination.scss'
 
-import Sidebar from '@/components/Sidebar'
+import OpSidebar from '../../components/OpSidebar'
 
 export default {
-  name: 'integration',
+  name: 'Op',
   props: {},
   data () {
     return {}
   },
   components: {
-    Sidebar
+    OpSidebar
   }
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
   .content {
     flex: 1;
     overflow: hidden;

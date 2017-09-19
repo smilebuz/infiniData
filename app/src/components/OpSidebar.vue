@@ -21,34 +21,22 @@ export default {
       showMenu: true,
       menu: [
         {
-          name: '仪表盘',
-          path: '/Integration/Dashboard',
+          name: '日志管理',
+          path: '/Op/LogManage',
           imgUrl: require('../assets/images/icon/menu1.png'),
           imgUrlBG: require('../assets/images/icon/menu01.png')
         },
         {
-          name: '离线导入',
-          path: '/Integration/OffImport',
+          name: '用户管理',
+          path: '/Op/UserManage',
           imgUrl: require('../assets/images/icon/menu2.png'),
           imgUrlBG: require('../assets/images/icon/menu02.png')
         },
         {
-          name: '定时导入',
-          path: '/Integration/IncImport',
+          name: '系统资源',
+          path: '/Op/SystemResource',
           imgUrl: require('../assets/images/icon/menu3.png'),
           imgUrlBG: require('../assets/images/icon/menu03.png')
-        },
-        {
-          name: '离线导出',
-          path: '/Integration/OffExport',
-          imgUrl: require('../assets/images/icon/menu4.png'),
-          imgUrlBG: require('../assets/images/icon/menu04.png')
-        },
-        {
-          name: '数据源',
-          path: '/Integration/Source',
-          imgUrl: require('../assets/images/icon/menu5.png'),
-          imgUrlBG: require('../assets/images/icon/menu05.png')
         }
       ]
     }

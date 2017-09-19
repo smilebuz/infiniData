@@ -1,16 +1,13 @@
 <template lang="html">
-  <div class="">
-    数据管理
+  <div class="usermanage">
+    用户管理
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {}
-  }
 }
 </script>
 
-<style lang="css">
+<style lang="scss" scoped>
 </style>
