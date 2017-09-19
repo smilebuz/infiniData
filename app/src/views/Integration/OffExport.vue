@@ -122,12 +122,15 @@ export default {
       ],
       columns: [
         {
-          type: 'selection'
+          type: 'selection',
+          fixed: 'left',
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          sortable: true
+          fixed: 'left',
+          width: 80
         },
         {
           title: '任务编号',
@@ -160,11 +163,13 @@ export default {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          ellipsis: true
+          ellipsis: true,
+          width: 150
         },
         {
           title: '类型',
           key: 'type',
+          width: 120,
           render: (h, params) => {
             return h('div', this.typeList[params.row.type])
           }
@@ -172,13 +177,13 @@ export default {
         {
           title: '目标位置',
           key: 'targetPath',
-          width: 70,
+          width: 120,
           ellipsis: true
         },
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 70,
+          width: 120,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
@@ -186,25 +191,27 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 70,
+          width: 120,
           ellipsis: true
         },
         {
           title: '调度状态',
           key: 'scheduleState',
-          width: 70,
+          width: 120,
           render: (h, params) => {
             return h('div', this.scheduleStateList[params.row.scheduleState])
           }
         },
         {
           title: '用户',
-          key: 'user'
+          key: 'user',
+          width: 150
         },
         {
           title: '操作',
           key: '',
           width: 140,
+          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             return this.renderOperationButtons(h, params)

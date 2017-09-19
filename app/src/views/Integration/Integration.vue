@@ -24,6 +24,7 @@ export default {
 </script>
 <style lang='scss' scoped>
   .content {
-    width: 100%;
+    flex: 1;
+    overflow: hidden;
   }
 </style>

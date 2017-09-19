@@ -106,11 +106,15 @@ export default {
       ],
       columns: [
         {
-          type: 'selection'
+          type: 'selection',
+          fixed: 'left',
+          width: 60
         },
         {
           type: 'index',
-          title: '序号'
+          title: '序号',
+          fixed: 'left',
+          width: 80
         },
         {
           title: '任务编号',
@@ -142,7 +146,7 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 90,
+          width: 180,
           ellipsis: true
         },
         {
@@ -154,49 +158,55 @@ export default {
         {
           title: '表名',
           key: 'tbName',
-          width: 90,
-          sortable: true,
-          ellipsis: true
+          width: 120,
+          sortable: true
         },
         {
           title: '主键字段',
-          key: 'priKey'
+          key: 'priKey',
+          width: 120
         },
         {
           title: '增量字段',
-          key: 'incField'
+          key: 'incField',
+          width: 120
         },
         {
           title: '增量条件',
           key: 'incCondition',
-          ellipsis: true
+          width: 155
         },
         {
           title: '调度类型',
           key: 'scheduleMode',
+          width: 120,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
         },
         {
           title: '调度时间',
-          key: 'scheduleCorn'
+          key: 'scheduleCorn',
+          width: 120
         },
         {
           title: '调度状态',
           key: 'scheduleState',
+          width: 120,
           render: (h, params) => {
             return h('div', this.scheduleStateList[params.row.scheduleState])
           }
         },
         {
           title: '用户',
-          key: 'user'
+          key: 'user',
+          width: 120
         },
         {
           title: '操作',
           key: '',
           width: 140,
+          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             return h('div', [

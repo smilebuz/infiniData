@@ -105,12 +105,15 @@ export default {
       ],
       columns: [
         {
-          type: 'selection'
+          type: 'selection',
+          fixed: 'left',
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          sortable: true
+          fixed: 'left',
+          width: 80
         },
         {
           title: '任务编号',
@@ -141,23 +144,25 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          ellipsis: true
+          width: 140
         },
         {
           title: '库名',
           key: 'dbName',
-          sortable: true
+          sortable: true,
+          width: 120
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          ellipsis: true
+          ellipsis: true,
+          width: 120
         },
         {
           title: '任务状态',
           key: 'status',
-          width: 150,
+          width: 200,
           render: (h, params) => {
             if (params.row.progress > 0 && params.row.progress < 100) {
               return h('div', [
@@ -175,7 +180,7 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 90,
+          width: 150,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
@@ -183,25 +188,27 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 90,
+          width: 180,
           ellipsis: true
         },
         {
           title: '调度状态',
           key: 'scheduleState',
-          width: 90,
+          width: 150,
           render: (h, params) => {
             return h('div', this.scheduleStateList[params.row.scheduleState])
           }
         },
         {
           title: '用户',
-          key: 'user'
+          key: 'user',
+          width: 150
         },
         {
           title: '操作',
           key: '',
           width: 140,
+          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             switch (params.row.status) {

@@ -81,7 +81,6 @@
 </template>
 
 <script>
-import bus from '../../bus'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -133,13 +132,14 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: 200
+          width: 60,
+          fixed: 'left'
         },
         {
           type: 'index',
           title: '序号',
-          sortable: true,
-          width: 200
+          width: 80,
+          fixed: 'left'
         },
         {
           title: '连接名称',
@@ -154,56 +154,55 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          ellipsis: true,
-          width: 200
+          width: 150
         },
         {
           title: '数据库名',
           key: 'dbName',
-          sortable: true,
           width: 110
         },
         {
           title: '端口',
           key: 'port',
-          width: 200
+          width: 100
         },
         {
           title: '用户名',
           key: 'userName',
-          width: 200
+          width: 110
         },
         {
           title: '密码',
           key: 'password',
-          width: 200
+          width: 140
         },
         {
           title: '连接类型',
           key: 'connType',
-          width: 70
+          width: 120
         },
         {
           title: '编码',
           key: 'encoding',
-          width: 200
+          width: 100
         },
         {
           title: '创建时间',
           key: 'createTime',
           ellipsis: true,
-          width: 70
+          width: 180
         },
         {
           title: '用户',
           key: 'user',
-          width: 200
+          width: 120
         },
         {
           title: '操作',
           key: '',
           align: 'center',
           width: 140,
+          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -235,21 +234,14 @@ export default {
         show: false,
         title: '数据源编辑'
       },
-      selectedSourceIds: [],
-      showMenu: true,
-      tableWidth: 0
+      selectedSourceIds: []
     }
   },
   computed: {
     ...mapGetters({
       sourceList: 'sourceList',
       pageInfo: 'sourcePageInfo'
-    }),
-    sourceStyle () {
-      return {
-        'max-width': this.tableWidth + 'px'
-      }
-    }
+    })
   },
   methods: {
     ...mapActions({
@@ -337,12 +329,6 @@ export default {
       },
       deep: true
     }
-  },
-  created () {
-    bus.$on('triggerMenu', function (showMenu) {
-      let totalWidth = window.screen.availWidth
-      this.tableWidth = showMenu ? (totalWidth - 170) : (totalWidth - 70)
-    })
   },
   mounted () {
     this.getSourceList(this.searchParams)

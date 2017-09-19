@@ -27,56 +27,63 @@ export default {
         {
           type: 'index',
           title: '序号',
+          fixed: 'left',
           width: 60
         },
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          ellipsis: true
+          width: 160
         },
         {
           title: '抽取节点',
-          key: 'IP'
+          key: 'IP',
+          width: 160
         },
         {
           title: '总记录数',
           key: 'totalRows',
-          sortable: true
+          sortable: true,
+          width: 120
         },
         {
           title: '起始行号',
           key: 'firstRow',
-          sortable: true
+          sortable: true,
+          width: 120
         },
         {
           title: '终止行号',
           key: 'lastRow',
-          sortable: true
+          sortable: true,
+          width: 120
         },
         {
           title: '开始时间',
           key: 'startTime',
           sortable: true,
-          ellipsis: true
+          width: 160
         },
         {
           title: '结束时间',
           key: 'endTime',
           sortable: true,
-          ellipsis: true
+          width: 160
         },
         {
           title: '耗时',
-          key: 'spendTime'
+          key: 'spendTime',
+          width: 100
         },
         {
           title: '抽取速度',
-          key: 'extractSpeed'
+          key: 'extractSpeed',
+          width: 100
         },
         {
           title: '调度状态',
           key: 'status',
-          width: 150,
+          width: 200,
           render: (h, params) => {
             if (params.row.status === 2) {
               return h('div', [
@@ -92,15 +99,16 @@ export default {
         {
           title: '备注',
           key: 'info',
-          ellipsis: true
+          ellipsis: true,
+          width: 120
         }
       ],
       searchParams: {
         taskId: '',
         orderBy: '',
         sort: '',
-        pageNum: -1,
-        pageSize: -1
+        pageNum: 1,
+        pageSize: 10
       }
     }
   },
@@ -114,7 +122,7 @@ export default {
   methods: {
     ...mapActions({
       getDetailList: 'getOffImpDetail',
-      stopPolling: 'stopImpDetailPolling'
+      stopPolling: 'stopOffImpDetailPolling'
     }),
     changePageNum (pageNum) {
       this.searchParams.pageNum = pageNum
