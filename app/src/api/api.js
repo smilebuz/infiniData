@@ -9,10 +9,10 @@ const Apilist = {
   // offimport
   'fullQuery': '/api/task/full/query', // post
   'createFull': '/api/task/full/create', // post
-  'startFull': '/api/task/full/start', // get
+  'startFull': '/api/task/full/start', // post
   'restartFull': '/api/task/full/restart', // get
   'stopFull': '/api/task/full/stop', // get
-  'deleteFull': '/api/task/full/delete', // get
+  'deleteFull': '/api/task/full/delete', // post
   'editFull': '/api/task/full/edit', // post
   'fullDetail': '/api/task/full/detail', // post
 
@@ -43,12 +43,12 @@ const Apilist = {
 
   // general
   'sourceGet': '/api/task/get/datasource', // post
-  'sourceTable': '/api/schema/tableScan', // post
+  'sourceTable': '/apiSchema/Export_schema/schema/tableScan', // get
   'tableFields': '/api/schema/getAllFields', // post
 
   // polling
   'getFullProgress': '/api/task/full/progress', // post
-  'getFullDetailProgress': '/api/task/full/progress/detail', // post
+  'getFullDetailProgress': '/api/task/full/detail/progress', // post
   'getIncDetailProgress': '/api/task/inc/progress', // post
   'getOffExpDetailProgress': '/api/task/export/progress', // post
 
@@ -111,14 +111,24 @@ export const Api = ((apilist) => {
 })(Apilist)
 
 export const polling = (pollingUrl, params, update, ref) => {
-  return axios.get(Apilist[pollingUrl], {params: params})
+  return axios.post(Apilist[pollingUrl], params)
     .then(data => {
       if (data.data.response === 1) {
+        /*
         if (data.data.progress > 0 && data.data.progress < 100) {
           let timer = setTimeout(() => {
             polling(pollingUrl, params, update, ref)
           }, 5000)
 
+          if (ref) {
+            ref.timer = timer
+          }
+        }
+        */
+        if (!data.data.length) {
+          let timer = setTimeout(() => {
+            polling(pollingUrl, params, update, ref)
+          }, 5000)
           if (ref) {
             ref.timer = timer
           }

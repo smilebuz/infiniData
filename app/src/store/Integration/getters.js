@@ -3,6 +3,9 @@ export default {
   offImpList (state) {
     return state.offimport.taskList
   },
+  offImport (state) {
+    return state.offimport
+  },
   offImpPollingList (state) {
     return state.offimport.pollingList
   },

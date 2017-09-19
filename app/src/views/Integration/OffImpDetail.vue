@@ -81,18 +81,23 @@ export default {
           width: 100
         },
         {
-          title: '调度状态',
+          title: '状态',
           key: 'status',
           width: 200,
           render: (h, params) => {
-            if (params.row.status === 2) {
-              return h('div', [
-                h('Progress', {
-                  props: {
-                    percent: params.row.progress
-                  }
-                })
-              ])
+            switch (params.row.status) {
+              case 2:
+                return h('div', [
+                  h('Progress', {
+                    props: {
+                      percent: params.row.progress
+                    }
+                  })
+                ])
+              case 3:
+                return h('div', '完成')
+              default:
+                break
             }
           }
         },

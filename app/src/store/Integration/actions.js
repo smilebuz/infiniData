@@ -21,57 +21,50 @@ const actions = {
       return task.progress > 0 && task.progress < 100
     })
     */
+
+    let taskIds = [...pollinglist]
     /*
-    let taskIds = []
     for (let task of pollinglist) {
       taskIds.push(task.taskId)
     }
-    polling('getFullProgress', {taskId: taskIds}, (data) => {
-      commit(type.SET_OFFIMP_TASK_STATUS, {
-        data: data
-      })
-      console.log('任务timer:', getters.offimport.timer)
-    }, getters.offimport)
     */
-    pollinglist.forEach((task) => {
-      let params = {
-        taskId: task.taskId
-      }
-      polling('getFullProgress', params, (data) => {
-        commit(type.SET_OFFIMP_TASK_STATUS, {
-          task: task,
-          data: data
-        })
-        console.log('任务id:', task.taskId, '任务timer:', task.timer)
-      }, task)
-    })
+    // debugger
+    polling('getFullProgress', {taskIds: taskIds}, (data) => {
+      commit(type.SET_OFFIMP_TASK_STATUS, {
+        data: data.data
+      })
+      console.log('任务timer:', getters.offImport.timer)
+    }, getters.offImport)
   },
   stopOffImpPolling ({ commit }) {
     commit(type.CLEAR_OFFIMP_TIMER)
   },
   startOffImpTask ({ commit, getters }, params) {
     Api.startFull.post(params).then(data => {
-      actions.getOffImpList({ commit, getters })
+      actions.stopOffImpPolling({ commit })
+      commit(type.START_OFFIMP_TASK, params)
+      actions.pollingOffImp({ commit, getters })
+      // return Promise.resolve(data)
     })
   },
   deleteOffImpTask ({ commit, getters }, params) {
-    Api.deleteFull.post(params).then(data => {
-      actions.getOffImpList({ commit, getters })
+    return Api.deleteFull.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   restartOffImpTask ({ commit, getters }, params) {
-    Api.restartFull.get(params).then(data => {
-      actions.getOffImpList({ commit, getters })
+    return Api.restartFull.get(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   stopOffImpTask ({ commit, getters }, params) {
-    Api.stopFull.get(params).then(data => {
-      actions.getOffImpList({ commit, getters })
+    return Api.stopFull.get(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   editOffImpTask ({ commit, getters }, params) {
-    Api.editFull.post(params).then(data => {
-      actions.getOffImpDetail({ commit, getters })
+    return Api.editFull.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   createOffImpTask ({ commit }, params) {
@@ -96,6 +89,7 @@ const actions = {
     for (let worker of pollinglist) {
       params.workerIds.push(worker.workerId) // 子任务id
     }
+    // debugger
     polling('getFullDetailProgress', params, (data) => {
       commit(type.SET_OFFIMP_DETAIL_TASK_STATUS, {
         data: data
@@ -114,7 +108,6 @@ const actions = {
     })
   },
   createIncImpTask ({ commit }, params) {
-    debugger
     return Api.createInc.post(params).then(data => {
       return Promise.resolve(data)
     })
@@ -253,7 +246,7 @@ const actions = {
     })
   },
   getSourceTable ({ commit }, params) {
-    return Api.sourceTable.post(params).then(data => {
+    return Api.sourceTable.get(params).then(data => {
       commit(type.SET_SOURCE_TABLE, data)
       return Promise.resolve(data)
     })

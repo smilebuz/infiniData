@@ -96,20 +96,25 @@ export default {
         },
         {
           title: '库名',
-          key: 'dbName'
+          key: 'dbName',
+          render: (h, params) => {
+            return h('div', {}, this.dataSources.find((el) => {
+              return el.connId === this.searchParams.connId
+            }).dbName)
+          }
         },
         {
           title: '表名',
-          key: 'table_name'
+          key: 'tbName'
         },
         {
           title: '总记录数',
-          key: 'count',
+          key: 'totalRows',
           sortable: true
         },
         {
           title: '主键字段',
-          key: 'pk'
+          key: 'priKey'
         }
       ],
       createParams: {
@@ -117,7 +122,7 @@ export default {
         tbInfos: [],
         blocks: 0,
         user: '',
-        priority: '',
+        priority: 1,
         scheduleMode: '',
         scheduleCorn: '',
         scheduleState: ''
@@ -158,7 +163,7 @@ export default {
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
-          this.editParams.scheduleCorn = ''
+          this.createParams.scheduleCorn = ''
           break
         case 2:
           this.createParams.scheduleState = 0
@@ -179,12 +184,15 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTableList(newParams)
+        this.getTableList(newParams).then(data => {
+          // this.tableList = data.data // 测试用
+          this.createParams.connId = this.searchParams.connId
+        })
       },
       deep: true
     }
   },
-  mounted () {
+  created () {
     this.getDataSource().then(data => {
       this.createParams.user = this.user.name
       this.filterForm.connId = this.dataSources[0].connId

@@ -77,8 +77,8 @@ export default {
         status: '',
         pageSize: 10,
         pageNum: 1,
-        orderBy: '',
-        sort: ''
+        orderBy: 'id',
+        sort: 'desc'
       },
       filterForm: {
         taskId: '',
@@ -226,7 +226,7 @@ export default {
                       on: {
                         click: () => {
                           let taskIds = [params.row.taskId]
-                          this.startTask(taskIds)
+                          this.startTask({taskIds: taskIds})
                         }
                       }
                     }, '启动'),
@@ -266,27 +266,15 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.stopTask({taskId: params.row.taskId})
+                        this.stopTask({taskId: params.row.taskId}).then(data => {
+                          this.getTaskList(this.searchParams)
+                        })
                       }
                     }
                   }, '停止')
                 ])
               case 3:
                 return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.stopask({taskId: params.row.taskId})
-                      }
-                    }
-                  }, '停止'),
                   h('Button', {
                     props: {
                       type: 'primary',
@@ -308,6 +296,35 @@ export default {
                     },
                     style: {
                       marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditModal(params.row)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              case 5:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        let taskIds = [params.row.taskId]
+                        this.startTask({taskIds: taskIds})
+                      }
+                    }
+                  }, '启动'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
                     },
                     on: {
                       click: () => {
@@ -417,10 +434,14 @@ export default {
           this.$router.push('CreateOffImp')
           break
         case 'delete':
-          this.deleteTask({taskIds: this.selectedTaskIds})
+          this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
+            this.getTaskList(this.searchParams)
+          })
           break
         case 'run':
-          this.startTask({taskIds: this.selectedTaskIds})
+          this.startTask({taskIds: this.selectedTaskIds}).then(data => {
+            this.getTaskList(this.searchParams)
+          })
           break
         default:
           break
@@ -457,7 +478,9 @@ export default {
         default:
           break
       }
-      this.editTask(this.editParams)
+      this.editTask(this.editParams).then(data => {
+        this.getTaskList(this.searchParams)
+      })
     },
     cancelEdit () {},
     changeSearchParams () {
