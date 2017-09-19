@@ -171,19 +171,12 @@ export default {
       })
       return h('Select', {
         props: {
-          size: 'small'
-          // value: targetTable.incField 真!
+          size: 'small',
+          value: targetTable.incField
         },
         on: {
           input: (value) => {
             targetTable.incField = value
-            // params.row.incField = value
-            /*
-            let targetTable = this.tableList.find((el) => {
-              return el.tbName === params.row.tbName
-            })
-            targetTable.incField = value // 问题 每次改变tableList中的值 就会重新渲染表
-            */
           }
         }
       }, this.buildIncFieldOption(h, params.row))
@@ -214,7 +207,8 @@ export default {
             size: 'small',
             type: 'datetime',
             transfer: true,
-            placeholder: 'null'
+            placeholder: 'null',
+            value: targetTable.condition1
           },
           style: {
             width: '160px'
@@ -238,7 +232,8 @@ export default {
             size: 'small',
             type: 'datetime',
             transfer: true,
-            placeholder: 'null'
+            placeholder: 'null',
+            value: targetTable.condition2
           },
           style: {
             width: '160px'
@@ -331,6 +326,20 @@ export default {
       deep: true
     }
   },
+  created () {
+    // 测试用 调试时取消
+    for (let table of this.tableList) {
+      this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
+    }
+    // this.tableParams[0].incField = 'name' 测试render v-model
+    // 保留
+    this.getDataSource().then(data => {
+      this.createParams.user = this.user.name
+      this.filterForm.connId = data.dataSources[0].connId
+      this.changeSearchParams()
+    })
+  }
+  /*
   mounted () {
     // 测试用 调试时取消
     for (let table of this.tableList) {
@@ -344,6 +353,7 @@ export default {
       this.changeSearchParams()
     })
   }
+  */
 }
 </script>
 
