@@ -27,7 +27,11 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <Table class="table" size="small" border stripe
+          :columns="columns"
+          :data="tableList"
+          @on-selection-change="selectTable"
+        ></Table>
         <div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -143,7 +147,8 @@ export default {
         scheduleState: ''
       },
       scheduleCornTiming: '',
-      scheduleCornPeriod: ''
+      scheduleCornPeriod: '',
+      selectValue: ''
     }
   },
   computed: {
@@ -161,16 +166,16 @@ export default {
       createTask: 'createIncImpTask'
     }),
     buildIncFiledSelect (h, params) {
-      // let self = this
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
       return h('Select', {
         props: {
           size: 'small'
+          // value: targetTable.incField 真!
         },
         on: {
           input: (value) => {
-            let targetTable = this.tableParams.find((el) => {
-              return el.tbName === params.row.tbName
-            })
             targetTable.incField = value
             // params.row.incField = value
             /*
@@ -200,6 +205,9 @@ export default {
       return options
     },
     buildConditionSelect (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
       return h('div', {}, [
         h('DatePicker', {
           props: {
@@ -214,9 +222,6 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                let targetTable = this.tableParams.find((el) => {
-                  return el.tbName === params.row.tbName
-                })
                 targetTable.condition1 = dateFormatter(value)
               }
             }
@@ -241,9 +246,6 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                let targetTable = this.tableParams.find((el) => {
-                  return el.tbName === params.row.tbName
-                })
                 targetTable.condition2 = dateFormatter(value)
               }
             }
@@ -334,6 +336,7 @@ export default {
     for (let table of this.tableList) {
       this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
     }
+    // this.tableParams[0].incField = 'name' 测试render v-model
     // 保留
     this.getDataSource().then(data => {
       this.createParams.user = this.user.name
