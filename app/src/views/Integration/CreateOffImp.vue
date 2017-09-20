@@ -19,11 +19,11 @@
     </div>
     <div class="opbuttons">
       <Button type="success" class="opbutton" icon="checkmark" size="small"
-        @click="selectAllinPage">
+        @click="changeSelectAllinDBStatus(true)">
         全选
       </Button>
       <Button type="error" class="opbutton" icon="close" size="small"
-        @click="clearSelection">
+        @click="changeSelectAllinDBStatus(false)">
         清空
       </Button>
     </div>
@@ -97,11 +97,11 @@ export default {
             return h('Checkbox', {
               props: {
                 size: 'small',
-                value: this.tbCheckInfo.selectAll
+                value: this.selectAllinPageInfo.selectAll
               },
               on: {
                 input: (checked) => {
-                  this.tbCheckInfo.selectAll = checked
+                  this.selectAllinPageInfo.selectAll = checked
                 }
               }
             })
@@ -132,12 +132,14 @@ export default {
         },
         {
           title: '库名',
-          key: 'dbName',
+          key: 'dbName'
+          /*
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
             }).dbName)
           }
+          */
         },
         {
           title: '表名',
@@ -153,9 +155,6 @@ export default {
           key: 'priKey'
         }
       ],
-      tbCheckInfo: {
-        selectAll: false
-      },
       createParams: {
         connId: '',
         tbInfos: [],
@@ -166,14 +165,38 @@ export default {
         scheduleCorn: '',
         scheduleState: '',
         exceptTables: [],
+        selectAll: false // 按钮全选
+      },
+      selectAllinPageInfo: {
         selectAll: false
-      }
+      },
+      selectAllinDBInfo: {
+        // exceptTables: [],
+        selectAll: false // 按钮全选
+      },
+      exceptTables: [],
+      tableList: [
+        {
+          dbName: 'informix',
+          tbName: 'import',
+          totalRows: 1000,
+          select: false,
+          priKey: 'age'
+        },
+        {
+          dbName: 'informix',
+          tbName: 'export',
+          totalRows: 2000,
+          select: false,
+          priKey: 'name'
+        }
+      ]
     }
   },
   computed: {
     ...mapGetters({
       dataSources: 'dataSources',
-      tableList: 'sourceTables',
+      // tableList: 'sourceTables',
       pageInfo: 'sourceTablePageInfo',
       user: 'user'
     })
@@ -184,42 +207,71 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffImpTask'
     }),
+    changeSelectAllinDBStatus (checked) {
+      this.selectAllinDBInfo.selectAll = checked
+    },
     selectAllinPage () {
-      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
+      this.createParams.tbInfos = []
       for (let table of this.tableList) {
-        table.select = true
-        this.createParams.tbInfos.push(table)
+        table.select = true // 没执行selectTable
+        this.selectTable(table.select, table)
       }
-      console.log(this.createParams.tbInfos)
     },
     clearAllinPage () {
       for (let table of this.tableList) {
         table.select = false
+        this.selectTable(table.select, table)
       }
-      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
-      console.log(this.createParams.tbInfos)
     },
     selectTable (ischecked, table) {
-      if (ischecked) {
-        this.createParams.tbInfos.push(table)
+      if (this.selectAllinDBInfo.selectAll) {
+        if (ischecked) {
+          // 从exceptTables中去除
+          let index = this.exceptTables.indexOf(table.tbName)
+          this.exceptTables.splice(index, 1)
+        } else {
+          // 添加到exceptTables
+          this.exceptTables.push(table.tbName)
+        }
       } else {
-        let targetTableIndex = -1
-        this.createParams.tbInfos.forEach((el, index) => {
-          if (el.tbName === table.tbName) {
-            targetTableIndex = index
+        if (ischecked) {
+          debugger
+          this.createParams.tbInfos.push(table)
+          // 判断是否已经选满
+          let checkAllJudge = true
+          for (let table of this.tableList) {
+            let targetTable = this.createParams.tbInfos.find(el => {
+              return el.tbName === table.tbName
+            })
+            if (!targetTable) {
+              checkAllJudge = false
+            }
           }
-        })
-        if (targetTableIndex >= 0) {
-          this.createParams.tbInfos.splice(targetTableIndex, 1)
+          if (checkAllJudge) {
+            this.selectAllinPageInfo.selectAll = true
+          }
+        } else {
+          let targetTableIndex = -1
+          this.createParams.tbInfos.forEach((el, index) => {
+            if (el.tbName === table.tbName) {
+              targetTableIndex = index
+            }
+          })
+          if (targetTableIndex >= 0) {
+            this.createParams.tbInfos.splice(targetTableIndex, 1)
+          }
+          /*
+          this.selectAllinPageInfo.selectAll = false
+          this.createParams.tbInfos.forEach((infoTable, index) => {
+            let targetTable = this.tableList.find(listTable => {
+              return infoTable.tbName === listTable.tbName
+            })
+            this.selectTable(true, targetTable)
+          })
+          */
         }
       }
       console.log(this.createParams.tbInfos)
-    },
-    selectAllinDB () {
-      this.createParams.selectAll = true
-    },
-    clearSelection () {
-      this.createParams.selectAll = false
     },
     changeSearchParams () {
       // 清空tbInfos
@@ -237,6 +289,12 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
+      this.createParams.selectAll = this.selectAllinDBInfo.selectAll
+      this.createParams.exceptTables = this.exceptTables
+      console.log('selectAll', this.createParams.selectAll)
+      console.log('exceptTables', JSON.stringify(this.createParams.exceptTables))
+      console.log('tbInfos', JSON.stringify(this.createParams.tbInfos))
+      debugger
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
@@ -263,27 +321,32 @@ export default {
       handler: function (newParams) {
         this.getTableList(newParams).then(data => {
           // this.tableList = data.data // 测试用
-          this.tbCheckInfo.selectAll = false
-          if (this.createParams.tbInfos.length) {
-            for (let table of this.createParams.tbInfos) {
-              this.tableList.forEach(el => {
-                if (el.tbName === table.tbName) {
-                  el.select = true
-                }
-              })
-            }
+          if (this.selectAllinDBInfo.selectAll) {
+            this.selectAllinPage()
           }
           this.createParams.connId = this.searchParams.connId
         })
       },
       deep: true
     },
-    tbCheckInfo: {
+    selectAllinPageInfo: {
       handler: function (newInfo) {
         if (newInfo.selectAll) {
           this.selectAllinPage()
         } else {
           this.clearAllinPage()
+        }
+      },
+      deep: true
+    },
+    selectAllinDBInfo: {
+      handler: function (newInfo) {
+        if (newInfo.selectAll) {
+          this.exceptTables = []
+          this.selectAllinPageInfo.selectAll = true
+        } else {
+          this.exceptTables = []
+          this.selectAllinPageInfo.selectAll = false
         }
       },
       deep: true
