@@ -222,6 +222,8 @@ export default {
       this.createParams.selectAll = false
     },
     changeSearchParams () {
+      // 清空tbInfos
+      this.createParams.tbInfos = []
       for (let prop in this.filterForm) {
         if (this.filterForm.hasOwnProperty(prop)) {
           this.searchParams[prop] = this.filterForm[prop]
