@@ -1,16 +1,183 @@
-<template lang="html">
-  <div class="">
-    数据管理
+<template>
+  <div class="manage">
+    <div class="side">
+      <div class="dbSelect">
+        <Select style="width: 140px;" size="small" 
+          v-model="tbParams.pdbId" 
+          @on-change="selectDb">
+          <Option 
+            v-for="(db, index) in dbList" 
+            :key="db.pdbId" 
+            :value="db.pdbId">
+            {{ db.pdbName }}
+          </Option>
+        </Select>
+        <Button type="text" shape="circle" icon="refresh"></Button>
+      </div>
+      <Tree class="tree"
+        :data="tables"
+      ></Tree>
+    </div>
+    <div class="tbcontainer">
+      <Table class="table" size="small" border stripe
+        :columns="columns"
+        :data="tableList"></Table>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   data () {
-    return {}
+    return {
+      tbParams: {
+        pdbId: '',
+        pageSize: 10,
+        tbName: ''
+      },
+      tables: [
+        {
+          title: '',
+          children: []
+        }
+      ],
+      columns: [
+        {
+          type: 'index',
+          title: '序号',
+          width: 60
+        },
+        {
+          title: '表名',
+          key: 'tbName',
+          width: 120
+        },
+        {
+          title: '类型',
+          key: 'type',
+          width: 100
+        },
+        {
+          title: '占用空间',
+          key: 'space',
+          width: 120
+        },
+        {
+          title: '字段数',
+          key: 'fieldCount',
+          width: 120
+        },
+        {
+          title: '记录数',
+          key: 'totalRows',
+          width: 120
+        },
+        {
+          title: '分区字段',
+          key: 'qu',
+          width: 120
+        },
+        {
+          title: '分桶字段',
+          key: 'tong',
+          width: 120
+        },
+        {
+          title: '引擎',
+          key: 'engine',
+          width: 120
+        },
+        {
+          title: '创建用户',
+          key: 'user',
+          width: 120
+        },
+        {
+          title: '操作',
+          key: '',
+          width: 120,
+          align: 'center',
+          render: (h, params) => {
+            return h('Button', {
+              props: {
+                size: 'small',
+                type: 'primary'
+              }
+            }, '分析')
+          }
+        }
+      ],
+      tableList: [
+        {
+          tbName: 'ocr_task',
+          type: '外表',
+          space: 5000,
+          fieldCount: 12,
+          totalRows: 1000,
+          qu: 'age',
+          tong: 'name',
+          engine: 'parquet',
+          user: 'admin'
+        }
+      ]
+    }
+  },
+  computed: {
+    ...mapGetters({
+      dbList: 'dbList',
+      tbList: 'tbList'
+      // tableList
+    })
+  },
+  methods: {
+    ...mapActions({
+      getDBList: 'getDBList',
+      getTBList: 'getTBList'
+    }),
+    selectDb (pdbId) {
+      this.tbParams.pdbId = pdbId
+    }
+  },
+  watch: {
+    tbParams: {
+      handler: function (newParams) {
+        this.getTBList(newParams).then(data => {
+          this.tables[0].title = this.dbList.find(db => {
+            return db.pdbId === this.tbParams.pdbId
+          }).pdbName
+          this.tables[0].children.splice(0, this.tables[0].children.length)
+          for (let table of this.tbList) {
+            this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+          }
+        })
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.getDBList().then(data => {
+      this.tbParams.pdbId = this.dbList[0].pdbId
+    })
   }
 }
 </script>
 
-<style lang="css">
+<style lang="scss" scoped>
+  .side {
+    max-width: 170px;
+    text-align: left;
+  }
+  .dbSelect {
+    display: flex;
+    margin-top: 5px;
+    margin-left: 5px;
+    align-items: center;
+  }
+  .tree {
+    margin-left: 5px;
+    margin-bottom: 50px;
+  }
 </style>
+

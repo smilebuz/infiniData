@@ -54,10 +54,17 @@
       <div class="sqlpad__mainPad">
         <Tabs type="card" v-model="currentTabId" class="sqlpad__mainPad-editorPad">
           <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name" :name="tab.id">
-            <!--textarea :rows="sqlEditor.rows" v-model="tab.content" placeholder="请输入" class="sqlEditor" :id="tab.id"></textarea-->
-            <!--Input type="textarea" :rows="sqlEditor.rows" v-model="sqlEditor.content" placeholder="请输入..."></Input-->
-            <div :id="tab.id" class="sqlEditor" v-model='tab.content'></div>
+            <div :id="tab.id" class="sqlEditor"></div>
           </TabPane>
+          <Modal title="保存sql"
+            v-model="saveModal.showModal"
+            @on-ok="saveSql"
+            @on-cancel="cancelSave">
+            <Input size="small" 
+              v-model="saveModal.saveName"
+              @on-enter="saveSql"
+            ></Input>
+          </Modal>
         </Tabs>
         <p class="sqlpad__mainPad-sqlInfo" v-show="executeSql">
           运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
@@ -104,8 +111,7 @@ export default {
       },
       tables: [
         {
-          expand: true,
-          title: 'ocr',
+          title: '',
           children: [] // 树子节点
         }
       ],
@@ -139,31 +145,21 @@ export default {
           name: '保存',
           action: 'save',
           imgUrl: require('../assets/images/icon/save.png')
-        },
+        }
+        /*
         {
           name: '导出',
           action: 'export',
           imgUrl: require('../assets/images/icon/export.png')
         }
+        */
       ],
-      sqlTabs: [
-        {
-          id: 'sql-build',
-          name: '建表SQL',
-          content: ''
-        },
-        {
-          id: 'sql-bi',
-          name: 'BI SQL',
-          content: ''
-        },
-        {
-          id: 'sql-inc',
-          name: '增量SQL',
-          content: ''
-        }
-      ],
-      currentTabId: 'sql-build',
+      saveModal: {
+        showModal: false,
+        saveName: ''
+      },
+      sqlTabs: [],
+      currentTabId: '',
       sqlEditor: {
         rows: 5
       },
@@ -290,9 +286,12 @@ export default {
           let params = {
             sql: targetTab.editor.getValue()
           }
+          alert(params.sql)
+          /*
           this.runSql(params).then(data => {
             this.executeSql = true
           })
+          */
           break
         case 'stop':
 
@@ -309,7 +308,7 @@ export default {
           })
           break
         case 'save':
-
+          this.saveModal.showModal = true
           break
         case 'export':
 
@@ -318,10 +317,62 @@ export default {
           break
       }
     },
+    saveSql () {
+      console.log(this.saveModal.saveName)
+      // 在sessionStorage中保存 成功后在回调函数中关闭弹窗
+      let currentTab = this.sqlTabs.find(tab => {
+        return tab.id === this.currentTabId
+      })
+      currentTab.name = this.saveModal.saveName
+      currentTab.content = currentTab.editor.getValue()
+
+      let sessionTabs = JSON.parse(sessionStorage.getItem('sqlTabs'))
+      if (sessionTabs) {
+        let targetTab = sessionTabs.find(el => {
+          return el.id === currentTab.id
+        })
+        if (targetTab) {
+          // 保存现有tab
+          targetTab.name = currentTab.name
+          targetTab.content = currentTab.content
+          sessionStorage.setItem('sqlTabs', JSON.stringify(sessionTabs))
+          this.$nextTick(function () {
+            this.setBrace(currentTab)
+          })
+        } else {
+          // 保存新tab
+          sessionTabs.push({
+            name: currentTab.name,
+            content: currentTab.content,
+            id: currentTab.id
+          })
+          sessionStorage.setItem('sqlTabs', JSON.stringify(sessionTabs))
+          this.$nextTick(function () {
+            this.setBrace(currentTab)
+          })
+        }
+      } else {
+        // sessionTab为空 保存第一个tab
+        sessionStorage.setItem('sqlTabs', JSON.stringify([{
+          name: currentTab.name,
+          content: currentTab.content,
+          id: currentTab.id
+        }]))
+        // 重新渲染页面
+        this.$nextTick(function () {
+          this.setBrace(currentTab)
+        })
+      }
+      this.saveModal.showModal = false
+    },
+    cancelSave () {
+      this.saveModal.saveName = ''
+    },
     setBrace (newSqlTab) {
       updateCompletions(this.schemaInfo)
       let editor = ace.edit(newSqlTab.id)
       newSqlTab.editor = editor
+      newSqlTab.editor.setValue(newSqlTab.content)
       editor.getSession().setMode('ace/mode/sql')
       editor.setTheme('ace/theme/chrome')
       editor.setOptions({
@@ -354,14 +405,13 @@ export default {
     }
   },
   watch: {
-    /*
-    sqlTabs: function (newTabs) {
-      this.setBraces()
-    }
-    */
     tbParams: {
       handler: function (newParams) {
         this.getTBList(newParams).then(data => {
+          this.tables[0].children.splice(0, this.tables[0].children.length)
+          this.tables[0].title = this.dbList.find(db => {
+            return db.pdbId === this.tbParams.pdbId
+          }).pdbName
           // 填充this.tables.children 改变this.tbInfoParams
           for (let table of this.tbList) {
             this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
@@ -380,10 +430,28 @@ export default {
     }
   },
   mounted () {
-    this.setBraces()
     this.getDBList().then(data => {
       this.selectedpdbId = this.dbList[0].pdbId
     })
+    let sessionTabs = sessionStorage.getItem('sqlTabs')
+    if (sessionTabs) {
+      for (let tab of sessionTabs) {
+        this.sqlTabs.push(tab)
+      }
+      this.currentTabId = this.sqlTabs[0].id
+      this.setBraces()
+    } else {
+      let newSqlTab = {
+        id: 'sqlnew',
+        name: '新建语句',
+        content: ''
+      }
+      this.sqlTabs.push(newSqlTab)
+      this.currentTabId = newSqlTab.id
+      this.$nextTick(function () {
+        this.setBrace(newSqlTab)
+      })
+    }
   }
 }
 </script>

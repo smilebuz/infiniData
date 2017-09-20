@@ -439,9 +439,23 @@ export default {
           })
           break
         case 'run':
-          this.startTask({taskIds: this.selectedTaskIds}).then(data => {
-            this.getTaskList(this.searchParams)
-          })
+          let isRunnable = true
+          // 判断有没有非手动运行
+          for (let taskId of this.selectedTaskIds) {
+            let targetTask = this.taskList.find(task => {
+              return task.taskId === taskId
+            })
+            if (targetTask.scheduleMode !== 1) {
+              isRunnable = false
+            }
+          }
+          if (isRunnable) {
+            this.startTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams)
+            })
+          } else {
+            alert('选择任务中含有非手动运行任务, 请重新选择')
+          }
           break
         default:
           break

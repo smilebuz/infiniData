@@ -28,6 +28,20 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/apiManage': {
+        target: 'http://123.56.179.3:8889',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/apiManage': ''
+        }
+      },
+      '/apiHive': {
+        target: 'http://123.56.179.3:8889',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/apiHive': ''
+        }
+      },
       '/apiSchema': {
         target: 'http://192.168.1.69:8089',
         changeOrigin: true,
@@ -36,7 +50,6 @@ module.exports = {
         }
       },
       '/api': {
-        // target: 'http://123.56.179.3:8889',
         target: 'http://192.168.1.52:8888',
         changeOrigin: true,
         pathRewrite: {

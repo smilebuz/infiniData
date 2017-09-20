@@ -53,10 +53,14 @@ const Apilist = {
   'getOffExpDetailProgress': '/api/task/export/progress', // post
 
   // handle
-  'handledbList': '/api/hive/platformdb/all', // get
-  'handletbList': '/api/hive/platformdb/tbs', // get
-  'handletbInfo': '/api/hive/platformdb/tbinfo', // get
-  'handlerunSql': '/api/dataprocess/runsql' // post
+  'handledbList': '/apiHive/hive/platformdb/all', // get
+  'handletbList': '/apiHive/hive/platformdb/tbs', // get
+  'handletbInfo': '/apiHive/hive/platformdb/tbinfo', // get
+  'handlerunSql': '/api/dataprocess/runsql', // post
+
+  // manage
+  'manageQuery': '/apiManage/manage/tb/query', // post
+  'manageAnalysis': '/apiManage/manage/tb/analysis' // get
 }
 
 export const Api = ((apilist) => {
