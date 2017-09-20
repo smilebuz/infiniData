@@ -18,16 +18,18 @@
       </Form>
     </div>
     <div class="opbuttons">
-      <Button type="success" class="opbutton" icon="checkmark" size="small">
+      <Button type="success" class="opbutton" icon="checkmark" size="small"
+        @click="selectAllinPage">
         全选
       </Button>
-      <Button type="error" class="opbutton" icon="close" size="small">
+      <Button type="error" class="opbutton" icon="close" size="small"
+        @click="clearSelection">
         清空
       </Button>
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <Table border stripe :columns="columns" :data="tableList" class="table" size="small"></Table>
         <div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -53,7 +55,9 @@
             <Radio :label="1">手动</Radio>
             <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 200px;" v-model="createParams.scheduleCorn" transfer></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 200px;" transfer
+                v-model="createParams.scheduleCorn"
+                :steps="[1,1,1,1,10,10]"></DatePicker>
             </Radio>
             <Radio :label="-1">失效</Radio>
           </RadioGroup>
@@ -86,13 +90,45 @@ export default {
       },
       columns: [
         {
-          type: 'selection',
-          aling: 'center'
+          // type: 'selection',
+          align: 'center',
+          width: 60,
+          renderHeader: (h, params) => {
+            return h('Checkbox', {
+              props: {
+                size: 'small',
+                value: this.tbCheckInfo.selectAll
+              },
+              on: {
+                input: (checked) => {
+                  this.tbCheckInfo.selectAll = checked
+                }
+              }
+            })
+          },
+          render: (h, params) => {
+            let targetTable = this.tableList.find(el => {
+              console.log(params.row.tbName)
+              return params.row.tbName === el.tbName
+            })
+            return h('Checkbox', {
+              props: {
+                size: 'small',
+                value: targetTable.select
+              },
+              on: {
+                input: (checked) => {
+                  targetTable.select = checked
+                  this.selectTable(checked, params.row)
+                }
+              }
+            })
+          }
         },
         {
           type: 'index',
-          align: 'center',
-          title: '序号'
+          title: '序号',
+          width: 80
         },
         {
           title: '库名',
@@ -117,6 +153,9 @@ export default {
           key: 'priKey'
         }
       ],
+      tbCheckInfo: {
+        selectAll: false
+      },
       createParams: {
         connId: '',
         tbInfos: [],
@@ -125,7 +164,9 @@ export default {
         priority: 1,
         scheduleMode: '',
         scheduleCorn: '',
-        scheduleState: ''
+        scheduleState: '',
+        exceptTables: [],
+        selectAll: false
       }
     }
   },
@@ -133,7 +174,7 @@ export default {
     ...mapGetters({
       dataSources: 'dataSources',
       tableList: 'sourceTables',
-      pageInfo: 'sourcePageInfo',
+      pageInfo: 'sourceTablePageInfo',
       user: 'user'
     })
   },
@@ -143,8 +184,42 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffImpTask'
     }),
-    selectTable (selection) {
-      this.createParams.tbInfos = [...selection]
+    selectAllinPage () {
+      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
+      for (let table of this.tableList) {
+        table.select = true
+        this.createParams.tbInfos.push(table)
+      }
+      console.log(this.createParams.tbInfos)
+    },
+    clearAllinPage () {
+      for (let table of this.tableList) {
+        table.select = false
+      }
+      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
+      console.log(this.createParams.tbInfos)
+    },
+    selectTable (ischecked, table) {
+      if (ischecked) {
+        this.createParams.tbInfos.push(table)
+      } else {
+        let targetTableIndex = -1
+        this.createParams.tbInfos.forEach((el, index) => {
+          if (el.tbName === table.tbName) {
+            targetTableIndex = index
+          }
+        })
+        if (targetTableIndex >= 0) {
+          this.createParams.tbInfos.splice(targetTableIndex, 1)
+        }
+      }
+      console.log(this.createParams.tbInfos)
+    },
+    selectAllinDB () {
+      this.createParams.selectAll = true
+    },
+    clearSelection () {
+      this.createParams.selectAll = false
     },
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -186,8 +261,28 @@ export default {
       handler: function (newParams) {
         this.getTableList(newParams).then(data => {
           // this.tableList = data.data // 测试用
+          this.tbCheckInfo.selectAll = false
+          if (this.createParams.tbInfos.length) {
+            for (let table of this.createParams.tbInfos) {
+              this.tableList.forEach(el => {
+                if (el.tbName === table.tbName) {
+                  el.select = true
+                }
+              })
+            }
+          }
           this.createParams.connId = this.searchParams.connId
         })
+      },
+      deep: true
+    },
+    tbCheckInfo: {
+      handler: function (newInfo) {
+        if (newInfo.selectAll) {
+          this.selectAllinPage()
+        } else {
+          this.clearAllinPage()
+        }
       },
       deep: true
     }
@@ -196,6 +291,7 @@ export default {
     this.getDataSource().then(data => {
       this.createParams.user = this.user.name
       this.filterForm.connId = this.dataSources[0].connId
+      // 初始化createParams
       this.changeSearchParams()
     })
   }

@@ -32,14 +32,14 @@
       <div class="tbInfo" v-show="radios.partitions.checked">
         <div class="tbInfo__title">
           <div class="tbInfoText">名称</div>
-          <div class="tbInfoText">个数</div>
+          <div class="tbInfoText">类型</div>
         </div>
         <div v-for="(partition, index) in partitions" :key="partition.partitionName" class="tbInfo__content">
           <div class="tbInfoText">
             {{ partition.partitionName }}
           </div>
           <div class="tbInfoText">
-            {{ partition.partitionNum }}
+            {{ partition.partitionType }}
           </div>
         </div>
       </div>
@@ -75,8 +75,8 @@
           </TabPane>
           <TabPane label="日志">
             <div class="logpad">
-              <p v-for="(log, index) in logs" class="logpad__log">
-                {{ log.content }}
+              <p class="logpad__log">
+                {{ log }}
               </p>
             </div>
           </TabPane>
@@ -223,20 +223,7 @@ export default {
         }
       ],
       dataList: [],
-      logs: [
-        {
-          content: '2017.09.09 12:20:20  运行正常'
-        },
-        {
-          content: '2017.09.09 12:20:20  运行正常'
-        },
-        {
-          content: '2017.09.09 12:20:20  运行正常'
-        },
-        {
-          content: '2017.09.09 13:20:20  出现警告信息：SQL语法错误，请重新编辑!'
-        }
-      ]
+      log: '2017.09.09 12:20:20  运行正常'
     }
   },
   computed: {

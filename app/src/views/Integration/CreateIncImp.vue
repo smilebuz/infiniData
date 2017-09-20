@@ -339,21 +339,6 @@ export default {
       this.changeSearchParams()
     })
   }
-  /*
-  mounted () {
-    // 测试用 调试时取消
-    for (let table of this.tableList) {
-      this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
-    }
-    // this.tableParams[0].incField = 'name' 测试render v-model
-    // 保留
-    this.getDataSource().then(data => {
-      this.createParams.user = this.user.name
-      this.filterForm.connId = data.dataSources[0].connId
-      this.changeSearchParams()
-    })
-  }
-  */
 }
 </script>
 
