@@ -169,21 +169,21 @@ export default {
           tbl_user: [
             {
               column_name: 'user_id',
-              data_type: 'int',
-              table_name: 'tbl_user',
-              table_schema: 'fuzzy',
-              table_type: 'Tables',
-              is_nullable: 'no'
+              // data_type: 'int',
+              table_name: 'tbl_user'
+              // table_schema: 'fuzzy',
+              // table_type: 'Tables',
+              // is_nullable: 'no'
             }
           ],
           tbl_log: [
             {
               column_name: 'id',
-              data_type: 'int',
-              table_name: 'tbl_log',
-              table_schema: 'fuzzy',
-              table_type: 'Tables',
-              is_nullable: 'no'
+              // data_type: 'int',
+              table_name: 'tbl_log'
+              // table_schema: 'fuzzy',
+              // table_type: 'Tables',
+              // is_nullable: 'no'
             }
           ]
         }
@@ -386,6 +386,7 @@ export default {
       for (let tab of this.sqlTabs) {
         let editor = ace.edit(tab.id)
         tab.editor = editor
+        tab.editor.setValue(tab.content)
         editor.getSession().setMode('ace/mode/sql')
         editor.setTheme('ace/theme/chrome')
         editor.setOptions({
@@ -433,13 +434,15 @@ export default {
     this.getDBList().then(data => {
       this.selectedpdbId = this.dbList[0].pdbId
     })
-    let sessionTabs = sessionStorage.getItem('sqlTabs')
+    let sessionTabs = JSON.parse(sessionStorage.getItem('sqlTabs'))
     if (sessionTabs) {
       for (let tab of sessionTabs) {
         this.sqlTabs.push(tab)
       }
       this.currentTabId = this.sqlTabs[0].id
-      this.setBraces()
+      this.$nextTick(function () {
+        this.setBraces()
+      })
     } else {
       let newSqlTab = {
         id: 'sqlnew',
