@@ -114,17 +114,6 @@ export const polling = (pollingUrl, params, update, ref) => {
   return axios.post(Apilist[pollingUrl], params)
     .then(data => {
       if (data.data.response === 1) {
-        /*
-        if (data.data.progress > 0 && data.data.progress < 100) {
-          let timer = setTimeout(() => {
-            polling(pollingUrl, params, update, ref)
-          }, 5000)
-
-          if (ref) {
-            ref.timer = timer
-          }
-        }
-        */
         if (!data.data.length) {
           let timer = setTimeout(() => {
             polling(pollingUrl, params, update, ref)

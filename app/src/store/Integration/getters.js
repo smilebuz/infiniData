@@ -65,7 +65,7 @@ export default {
     return state.offexport.detail.detailList
   },
   offExpDetailPollingList (state) {
-    return state.offexport.detail.pollingLis
+    return state.offexport.detail.pollingList
   },
   offExpDetailInfo (state) {
     return state.offexport.detail.detailInfo
