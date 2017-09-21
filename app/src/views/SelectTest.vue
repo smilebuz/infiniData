@@ -47,6 +47,8 @@ export default {
         pageNum: 1 // 测试用 只有pageNum
       },
       selectNames: [],
+      selectedPersons: [],
+      selectAllFlag: false,
       columns: [
         {
           type: 'selection',
@@ -79,15 +81,53 @@ export default {
       getPersonList: 'getTestPersonList'
     }),
     selectAll (selected) {
+      this.selectAllFlag = selected
       this.personList.forEach(person => {
         person._disabled = selected
+        person._checked = selected
       })
     },
     selectPerson (selection) {
-      this.selectNames.splice(0, this.selectNames.length)
+      // 正向查找
       for (let person of selection) {
-        this.selectNames.push(person.name)
+        let targetPerson = this.selectedPersons.find(el => {
+          return el.name === person.name
+        })
+        if (!targetPerson) {
+          this.selectedPersons.push(person)
+        }
+        /*
+        if (this.selectNames.indexOf(person.name) < 0) {
+          this.selectNames.push(person.name)
+        }
+        */
       }
+
+      // 没被选择的
+      let unSelection = []
+      for (let person of this.personList) {
+        let targetPerson = selection.find(el => {
+          return el.name === person.name
+        })
+        if (!targetPerson) {
+          unSelection.push(person)
+        }
+      }
+
+      // 去除没被选择的
+      for (let person of unSelection) {
+        this.selectedPersons = this.selectedPersons.filter(el => {
+          return el.name !== person.name
+        })
+      }
+      /*
+      for (let person of unSelection) {
+        let targetIndex = this.selectNames.indexOf(person.name)
+        if (targetIndex >= 0) {
+          this.selectNames.splice(targetIndex, 1)
+        }
+      }
+      */
     },
     changePageSize (pageSize) {
 
@@ -96,14 +136,24 @@ export default {
       this.searchParams.pageNum = pageNum
     },
     submitCreateParams () {
+      console.log(JSON.stringify(this.selectedPersons))
     }
   },
   watch: {
     searchParams: {
       handler: function (newParams) {
         this.getPersonList(newParams).then(data => {
+          this.selectAll(this.selectAllFlag)
           this.personList.forEach(person => {
+            /*
             if (this.selectNames.indexOf(person.name) >= 0) {
+              person._checked = true
+            }
+            */
+            let targetPerson = this.selectedPersons.find(el => {
+              return el.name === person.name
+            })
+            if (targetPerson) {
               person._checked = true
             }
           })
@@ -114,7 +164,6 @@ export default {
   },
   created () {
     this.getPersonList(this.searchParams).then(data => {
-      console.log(JSON.stringify(this.personList))
     })
   }
 }
