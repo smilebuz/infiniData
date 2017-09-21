@@ -29,7 +29,11 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
+      <Table border stripe class="table" size="default"
+        :columns="columns"
+        :data="taskList"
+        @on-selection-change="selectTask"
+      ></Table>
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">分片设置</span>
@@ -55,8 +59,13 @@
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+        <Page show-sizer show-elevator
+          :total="pageInfo.totalCount"
+          :current="pageInfo.currentPage"
+          :page-size="pageInfo.pageSize"
+          @on-change="changePageNum"
+          @on-page-size-change="changePageSize"
+        ></Page>
       </div>
     </div>
   </div>
@@ -514,13 +523,19 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTaskList(newParams)
+        this.getTaskList(newParams).then(data => {
+          this.taskList.forEach(task => {
+            if (this.selectedTaskIds.indexOf(task.taskId) >= 0) {
+              task._checked = true
+            }
+          })
+        })
       },
       deep: true
     }
   },
-  mounted () {
-    this.getTaskList(this.searchParams)
+  created () {
+    this.getTaskList(this.searchParams).then(data => {})
   },
   beforeDestroy () {
     this.stopPolling()

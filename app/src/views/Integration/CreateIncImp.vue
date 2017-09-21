@@ -17,14 +17,6 @@
         </FormItem>
       </Form>
     </div>
-    <div class="opbuttons">
-      <Button type="success" class="opbutton" icon="checkmark" size="small">
-        全选
-      </Button>
-      <Button type="error" class="opbutton" icon="close" size="small">
-        清空
-      </Button>
-    </div>
     <div class="main">
       <div class="createPanel">
         <Table class="table" size="small" border stripe

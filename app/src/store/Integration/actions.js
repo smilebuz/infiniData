@@ -4,9 +4,10 @@ import type from '../mutation-type'
 const actions = {
   getOffImpList ({ commit, getters }, params) {
     actions.stopOffImpPolling({ commit, getters })
-    Api.fullQuery.post(params).then(data => {
+    return Api.fullQuery.post(params).then(data => {
       commit(type.SET_OFFIMP_LIST, data)
-      actions.pollingOffImp({ commit, getters })
+      // actions.pollingOffImp({ commit, getters })
+      return Promise.resolve(data)
     })
   },
   pollingOffImp ({ commit, getters }) {

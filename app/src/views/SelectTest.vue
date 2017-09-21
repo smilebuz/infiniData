@@ -1,25 +1,24 @@
 <template>
   <div class="selecttest">
 		<div class="opbuttons">
-      <Button type="success" class="opbutton" icon="checkmark" size="small"
-        @click="changeSelectAllinDBStatus(true)">
+      <Button type="success" class="opbutton" icon="checkmark" size="small" @click="selectAll(true)">
         全选
       </Button>
-      <Button type="error" class="opbutton" icon="close" size="small"
-        @click="changeSelectAllinDBStatus(false)">
+      <Button type="error" class="opbutton" icon="close" size="small" @click="selectAll(false)">
         清空
       </Button>
     </div>
 		<div class="main">
       <Table class="table" size="small" border stripe
-			:columns="columns"
-			:data="personList"
+			  :columns="columns"
+			  :data="personList"
+        @on-selection-change="selectPerson"
       ></Table>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page show-sizer show-elevator
+        <Page show-elevator
           :total="pageInfo.totalCount"
           :current="pageInfo.currentPage"
           :page-size="pageInfo.pageSize"
@@ -45,44 +44,13 @@ export default {
   data () {
     return {
       searchParams: {
-        pageNum: 1
+        pageNum: 1 // 测试用 只有pageNum
       },
-      createParams: {
-        tbNames: [],
-        exceptTbNames: []
-      },
+      selectNames: [],
       columns: [
         {
-          width: 80,
-          renderHeader: (h, params) => {
-            return h('Checkbox', {
-              props: {
-                size: 'small',
-                value: this.pageSelectInfo.selectAll
-              },
-              on: {
-                input: (isChecked) => {
-                  this.pageSelectInfo.selectAll = isChecked
-                }
-              }
-            })
-          },
-          render: (h, params) => {
-            let targetPerson = this.personList.find(person => {
-              return person.name === params.row.name
-            })
-            return h('Checkbox', {
-              props: {
-                size: 'small',
-                value: targetPerson.select
-              },
-              on: {
-                input: (isChecked) => {
-                  targetPerson.select = isChecked
-                }
-              }
-            })
-          }
+          type: 'selection',
+          width: 60
         },
         {
           type: 'index',
@@ -97,13 +65,7 @@ export default {
           title: '年龄',
           key: 'age'
         }
-      ],
-      dbSelectInfo: {
-        selectAll: false
-      },
-      pageSelectInfo: {
-        selectAll: false
-      }
+      ]
     }
   },
   computed: {
@@ -116,8 +78,16 @@ export default {
     ...mapActions({
       getPersonList: 'getTestPersonList'
     }),
-    changeSelectAllinDBStatus (isChecked) {
-      this.dbSelectInfo.selectAll = isChecked
+    selectAll (selected) {
+      this.personList.forEach(person => {
+        person._disabled = selected
+      })
+    },
+    selectPerson (selection) {
+      this.selectNames.splice(0, this.selectNames.length)
+      for (let person of selection) {
+        this.selectNames.push(person.name)
+      }
     },
     changePageSize (pageSize) {
 
@@ -131,14 +101,21 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getPersonList(newParams)
+        this.getPersonList(newParams).then(data => {
+          this.personList.forEach(person => {
+            if (this.selectNames.indexOf(person.name) >= 0) {
+              person._checked = true
+            }
+          })
+        })
       },
       deep: true
     }
   },
-  mounted () {
-    this.getPersonList(this.searchParams)
-    this.pageSelectInfo.selectAll = true
+  created () {
+    this.getPersonList(this.searchParams).then(data => {
+      console.log(JSON.stringify(this.personList))
+    })
   }
 }
 </script>
