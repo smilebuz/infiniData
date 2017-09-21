@@ -43,6 +43,10 @@ export default {
         {
           name: '运维管理',
           path: '/Op'
+        },
+        {
+          name: '全选测试',
+          path: '/SelectTest'
         }
       ]
     }

@@ -57,7 +57,7 @@
               <span>定时</span>
               <DatePicker type="datetime" size="small" style="width: 200px;" transfer
                 v-model="createParams.scheduleCorn"
-                :steps="[1,1,1,1,10,10]"></DatePicker>
+              ></DatePicker>
             </Radio>
             <Radio :label="-1">失效</Radio>
           </RadioGroup>
@@ -102,6 +102,11 @@ export default {
               on: {
                 input: (checked) => {
                   this.selectAllinPageInfo.selectAll = checked
+                  if (checked) {
+                    this.selectAllinPage()
+                  } else {
+                    this.clearAllinPage()
+                  }
                 }
               }
             })
@@ -132,14 +137,12 @@ export default {
         },
         {
           title: '库名',
-          key: 'dbName'
-          /*
+          key: 'dbName',
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
             }).dbName)
           }
-          */
         },
         {
           title: '表名',
@@ -174,7 +177,8 @@ export default {
         // exceptTables: [],
         selectAll: false // 按钮全选
       },
-      exceptTables: [],
+      exceptTables: []
+      /*
       tableList: [
         {
           dbName: 'informix',
@@ -191,12 +195,13 @@ export default {
           priKey: 'name'
         }
       ]
+      */
     }
   },
   computed: {
     ...mapGetters({
       dataSources: 'dataSources',
-      // tableList: 'sourceTables',
+      tableList: 'sourceTables',
       pageInfo: 'sourceTablePageInfo',
       user: 'user'
     })
@@ -249,6 +254,7 @@ export default {
           }
           if (checkAllJudge) {
             this.selectAllinPageInfo.selectAll = true
+            // this.selectAllinPage()
           }
         } else {
           let targetTableIndex = -1
@@ -260,6 +266,7 @@ export default {
           if (targetTableIndex >= 0) {
             this.createParams.tbInfos.splice(targetTableIndex, 1)
           }
+          this.selectAllinPageInfo.selectAll = false
           /*
           this.selectAllinPageInfo.selectAll = false
           this.createParams.tbInfos.forEach((infoTable, index) => {
@@ -323,12 +330,34 @@ export default {
           // this.tableList = data.data // 测试用
           if (this.selectAllinDBInfo.selectAll) {
             this.selectAllinPage()
+          } else {
+            this.selectAllinPageInfo.selectAll = false
+            let checkAllJudge = true
+            if (this.createParams.tbInfos.length) {
+              for (let table of this.createParams.tbInfos) {
+                let targetTable = this.tableList.find(el => {
+                  return el.tbName === table.tbName
+                })
+                debugger
+                if (targetTable) {
+                  targetTable.select = true
+                } else {
+                  checkAllJudge = false
+                }
+              }
+            } else {
+              checkAllJudge = false
+            }
+            if (checkAllJudge) {
+              this.selectAllinPageInfo.selectAll = true
+            }
           }
           this.createParams.connId = this.searchParams.connId
         })
       },
       deep: true
     },
+    /*
     selectAllinPageInfo: {
       handler: function (newInfo) {
         if (newInfo.selectAll) {
@@ -339,14 +368,17 @@ export default {
       },
       deep: true
     },
+    */
     selectAllinDBInfo: {
       handler: function (newInfo) {
         if (newInfo.selectAll) {
           this.exceptTables = []
           this.selectAllinPageInfo.selectAll = true
+          // this.selectAllinPage()
         } else {
           this.exceptTables = []
           this.selectAllinPageInfo.selectAll = false
+          // this.clearAllinPage()
         }
       },
       deep: true

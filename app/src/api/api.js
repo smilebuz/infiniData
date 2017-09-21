@@ -60,7 +60,10 @@ const Apilist = {
 
   // manage
   'manageQuery': '/apiManage/manage/tb/query', // post
-  'manageAnalysis': '/apiManage/manage/tb/analysis' // get
+  'manageAnalysis': '/apiManage/manage/tb/analysis', // get
+
+  // selecttest
+  'selectTest': '/apiManage/select/test'
 }
 
 export const Api = ((apilist) => {
