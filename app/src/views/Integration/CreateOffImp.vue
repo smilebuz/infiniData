@@ -55,7 +55,9 @@
             <Radio :label="1">手动</Radio>
             <Radio :label="2">
               <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 200px;" v-model="createParams.scheduleCorn" transfer></DatePicker>
+              <DatePicker type="datetime" size="small" style="width: 200px;" transfer
+                v-model="createParams.scheduleCorn"
+              ></DatePicker>
             </Radio>
             <Radio :label="-1">失效</Radio>
           </RadioGroup>
@@ -251,7 +253,6 @@ export default {
     display: flex;
   }
   .setting {
-    flex-grow: 1;
     text-align: left;
   }
   .btncontainer {

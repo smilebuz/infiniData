@@ -18,10 +18,12 @@
       </Form>
     </div>
     <div class="opbuttons">
-      <Button type="success" class="opbutton" icon="checkmark" size="small">
+      <Button type="success" class="opbutton" icon="checkmark" size="small"
+        @click="selectAllinDB(true)">
         全选
       </Button>
-      <Button type="error" class="opbutton" icon="close" size="small">
+      <Button type="error" class="opbutton" icon="close" size="small"
+        @click="selectAllinDB(false)">
         清空
       </Button>
     </div>
@@ -145,8 +147,10 @@ export default {
         tbInfos: [],
         scheduleMode: 0,
         scheduleState: '',
-        scheduleCorn: ''
+        scheduleCorn: '',
+        selectAll: false
       },
+      selectAllFlag: false,
       scheduleCornTiming: '',
       scheduleCornPeriod: ''
     }
@@ -165,11 +169,38 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffExpTask'
     }),
+    selectAllinDB (selected) {
+      this.selectAllFlag = selected
+      this.tableList.forEach(table => {
+        table._checked = selected
+        table._disabled = selected
+      })
+    },
     selectTable (selection) {
-      this.createParams.tbInfos.splice(0, this.createParams.tbInfos.length)
-      for (let table of selection) {
-        this.createParams.tbInfos.push(table)
+      selection.forEach(table => {
+        let targetTable = this.createParams.tbInfos.find(el => {
+          return el.tbName === table.tbName
+        })
+        if (!targetTable) {
+          this.createParams.tbInfos.push(table)
+        }
+      })
+
+      let unSelection = []
+      for (let table of this.tableList) {
+        let targetTable = selection.find(el => {
+          return el.tbName === table.tbName
+        })
+        if (!targetTable) {
+          unSelection.push(table)
+        }
       }
+
+      unSelection.forEach(table => {
+        this.createParams.tbInfos = this.createParams.tbInfos.filter(el => {
+          return el.tbName !== table.tbName
+        })
+      })
     },
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -185,6 +216,7 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
+      this.createParams.selectAll = this.selectAllFlag
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
@@ -213,7 +245,15 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTableList(newParams)
+        this.getTableList(newParams).then(data => {
+          this.createParams.connId = this.searchParams.connId
+          this.selectAllinDB(this.selectAllFlag)
+          this.tableList.forEach(table => {
+            if (this.selectedTbNames.indexOf(table.tbName) >= 0) {
+              table._checked = true
+            }
+          })
+        })
       },
       deep: true
     }
