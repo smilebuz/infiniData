@@ -66,7 +66,15 @@ const Apilist = {
   'selectTest': '/apiManage/select/test', // get
 
   // op
-  'logQuery': '/api/optionManage/log/query' // post
+  'logQuery': '/api/optionManage/log/query', // post
+  'userQuery': '/api/optionManage/user/query', // post
+  'deleteUser': '/api/optionManage/user/delete', // post
+  'createUser': '/api/optionManage/user/create', // post
+  'editUser': '/api/optionManage/user/edit', // post
+  'resourceQuery': '/api/optionManage/config/query', // post
+  'deleteResource': '/api/optionManage/config/delete', // post
+  'createResource': '/api/optionManage/config/create', // post
+  'editResource': '/api/optionManage/config/edit' // post
 }
 
 export const Api = ((apilist) => {

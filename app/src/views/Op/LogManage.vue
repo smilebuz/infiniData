@@ -123,13 +123,13 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getLogList(newParams)
+        this.getLogList(newParams).then(data => {})
       },
       deep: true
     }
   },
   mounted () {
-    this.getLogList(this.searchParams)
+    this.getLogList(this.searchParams).then(data => {})
   }
 }
 </script>

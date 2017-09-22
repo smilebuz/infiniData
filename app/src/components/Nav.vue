@@ -42,7 +42,7 @@ export default {
         },
         {
           name: '运维管理',
-          path: '/Op'
+          path: '/Op/LogManage'
         },
         {
           name: '全选测试',

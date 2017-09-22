@@ -8,5 +8,23 @@ export default {
         state.log.pageInfo[prop] = data[prop]
       }
     }
+  },
+
+  [type.SET_USER_LIST] (state, data) {
+    state.usermanage.userList = data.data
+    for (let prop in state.usermanage.pageInfo) {
+      if (state.usermanage.hasOwnProperty(prop)) {
+        state.usermanage.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+
+  [type.SET_RESOURCE_LIST] (state, data) {
+    state.resource.resourceList = data.data
+    for (let prop in state.resource.pageInfo) {
+      if (state.resource.hasOwnProperty(prop)) {
+        state.resource.pageInfo[prop] = data[prop]
+      }
+    }
   }
 }

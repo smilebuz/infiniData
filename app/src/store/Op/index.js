@@ -12,6 +12,24 @@ export default {
         totalCount: -1,
         totalSize: -1
       }
+    },
+    usermanage: {
+      userList: [],
+      pageInfo: {
+        pageSize: -1,
+        pageNum: -1,
+        totalCount: -1,
+        totalSize: -1
+      }
+    },
+    resource: {
+      resourceList: [],
+      pageInfo: {
+        pageSize: -1,
+        pageNum: -1,
+        totalCount: -1,
+        totalSize: -1
+      }
     }
   },
   actions,
