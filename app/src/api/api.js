@@ -63,7 +63,10 @@ const Apilist = {
   'manageAnalysis': '/apiManage/manage/tb/analysis', // get
 
   // selecttest
-  'selectTest': '/apiManage/select/test'
+  'selectTest': '/apiManage/select/test', // get
+
+  // op
+  'logQuery': '/api/optionManage/log/query' // post
 }
 
 export const Api = ((apilist) => {

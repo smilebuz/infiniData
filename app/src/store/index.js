@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import Integration from './Integration'
 import Handle from './Handle'
 import User from './User'
+import Op from './Op'
 
 import SelectTest from './SelectTest'
 
@@ -14,6 +15,8 @@ export default new Vuex.Store({
     Integration,
     Handle,
     User,
+    Op,
+
     SelectTest
   }
 })

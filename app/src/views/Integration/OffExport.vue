@@ -18,7 +18,7 @@
             </Option>
           </Select>
         </FormItem>
-        <FormItem class="form__item">
+        <FormItem class="form__item form__item-button">
           <Button type="primary" @click="changeSearchParams">筛选</Button>
         </FormItem>
       </Form>

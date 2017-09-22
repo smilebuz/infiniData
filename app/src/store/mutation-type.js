@@ -37,5 +37,8 @@ export default {
   HANDLE_RUN_SQL: 'HANDLE_RUN_SQL',
 
   // 全选测试
-  SELECT_TEST: 'SELECT_TEST'
+  SELECT_TEST: 'SELECT_TEST',
+
+  // 运维中心
+  SET_LOG_LIST: 'SET_LOG_LIST'
 }

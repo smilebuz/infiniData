@@ -23,20 +23,20 @@ export default {
         {
           name: '日志管理',
           path: '/Op/LogManage',
-          imgUrl: require('../assets/images/icon/menu1.png'),
-          imgUrlBG: require('../assets/images/icon/menu01.png')
+          imgUrl: require('../assets/images/icon/log.png'),
+          imgUrlBG: require('../assets/images/icon/logbg.png')
         },
         {
           name: '用户管理',
           path: '/Op/UserManage',
-          imgUrl: require('../assets/images/icon/menu2.png'),
-          imgUrlBG: require('../assets/images/icon/menu02.png')
+          imgUrl: require('../assets/images/icon/user.png'),
+          imgUrlBG: require('../assets/images/icon/userbg.png')
         },
         {
           name: '系统资源',
           path: '/Op/SystemResource',
-          imgUrl: require('../assets/images/icon/menu3.png'),
-          imgUrlBG: require('../assets/images/icon/menu03.png')
+          imgUrl: require('../assets/images/icon/resource.png'),
+          imgUrlBG: require('../assets/images/icon/resourcebg.png')
         }
       ]
     }

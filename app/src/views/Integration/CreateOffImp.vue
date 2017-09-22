@@ -12,7 +12,7 @@
         <FormItem prop="tables" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tables"></Input>
         </FormItem>
-        <FormItem class="form__item">
+        <FormItem class="form__item form__item-button">
           <Button type="primary" @click="changeSearchParams">查询</Button>
         </FormItem>
       </Form>
@@ -32,7 +32,8 @@
         <Table border stripe class="table" size="small"
           :columns="columns"
           :data="tableList"
-          @on-selection-change="selectTable"></Table>
+          @on-selection-change="selectTable"
+        ></Table>
         <div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -143,7 +144,6 @@ export default {
         scheduleState: '',
         selectAll: false
       },
-      selectedTbNames: [],
       selectAllFlag: false
     }
   },
@@ -170,30 +170,30 @@ export default {
       })
     },
     selectTable (selection) {
-      for (let table of selection) {
+      selection.forEach(table => {
         let targetTable = this.createParams.tbInfos.find(el => {
           return el.tbName === table.tbName
         })
         if (!targetTable) {
           this.createParams.tbInfos.push(table)
         }
-      }
+      })
 
       let unSelection = []
-      for (let table of this.tableList) {
+      this.tableList.forEach(table => {
         let targetTable = selection.find(el => {
           return el.tbName === table.tbName
         })
         if (!targetTable) {
           unSelection.push(table)
         }
-      }
+      })
 
-      for (let table of unSelection) {
+      unSelection.forEach(table => {
         this.createParams.tbInfos = this.createParams.tbInfos.filter(el => {
           return el.tbName !== table.tbName
         })
-      }
+      })
     },
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -226,19 +226,16 @@ export default {
         default:
           break
       }
-      console.log(JSON.stringify(this.createParams.tbInfos))
-      /*
+      // console.log(JSON.stringify(this.createParams.tbInfos))
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffImport')
       })
-      */
     }
   },
   watch: {
     searchParams: {
       handler: function (newParams) {
         this.getTableList(newParams).then(data => {
-          // this.tableList = data.data // 测试用
           this.createParams.connId = this.searchParams.connId
           this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
@@ -246,7 +243,6 @@ export default {
               return el.tbName === table.tbName
             })
             if (targetTable) {
-              debugger
               table._checked = true
             }
           })

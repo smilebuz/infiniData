@@ -3,7 +3,7 @@
     <div class="form-inline">
       <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
         <FormItem prop="connId" label="数据源" class="form__item">
-          <Select v-model="filterForm.connId" placeholder="请选择">
+          <Select v-model="filterForm.connId" placeholder="请选择" style="width:120px;">
             <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
               {{ source.dbName }}
             </Option>
@@ -12,7 +12,7 @@
         <FormItem prop="tbName" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tables"></Input>
         </FormItem>
-        <FormItem class="form__item">
+        <FormItem class="form__item form__item-button">
           <Button type="primary" @click="changeSearchParams">查询</Button>
         </FormItem>
       </Form>
@@ -29,13 +29,23 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <Table border stripe class="table" size="small"
+          :columns="columns"
+          :data="tableList"
+          @on-selection-change="selectTable"
+        ></Table>
         <div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
           </div>
-          <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-          @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+          <Page show-sizer show-elevator
+            :total="pageInfo.totalCount"
+            :current="pageInfo.currentPage"
+            :page-size="pageInfo.pageSize"
+            :page-size-opts="pageopts"
+            @on-change="changePageNum"
+            @on-page-size-change="changePageSize"
+          ></Page>
         </div>
       </div>
       <div class="setting">
@@ -159,7 +169,7 @@ export default {
     ...mapGetters({
       dataSources: 'dataSources',
       tableList: 'sourceTables',
-      pageInfo: 'sourcePageInfo',
+      pageInfo: 'sourceTablePageInfo',
       user: 'user'
     })
   },
@@ -237,6 +247,7 @@ export default {
         default:
           break
       }
+      // console.log(JSON.stringify(this.createParams.tbInfos))
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffExport')
       })
@@ -249,9 +260,14 @@ export default {
           this.createParams.connId = this.searchParams.connId
           this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
-            if (this.selectedTbNames.indexOf(table.tbName) >= 0) {
-              table._checked = true
-            }
+            this.tableList.forEach(table => {
+              let targetTable = this.createParams.tbInfos.find(el => {
+                return el.tbName === table.tbName
+              })
+              if (targetTable) {
+                table._checked = true
+              }
+            })
           })
         })
       },
