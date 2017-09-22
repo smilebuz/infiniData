@@ -10,7 +10,7 @@ export default {
         pageSize: -1,
         pageNum: -1,
         totalCount: -1,
-        totalSize: -1
+        totalPage: -1
       }
     },
     usermanage: {
@@ -19,7 +19,7 @@ export default {
         pageSize: -1,
         pageNum: -1,
         totalCount: -1,
-        totalSize: -1
+        totalPage: -1
       }
     },
     resource: {
@@ -28,7 +28,7 @@ export default {
         pageSize: -1,
         pageNum: -1,
         totalCount: -1,
-        totalSize: -1
+        totalPage: -1
       }
     }
   },

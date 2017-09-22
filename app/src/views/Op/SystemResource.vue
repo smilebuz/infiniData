@@ -127,6 +127,8 @@ export default {
         {
           title: '操作',
           key: '',
+          align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('Button', {
               props: {
@@ -134,7 +136,7 @@ export default {
                 type: 'primary'
               },
               on: {
-                click: (params) => {
+                click: () => {
                   this.openEditModal(params.row)
                 }
               }

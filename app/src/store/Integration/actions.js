@@ -6,7 +6,7 @@ const actions = {
     actions.stopOffImpPolling({ commit, getters })
     return Api.fullQuery.post(params).then(data => {
       commit(type.SET_OFFIMP_LIST, data)
-      // actions.pollingOffImp({ commit, getters })
+      actions.pollingOffImp({ commit, getters })
       return Promise.resolve(data)
     })
   },

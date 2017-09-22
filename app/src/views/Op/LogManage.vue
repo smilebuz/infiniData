@@ -53,8 +53,8 @@ export default {
       searchParams: {
         info: '',
         logLevel: '',
-        pageNum: '',
-        pageSize: '',
+        pageNum: 1,
+        pageSize: 10,
         orderBy: 'id',
         sort: 'desc'
       },

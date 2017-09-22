@@ -278,6 +278,69 @@ export default {
     renderOperationButtons (h, params) {
       switch (params.row.status) {
         case 1:
+        case 5:
+          if (params.row.scheduleMode === 1) {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    let taskIds = [params.row.taskId]
+                    this.startTask({taskIds: taskIds})
+                  }
+                }
+              }, '启动'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.openEditModal(params.row)
+                  }
+                }
+              }, '编辑')
+            ])
+          } else {
+            return h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.openEditModal(params.row)
+                }
+              }
+            }, '编辑')
+          }
+        case 2:
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.stopTask({taskId: params.row.taskId}).then(data => {
+                    this.getTaskList(this.searchParams)
+                  })
+                }
+              }
+            }, '停止')
+          ])
+        case 99:
           return h('div', [
             h('Button', {
               props: {
@@ -289,10 +352,10 @@ export default {
               },
               on: {
                 click: () => {
-                  console.log(params.row.status)
+                  this.restartTask({taskId: params.row.taskId})
                 }
               }
-            }, '下载'),
+            }, '重启'),
             h('Button', {
               props: {
                 type: 'primary',
@@ -306,19 +369,7 @@ export default {
             }, '编辑')
           ])
         default:
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.openEditModal(params.row)
-                }
-              }
-            }, '编辑')
-          ])
+          return h('div', {})
       }
     },
     operateTask (opType) {

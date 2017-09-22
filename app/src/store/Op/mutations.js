@@ -4,7 +4,7 @@ export default {
   [type.SET_LOG_LIST] (state, data) {
     state.log.logList = data.data
     for (let prop in state.log.pageInfo) {
-      if (state.log.hasOwnProperty(prop)) {
+      if (state.log.pageInfo.hasOwnProperty(prop)) {
         state.log.pageInfo[prop] = data[prop]
       }
     }
@@ -13,7 +13,7 @@ export default {
   [type.SET_USER_LIST] (state, data) {
     state.usermanage.userList = data.data
     for (let prop in state.usermanage.pageInfo) {
-      if (state.usermanage.hasOwnProperty(prop)) {
+      if (state.usermanage.pageInfo.hasOwnProperty(prop)) {
         state.usermanage.pageInfo[prop] = data[prop]
       }
     }
@@ -22,7 +22,7 @@ export default {
   [type.SET_RESOURCE_LIST] (state, data) {
     state.resource.resourceList = data.data
     for (let prop in state.resource.pageInfo) {
-      if (state.resource.hasOwnProperty(prop)) {
+      if (state.resource.pageInfo.hasOwnProperty(prop)) {
         state.resource.pageInfo[prop] = data[prop]
       }
     }

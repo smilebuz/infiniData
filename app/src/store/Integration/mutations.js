@@ -4,9 +4,6 @@ export default {
   // 离线导入
   [type.SET_OFFIMP_LIST] (state, data) {
     state.offimport.taskList = data.data
-    state.offimport.taskList.forEach(task => {
-      task._checked = false
-    })
     state.offimport.taskList.forEach((task) => {
       if (task.progress > 0 && task.progress < 100) {
         state.offimport.pollingList.push(task.taskId) // pollingList存的是taskId

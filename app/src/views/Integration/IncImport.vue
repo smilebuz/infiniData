@@ -209,19 +209,118 @@ export default {
           fixed: 'right',
           align: 'center',
           render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.openEditModal(params.row)
-                  }
+            switch (params.row.status) {
+              case 1:
+              case 5:
+                if (params.row.scheduleMode === 1) {
+                  // 判断是不是手动
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px'
+                      },
+                      on: {
+                        click: () => {
+                          let taskIds = [params.row.taskId]
+                          this.startTask({taskIds: taskIds})
+                        }
+                      }
+                    }, '启动'),
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.openEditModal(params.row)
+                        }
+                      }
+                    }, '编辑')
+                  ])
+                } else {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.openEditModal(params.row)
+                        }
+                      }
+                    }, '编辑')
+                  ])
                 }
-              }, '编辑')
-            ])
+              case 2:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.stopTask({taskId: params.row.taskId}).then(data => {
+                          this.getTaskList(this.searchParams)
+                        })
+                      }
+                    }
+                  }, '停止')
+                ])
+              /*
+              case 3:
+              case 4:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditModal(params.row)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              */
+              case 99:
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.restartTask({taskId: params.row.taskId})
+                      }
+                    }
+                  }, '重启'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditModal(params.row)
+                      }
+                    }
+                  }, '编辑')
+                ])
+              default:
+                break
+            }
           }
         }
       ],

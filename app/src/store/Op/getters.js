@@ -1,6 +1,6 @@
 export default {
   logList (state) {
-    return state.log.list
+    return state.log.logList
   },
   logPageInfo (state) {
     return state.log.pageInfo

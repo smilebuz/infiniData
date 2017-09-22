@@ -222,7 +222,9 @@ export default {
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
+              case 5:
                 if (params.row.scheduleMode === 1) {
+                  // 判断是不是手动
                   return h('div', [
                     h('Button', {
                       props: {
@@ -282,20 +284,8 @@ export default {
                     }
                   }, '停止')
                 ])
+              /*
               case 3:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row)
-                      }
-                    }
-                  }, '编辑')
-                ])
               case 4:
                 return h('div', [
                   h('Button', {
@@ -303,9 +293,6 @@ export default {
                       type: 'primary',
                       size: 'small'
                     },
-                    style: {
-                      marginRight: '5px'
-                    },
                     on: {
                       click: () => {
                         this.openEditModal(params.row)
@@ -313,35 +300,7 @@ export default {
                     }
                   }, '编辑')
                 ])
-              case 5:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        let taskIds = [params.row.taskId]
-                        this.startTask({taskIds: taskIds})
-                      }
-                    }
-                  }, '启动'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row)
-                      }
-                    }
-                  }, '编辑')
-                ])
+              */
               case 99:
                 return h('div', [
                   h('Button', {
@@ -371,7 +330,7 @@ export default {
                   }, '编辑')
                 ])
               default:
-                break
+                return h('div', {})
             }
           }
         }

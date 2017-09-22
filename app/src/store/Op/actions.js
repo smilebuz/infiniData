@@ -26,13 +26,14 @@ const actions = {
     })
   },
   editUser ({ commit }, params) {
+    debugger
     return Api.editUser.post(params).then(data => {
       return Promise.resolve(data)
     })
   },
 
   getResourceList ({ commit }, params) {
-    return Api.userQuery.post(params).then(data => {
+    return Api.resourceQuery.post(params).then(data => {
       commit(type.SET_RESOURCE_LIST, data)
       return Promise.resolve(data)
     })

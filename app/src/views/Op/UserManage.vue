@@ -79,7 +79,7 @@
             <FormItem label="电话">
               <Input v-model="editParams.phone"></Input>
             </FormItem>
-            <FormItem>
+            <FormItem label="状态">
               <Select v-model="editParams.status">
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -173,7 +173,7 @@ export default {
                 type: 'primary'
               },
               on: {
-                click: (params) => {
+                click: () => {
                   this.openEditModal(params.row)
                 }
               }
@@ -277,13 +277,13 @@ export default {
     },
 
     openEditModal (user) {
-      this.editModal.show = true
       this.editParams.id = user.id
       this.editParams.name = user.name
       this.editParams.pwd = user.pwd
       this.editParams.email = user.email
       this.editParams.phone = user.phone
       this.editParams.status = user.status
+      this.editModal.show = true
     },
     submitEditParams () {
       this.editUser(this.editParams).then(data => {
