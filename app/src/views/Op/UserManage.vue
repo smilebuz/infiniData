@@ -81,8 +81,8 @@
             </FormItem>
             <FormItem label="状态">
               <Select v-model="editParams.status">
-                <option value="0">0</option>
-                <option value="1">1</option>
+                <Option :value="0">0</Option>
+                <Option :value="1">1</Option>
               </Select>
             </FormItem>
           </Form>
@@ -204,7 +204,7 @@ export default {
         phone: '',
         status: ''
       },
-      statusList: ['冻结', '正常']
+      statusList: ['0', '1']
     }
   },
   computed: {
