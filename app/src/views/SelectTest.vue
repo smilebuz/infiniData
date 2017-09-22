@@ -46,7 +46,6 @@ export default {
       searchParams: {
         pageNum: 1 // 测试用 只有pageNum
       },
-      selectNames: [],
       selectedPersons: [],
       selectAllFlag: false,
       columns: [
@@ -82,6 +81,7 @@ export default {
     }),
     selectAll (selected) {
       this.selectAllFlag = selected
+      // this.selectedPersons = []
       this.personList.forEach(person => {
         person._disabled = selected
         person._checked = selected
@@ -96,11 +96,6 @@ export default {
         if (!targetPerson) {
           this.selectedPersons.push(person)
         }
-        /*
-        if (this.selectNames.indexOf(person.name) < 0) {
-          this.selectNames.push(person.name)
-        }
-        */
       }
 
       // 没被选择的
@@ -120,14 +115,6 @@ export default {
           return el.name !== person.name
         })
       }
-      /*
-      for (let person of unSelection) {
-        let targetIndex = this.selectNames.indexOf(person.name)
-        if (targetIndex >= 0) {
-          this.selectNames.splice(targetIndex, 1)
-        }
-      }
-      */
     },
     changePageSize (pageSize) {
 
@@ -143,13 +130,8 @@ export default {
     searchParams: {
       handler: function (newParams) {
         this.getPersonList(newParams).then(data => {
-          this.selectAll(this.selectAllFlag)
           this.personList.forEach(person => {
-            /*
-            if (this.selectNames.indexOf(person.name) >= 0) {
-              person._checked = true
-            }
-            */
+            this.selectAll(this.selectAllFlag)
             let targetPerson = this.selectedPersons.find(el => {
               return el.name === person.name
             })

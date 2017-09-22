@@ -29,13 +29,21 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe :columns="columns" :data="tableList" class="table" size="small" @on-selection-change="selectTable"></Table>
+        <Table border stripe class="table" size="small"
+          :columns="columns"
+          :data="tableList"
+          @on-selection-change="selectTable"></Table>
         <div class="pagination">
           <div>
             当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
           </div>
-          <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-          @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+          <Page show-sizer show-elevator
+            :total="pageInfo.totalCount"
+            :current="pageInfo.currentPage"
+            :page-size="pageInfo.pageSize"
+            :page-size-opts="pageopts"
+            @on-change="changePageNum"
+            @on-page-size-change="changePageSize"></Page>
         </div>
       </div>
       <div class="setting">
@@ -78,6 +86,7 @@ import { dateFormatter } from '../../utils/dateFormatter'
 export default {
   data () {
     return {
+      pageopts: [5, 10, 20],
       searchParams: {
         connId: '',
         tables: '',
@@ -91,12 +100,14 @@ export default {
       columns: [
         {
           type: 'selection',
-          aling: 'center'
+          align: 'center',
+          width: 80
         },
         {
           type: 'index',
           align: 'center',
-          title: '序号'
+          title: '序号',
+          width: 80
         },
         {
           title: '库名',
@@ -151,6 +162,7 @@ export default {
       createTask: 'createOffImpTask'
     }),
     selectAllinDB (selected) {
+      // this.createParams.tbInfos = []
       this.selectAllFlag = selected
       this.tableList.forEach(table => {
         table._checked = selected
@@ -158,14 +170,14 @@ export default {
       })
     },
     selectTable (selection) {
-      selection.forEach(table => {
+      for (let table of selection) {
         let targetTable = this.createParams.tbInfos.find(el => {
           return el.tbName === table.tbName
         })
         if (!targetTable) {
           this.createParams.tbInfos.push(table)
         }
-      })
+      }
 
       let unSelection = []
       for (let table of this.tableList) {
@@ -177,11 +189,11 @@ export default {
         }
       }
 
-      unSelection.forEach(table => {
+      for (let table of unSelection) {
         this.createParams.tbInfos = this.createParams.tbInfos.filter(el => {
           return el.tbName !== table.tbName
         })
-      })
+      }
     },
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -214,9 +226,12 @@ export default {
         default:
           break
       }
+      console.log(JSON.stringify(this.createParams.tbInfos))
+      /*
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffImport')
       })
+      */
     }
   },
   watch: {
@@ -227,7 +242,11 @@ export default {
           this.createParams.connId = this.searchParams.connId
           this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
-            if (this.selectedTbNames.indexOf(table.tbName) >= 0) {
+            let targetTable = this.createParams.tbInfos.find(el => {
+              return el.tbName === table.tbName
+            })
+            if (targetTable) {
+              debugger
               table._checked = true
             }
           })
