@@ -20,6 +20,7 @@ export default {
   },
 
   [type.SET_RESOURCE_LIST] (state, data) {
+    debugger
     state.resource.resourceList = data.data
     for (let prop in state.resource.pageInfo) {
       if (state.resource.pageInfo.hasOwnProperty(prop)) {

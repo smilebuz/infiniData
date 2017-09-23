@@ -128,12 +128,12 @@ export default {
         },
         {
           title: '缺省值',
-          key: '',
+          key: 'default_value',
           width: 180
         },
         {
           title: '描述',
-          key: ''
+          key: 'info'
         },
         {
           title: '操作',

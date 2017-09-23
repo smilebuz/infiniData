@@ -10,8 +10,8 @@
     <div class="nav__user">
       <Avatar icon="person" />
       <div class="user__info">
-        <p class="user__info-name">{{ user.name }}</p>
-        <p class="user__info-position">{{ user.position }}</p>
+        <p class="user__info-name">{{ user.userName }}</p>
+        <!--p class="user__info-position">{{ user.position }}</p-->
       </div>
       <div class="user__logout" @click="logout">
         <Icon type="power" />
@@ -52,9 +52,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    ...mapGetters({
+      user: 'user'
+    })
   },
   methods: {
     ...mapActions([

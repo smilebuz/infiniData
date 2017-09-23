@@ -7,7 +7,7 @@
             {{ db.pdbName }}
           </Option>
         </Select>
-        <Button type="text" shape="circle" icon="refresh"></Button>
+        <!--Button type="text" shape="circle" icon="refresh"></Button-->
       </div>
       <Tree :data="tables" class="tree" @on-select-change="selectTable"></Tree>
       <div class="radios">
@@ -69,18 +69,31 @@
         <p class="sqlpad__mainPad-sqlInfo" v-show="!hasSqlRunning">
           运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
         </p>
-        <p v-if="hasSqlRunning">正在运行sql语句 请稍等</p>
-        <Tabs type="card" class="sqlpad__mainPad-infoPad" v-else>
+        <Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="运行信息" class="tabpane">
-            <div class="logpad">
+            <p v-show="hasSqlRunning">
+              正在运行sql语句 请稍等
+            </p>
+            <div v-show="!hasSqlRunning" class="mainPad__title-conatiner">
+              <h3 class="sqlpad__mainPad-title">日志</h3>
+            </div>
+            <div class="logpad" v-show="!hasSqlRunning">
               <Input type="textarea" placeholder="日志信息" readonly
                 v-model="log"
                 :rows="5">
               </Input>
             </div>
-            <Table border stripe
+            <div v-show="!hasSqlRunning" class="mainPad__title-conatiner">
+              <h3 class="sqlpad__mainPad-title">数据</h3>
+              <Button type="primary" size="small" @click="exportData">
+                导出数据至csv文件
+              </Button>
+            </div>
+            <Table border stripe ref="dataTable"
               :columns="columns"
-              :data="sqlInfo.infoList"></Table>
+              :data="sqlInfo.infoList"
+              v-show="!hasSqlRunning"
+            ></Table>
           </TabPane>
           <!--TabPane label="日志">
             <div class="logpad">
@@ -199,7 +212,7 @@ export default {
         }
       },
       columns: [],
-      log: '2017.09.09 12:20:20  运行正常'
+      log: ''
     }
   },
   computed: {
@@ -257,10 +270,12 @@ export default {
             this.columns.forEach(column => {
               column.width = 200
             })
+            /*
             this.columns.unshift({
               type: 'index',
               title: '#'
             })
+            */
           })
           break
         case 'stop':
@@ -373,6 +388,11 @@ export default {
       if (selection[0].tbId) {
         this.tbInfoParams.tbId = selection[0].tbId
       }
+    },
+    exportData () {
+      this.$refs.dataTable.exportCsv({
+        filename: '原始数据'
+      })
     }
   },
   watch: {
@@ -428,9 +448,21 @@ export default {
       })
     }
   },
-  beforeDestroy () {
+  beforeRouteLeave (to, from, next) {
+    // alert(this.hasSqlRunning)
     if (this.hasSqlRunning) {
-      alert('离开页面将停止正在运行的sql语句')
+      this.$Modal.confirm({
+        title: '前往其他页面？',
+        content: '<p>有正在执行的sql语句，离开当前页将停止该语句</p>',
+        onOk: () => {
+          next()
+        },
+        onCancel: () => {
+          next(false)
+        }
+      })
+    } else {
+      next()
     }
   }
 }
@@ -532,4 +564,12 @@ export default {
     margin-bottom: .5em;
   }
   */
+  .logpad {
+    margin-bottom: 1em;
+  }
+  .mainPad__title-conatiner {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+  }
 </style>

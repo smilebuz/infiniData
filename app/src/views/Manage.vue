@@ -21,7 +21,7 @@
     <div class="tbcontainer">
       <Table class="table" size="small" border stripe
         :columns="columns"
-        :data="tableList"></Table>
+        :data="tbList"></Table>
     </div>
   </div>
 </template>
@@ -56,9 +56,10 @@ export default {
         },
         {
           title: '类型',
-          key: 'type',
+          key: 'tbtype',
           width: 100
         },
+        /*
         {
           title: '占用空间',
           key: 'space',
@@ -82,7 +83,7 @@ export default {
         {
           title: '分桶字段',
           key: 'tong',
-          width: 120
+          width: 180
         },
         {
           title: '引擎',
@@ -94,6 +95,7 @@ export default {
           key: 'user',
           width: 120
         },
+        */
         {
           title: '操作',
           key: '',
@@ -104,22 +106,14 @@ export default {
               props: {
                 size: 'small',
                 type: 'primary'
+              },
+              on: {
+                click: () => {
+
+                }
               }
             }, '分析')
           }
-        }
-      ],
-      tableList: [
-        {
-          tbName: 'ocr_task',
-          type: '外表',
-          space: 5000,
-          fieldCount: 12,
-          totalRows: 1000,
-          qu: 'age',
-          tong: 'name',
-          engine: 'parquet',
-          user: 'admin'
         }
       ]
     }
@@ -128,7 +122,6 @@ export default {
     ...mapGetters({
       dbList: 'dbList',
       tbList: 'tbList'
-      // tableList
     })
   },
   methods: {

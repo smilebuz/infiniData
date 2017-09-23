@@ -5,9 +5,9 @@ import mutations from './mutations'
 export default {
   state: {
     user: {
-      userName: '',
-      password: ''
-    }
+      userName: ''
+    },
+    loginFlag: false
   },
   actions,
   getters,
