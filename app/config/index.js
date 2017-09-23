@@ -35,13 +35,6 @@ module.exports = {
           '^/apiManage': ''
         }
       },
-      '/apiHive': {
-        target: 'http://123.56.179.3:8889',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/apiHive': ''
-        }
-      },
       '/apiSchema': {
         target: 'http://192.168.1.69:8089',
         changeOrigin: true,

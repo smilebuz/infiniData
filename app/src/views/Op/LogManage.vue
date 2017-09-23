@@ -93,7 +93,7 @@ export default {
           width: 150
         }
       ],
-      logLevelList: ['info', 'warning', 'error']
+      logLevelList: ['DEBUG', 'ERROR']
     }
   },
   computed: {

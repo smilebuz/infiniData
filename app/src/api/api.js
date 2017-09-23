@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const Apilist = {
-  // test
-  'test': '/api/users/login',
+  // login
+  'login': '/api/optionManage/user/login', // post
 
   // integration
 
@@ -53,9 +53,9 @@ const Apilist = {
   'getOffExpDetailProgress': '/api/task/export/progress', // post
 
   // handle
-  'handledbList': '/apiHive/hive/platformdb/all', // get
-  'handletbList': '/apiHive/hive/platformdb/tbs', // get
-  'handletbInfo': '/apiHive/hive/platformdb/tbinfo', // get
+  'handledbList': '/api/hive/platformdb/all', // get
+  'handletbList': '/api/hive/platformdb/tbs', // get
+  'handletbInfo': '/api/hive/platformdb/tbinfo', // get
   'handlerunSql': '/api/dataprocess/runsql', // post
 
   // manage

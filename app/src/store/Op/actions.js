@@ -26,7 +26,6 @@ const actions = {
     })
   },
   editUser ({ commit }, params) {
-    debugger
     return Api.editUser.post(params).then(data => {
       return Promise.resolve(data)
     })

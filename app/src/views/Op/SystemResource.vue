@@ -117,18 +117,29 @@ export default {
           width: 80
         },
         {
-          title: '键',
-          key: 'key'
+          title: '配置名称',
+          key: 'key',
+          width: 180
         },
         {
-          title: '值',
-          key: 'value'
+          title: '配置的值',
+          key: 'value',
+          width: 180
+        },
+        {
+          title: '缺省值',
+          key: '',
+          width: 180
+        },
+        {
+          title: '描述',
+          key: ''
         },
         {
           title: '操作',
           key: '',
           align: 'center',
-          width: 150,
+          width: 140,
           render: (h, params) => {
             return h('Button', {
               props: {

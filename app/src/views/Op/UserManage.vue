@@ -145,7 +145,8 @@ export default {
         },
         {
           title: '姓名',
-          key: 'name'
+          key: 'name',
+          width: 160
         },
         {
           title: '电话',
@@ -166,6 +167,8 @@ export default {
         {
           title: '操作',
           key: '',
+          width: 140,
+          align: 'center',
           render: (h, params) => {
             return h('Button', {
               props: {

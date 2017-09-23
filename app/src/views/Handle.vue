@@ -66,20 +66,29 @@
             ></Input>
           </Modal>
         </Tabs>
-        <p class="sqlpad__mainPad-sqlInfo" v-show="executeSql">
+        <p class="sqlpad__mainPad-sqlInfo" v-show="!hasSqlRunning">
           运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
         </p>
-        <Tabs type="card" class="sqlpad__mainPad-infoPad">
-          <TabPane label="数据" class="tabpane">
-            <Table border stripe :columns="dataColumns" :data="dataList"></Table>
+        <p v-if="hasSqlRunning">正在运行sql语句 请稍等</p>
+        <Tabs type="card" class="sqlpad__mainPad-infoPad" v-else>
+          <TabPane label="运行信息" class="tabpane">
+            <div class="logpad">
+              <Input type="textarea" placeholder="日志信息" readonly
+                v-model="log"
+                :rows="5">
+              </Input>
+            </div>
+            <Table border stripe
+              :columns="columns"
+              :data="sqlInfo.infoList"></Table>
           </TabPane>
-          <TabPane label="日志">
+          <!--TabPane label="日志">
             <div class="logpad">
               <p class="logpad__log">
-                {{ log }}
+                {{ sqlInfo.log }}
               </p>
             </div>
-          </TabPane>
+          </TabPane-->
         </Tabs>
       </div>
     </div>
@@ -163,7 +172,8 @@ export default {
       sqlEditor: {
         rows: 5
       },
-      executeSql: false,
+      dataTabs: [],
+      hasSqlRunning: false,
       schemaInfo: {
         fuzzy: {
           tbl_user: [
@@ -188,41 +198,7 @@ export default {
           ]
         }
       },
-      dataColumns: [
-        {
-          type: 'index',
-          align: 'center'
-        },
-        {
-          title: '客户编码',
-          key: ''
-        },
-        {
-          title: '保单号',
-          key: ''
-        },
-        {
-          title: '用户名称',
-          key: ''
-        },
-        {
-          title: '险种',
-          key: ''
-        },
-        {
-          title: '车牌号',
-          key: ''
-        },
-        {
-          title: '状态',
-          key: ''
-        },
-        {
-          title: '保费',
-          key: ''
-        }
-      ],
-      dataList: [],
+      columns: [],
       log: '2017.09.09 12:20:20  运行正常'
     }
   },
@@ -267,18 +243,25 @@ export default {
     operate (action) {
       switch (action) {
         case 'run':
+          this.hasSqlRunning = true
           let targetTab = this.sqlTabs.find((tab) => {
             return tab.id === this.currentTabId
           })
           let params = {
             sql: targetTab.editor.getValue()
           }
-          alert(params.sql)
-          /*
           this.runSql(params).then(data => {
-            this.executeSql = true
+            this.hasSqlRunning = false
+            this.log = this.sqlInfo.log
+            this.columns = this.sqlInfo.columns
+            this.columns.forEach(column => {
+              column.width = 200
+            })
+            this.columns.unshift({
+              type: 'index',
+              title: '#'
+            })
           })
-          */
           break
         case 'stop':
 
@@ -401,11 +384,13 @@ export default {
             return db.pdbId === this.tbParams.pdbId
           }).pdbName
           // 填充this.tables.children 改变this.tbInfoParams
-          for (let table of this.tbList) {
-            this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+          if (this.tbList.length) {
+            for (let table of this.tbList) {
+              this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+            }
+            this.tbInfoParams.pdbId = this.selectedpdbId
+            this.tbInfoParams.tbId = this.tbList[0].tbId
           }
-          this.tbInfoParams.pdbId = this.selectedpdbId
-          this.tbInfoParams.tbId = this.tbList[0].tbId
         })
       },
       deep: true
@@ -441,6 +426,11 @@ export default {
       this.$nextTick(function () {
         this.setBrace(newSqlTab)
       })
+    }
+  },
+  beforeDestroy () {
+    if (this.hasSqlRunning) {
+      alert('离开页面将停止正在运行的sql语句')
     }
   }
 }
@@ -483,13 +473,19 @@ export default {
     border-bottom: 1px solid #f0f0f0;
   }
   .tbInfoText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex: 1;
-    height: 30px;
+    max-width: 50%;
+    min-height: 30px;
+    padding-left: 2px;
+    padding-right: 2px;
     border: 1px solid #f0f0f0;
     border-bottom: none;
     border-right: none;
-    line-height: 30px;
     text-align: center;
+    word-break: break-all;
   }
   .sqlpad {
     flex-grow: 1;
@@ -523,7 +519,7 @@ export default {
     padding: 1em;
     font-size: 14px;
   }
-
+  /*
   .logpad {
     height: 100%;
     padding: 1em;
@@ -535,4 +531,5 @@ export default {
   .logpad__log {
     margin-bottom: .5em;
   }
+  */
 </style>

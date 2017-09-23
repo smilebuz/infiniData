@@ -1,7 +1,6 @@
 export default {
-  UPDATE_USER: 'UPDATE_USER',
-  ADD_USER: 'ADD_USER',
-  DELETE_USER: 'DELETE_USER',
+  // 登录
+  SET_USER: 'SET_USER',
 
   // 离线导入
   SET_OFFIMP_LIST: 'SET_OFFIMP_LIST',

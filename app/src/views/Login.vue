@@ -4,10 +4,16 @@
       <img src="../assets/images/icon/loginlogo.png" alt="logo" class="login__logo">
       <Card class="card">
         <p slot="title">用户登录</p>
-        <Input v-model="loginData.username" placeholder="用户名/邮箱" class="login__item"></Input>
-        <Input v-model="loginData.password" placeholder="密码" class="login__item"></Input>
-        <Button class="login__item" type="info" long @click="login">登录</Button>
-        <Checkbox v-model="loginData.rememberPW" class="login__item-checkbox">记住密码</Checkbox>
+        <Input placeholder="用户名/邮箱" class="login__item"
+          v-model="loginParams.userName"
+        ></Input>
+        <Input placeholder="密码" class="login__item"
+          v-model="loginParams.password"
+        ></Input>
+        <Button class="login__item" type="info" long
+          @click="submitLoginParams"
+        >登录</Button>
+        <!--Checkbox v-model="loginParams.rememberPW" class="login__item-checkbox">记住密码</Checkbox-->
       </Card>
     </div>
     <div class="copyright">
@@ -23,20 +29,21 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loginData: {
-        username: '',
-        password: '',
-        rememberPW: false
+      loginParams: {
+        userName: '',
+        password: ''
+        // rememberPW: false
       }
     }
   },
   methods: {
-    ...mapActions([
-      'updateUser'
-    ]),
-    login () {
-      this.updateUser()
-      this.$router.push('/Integration/Dashboard')
+    ...mapActions({
+      login: 'login'
+    }),
+    submitLoginParams () {
+      this.login(this.loginParams).then(data => {
+        this.$router.push('/Integration/Dashboard')
+      })
     }
   }
 }

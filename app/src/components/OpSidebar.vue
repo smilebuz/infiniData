@@ -33,7 +33,7 @@ export default {
           imgUrlBG: require('../assets/images/icon/userbg.png')
         },
         {
-          name: '系统资源',
+          name: '系统配置',
           path: '/Op/SystemResource',
           imgUrl: require('../assets/images/icon/resource.png'),
           imgUrlBG: require('../assets/images/icon/resourcebg.png')

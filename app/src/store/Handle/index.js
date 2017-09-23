@@ -10,10 +10,12 @@ export default {
       fieldList: [],
       partitionList: []
     },
-    logs: [],
     runSqlInfo: {
       time_consum: '',
-      count: ''
+      count: '',
+      columns: [],
+      infoList: [],
+      log: ''
     }
   },
   actions,
