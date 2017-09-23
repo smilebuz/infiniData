@@ -59,8 +59,8 @@ const Apilist = {
   'handlerunSql': '/api/dataprocess/runsql', // post
 
   // manage
-  'manageQuery': '/apiManage/manage/tb/query', // post
-  'manageAnalysis': '/apiManage/manage/tb/analysis', // get
+  'manageQuery': '/api/hive/platformdb/tbs', // post
+  'manageAnalysis': '/api/manage/tb/analysis', // get
 
   // selecttest
   'selectTest': '/apiManage/select/test', // get

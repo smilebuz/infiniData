@@ -6,9 +6,11 @@
         <p slot="title">用户登录</p>
         <Input placeholder="用户名/邮箱" class="login__item"
           v-model="loginParams.userName"
+          @on-enter="submitLoginParams"
         ></Input>
-        <Input placeholder="密码" class="login__item"
+        <Input placeholder="密码" class="login__item" type="password"
           v-model="loginParams.password"
+          @on-enter="submitLoginParams"
         ></Input>
         <Button class="login__item" type="info" long
           @click="submitLoginParams"

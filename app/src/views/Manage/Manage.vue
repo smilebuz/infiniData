@@ -27,6 +27,9 @@
 </template>
 
 <script>
+import '../../assets/css/common.scss'
+import '../../assets/css/pagination.scss'
+
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -47,7 +50,8 @@ export default {
         {
           type: 'index',
           title: '序号',
-          width: 60
+          fixed: 'left',
+          width: 80
         },
         {
           title: '表名',
@@ -59,15 +63,14 @@ export default {
           key: 'tbtype',
           width: 100
         },
-        /*
         {
           title: '占用空间',
-          key: 'space',
+          key: 'spaceUsage',
           width: 120
         },
         {
           title: '字段数',
-          key: 'fieldCount',
+          key: 'totalFields',
           width: 120
         },
         {
@@ -77,12 +80,12 @@ export default {
         },
         {
           title: '分区字段',
-          key: 'qu',
+          key: 'partitionField',
           width: 120
         },
         {
           title: '分桶字段',
-          key: 'tong',
+          key: 'bucketField',
           width: 180
         },
         {
@@ -91,15 +94,20 @@ export default {
           width: 120
         },
         {
-          title: '创建用户',
-          key: 'user',
+          title: '创建者',
+          key: 'owner',
           width: 120
         },
-        */
+        {
+          title: '创建时间',
+          key: 'create_time',
+          width: 160
+        },
         {
           title: '操作',
           key: '',
           width: 120,
+          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             return h('Button', {
@@ -109,7 +117,8 @@ export default {
               },
               on: {
                 click: () => {
-
+                  // this.$router.push('/Manage/Analysis/' + this.tbParams.pdbId + '/post/' + params.row.tbId)
+                  this.$router.push('/Manage/Analysis')
                 }
               }
             }, '分析')

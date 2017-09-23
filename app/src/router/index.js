@@ -18,7 +18,9 @@ import Source from '../views/Integration/Source'
 import CreateSource from '../views/Integration/CreateSource'
 
 import Handle from '../views/Handle'
+
 import Manage from '../views/Manage'
+import Analysis from '../views/Manage/Analysis'
 
 import Op from '../views/Op/Op'
 import LogManage from '../views/Op/LogManage'
@@ -120,7 +122,14 @@ let router = new Router({
       path: '/Manage',
       name: 'Manage',
       meta: { requiresAuth: true },
-      component: Manage
+      component: Manage,
+      children: [
+        {
+          path: 'Analysis',
+          meta: { requiresAuth: true },
+          component: Analysis
+        }
+      ]
     },
     {
       path: '/Op',
@@ -131,6 +140,7 @@ let router = new Router({
         {
           path: 'LogManage',
           name: 'LogManage',
+          meta: { requiresAuth: true },
           component: LogManage
         },
         {
