@@ -60,15 +60,21 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical v-model="createParams.scheduleMode" class="radiogroup">
-            <Radio :label="1">手动</Radio>
-            <Radio :label="2">
-              <span>定时</span>
+          <RadioGroup vertical class="radiogroup"
+            v-model="createParams.scheduleMode"
+            @on-change="changeScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">
+                <span>定时</span>
+              </Radio>
               <DatePicker type="datetime" size="small" style="width: 200px;" transfer
                 v-model="createParams.scheduleCorn"
+                :options="scheduleOptions"
+                :disabled="disableDatePicker"
               ></DatePicker>
-            </Radio>
-            <Radio :label="-1">失效</Radio>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -133,6 +139,12 @@ export default {
           key: 'priKey'
         }
       ],
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
+      },
+      disableDatePicker: true,
       createParams: {
         connId: '',
         tbInfos: [],
@@ -161,6 +173,13 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffImpTask'
     }),
+    changeScheduleMode (value) {
+      if (value === 2) {
+        this.disableDatePicker = false
+      } else {
+        this.disableDatePicker = true
+      }
+    },
     selectAllinDB (selected) {
       // this.createParams.tbInfos = []
       this.selectAllFlag = selected

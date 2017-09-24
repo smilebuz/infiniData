@@ -130,8 +130,8 @@ export default {
     searchParams: {
       handler: function (newParams) {
         this.getPersonList(newParams).then(data => {
+          this.selectAll(this.selectAllFlag)
           this.personList.forEach(person => {
-            this.selectAll(this.selectAllFlag)
             let targetPerson = this.selectedPersons.find(el => {
               return el.name === person.name
             })

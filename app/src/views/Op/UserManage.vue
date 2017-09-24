@@ -81,8 +81,8 @@
             </FormItem>
             <FormItem label="状态">
               <Select v-model="editParams.status">
-                <Option :value="0">0</Option>
-                <Option :value="1">1</Option>
+                <Option :value="0">无效</Option>
+                <Option :value="1">有效</Option>
               </Select>
             </FormItem>
           </Form>
@@ -162,7 +162,10 @@ export default {
         },
         {
           title: '状态',
-          key: 'status'
+          key: 'status',
+          render: (h, params) => {
+            return h('div', {}, this.statusList[params.row.status])
+          }
         },
         {
           title: '操作',
@@ -207,7 +210,10 @@ export default {
         phone: '',
         status: ''
       },
-      statusList: ['0', '1']
+      statusList: {
+        0: '无效',
+        1: '有效'
+      }
     }
   },
   computed: {
