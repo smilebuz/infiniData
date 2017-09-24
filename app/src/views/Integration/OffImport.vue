@@ -277,9 +277,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.stopTask({taskId: params.row.taskId}).then(data => {
-                          this.getTaskList(this.searchParams)
-                        })
+                        this.stopTask({taskId: params.row.taskId})
                       }
                     }
                   }, '停止')

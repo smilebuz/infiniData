@@ -14,10 +14,11 @@ export default {
       return task.progress > 0 && task.progress < 100
     })
     */
-    state.offimport.pageInfo.pageNum = data.pageNum
-    state.offimport.pageInfo.totalPage = data.totalPage
-    state.offimport.pageInfo.pageSize = data.pageSize
-    state.offimport.pageInfo.totalCount = data.totalCount
+    for (var prop in state.offimport.pageInfo) {
+      if (state.offimport.pageInfo.hasOwnProperty(prop)) {
+        state.offimport.pageInfo[prop] = data[prop]
+      }
+    }
   },
   [type.SET_OFFIMP_TASK_STATUS] (state, data) {
     // debugger
@@ -46,6 +47,17 @@ export default {
       state.offimport.pollingList.push(taskId)
     }
   },
+  [type.RESTART_OFFIMP_TASK] (state, data) {
+    if (state.offimport.pollingList.indexOf(data.taskId) < 0) {
+      state.offimport.pollingList.push(data.taskId)
+    }
+  },
+  [type.STOP_OFFIMP_TASK] (state, data) {
+    let targetIndex = state.offimport.pollingList.indexOf(data.taskId)
+    if (targetIndex >= 0) {
+      state.offimport.pollingList.splice(targetIndex, 1)
+    }
+  },
 
   [type.SET_OFFIMP_DETAIL_LIST] (state, data) {
     state.offimport.detail.detailList = data.data
@@ -55,21 +67,22 @@ export default {
       return task.progress > 0 && task.progress < 100
     })
     */
-    state.offimport.detail.pageInfo.pageNum = data.pageNum
-    state.offimport.detail.pageInfo.totalPage = data.totalPage
-    state.offimport.detail.pageInfo.pageSize = data.pageSize
-    state.offimport.detail.pageInfo.totalCount = data.totalCount
+    for (var prop in state.offimport.detail.pageInfo) {
+      if (state.offimport.detail.pageInfo.hasOwnProperty(prop)) {
+        state.offimport.detail.pageInfo[prop] = data[prop]
+      }
+    }
   },
   [type.SET_OFFIMP_DETAIL_TASK_STATUS] (state, data) {
     state.offimport.detail.progress = data.data.progress // 父任务进程
     // debugger
     if (data.data.data.length) {
-      for (let task of data.data.data) {
-        let targetTask = state.offimport.detail.pollingList.find((el) => {
-          return el.workerId === task.workerId
+      for (let worker of data.data.data) {
+        let targetWorker = state.offimport.detail.pollingList.find((el) => {
+          return el.workerId === worker.workerId
         })
-        targetTask.progress = task.progress
-        targetTask.extractSpeed = parseInt(task.extractSpeed) + '条/s'
+        targetWorker.progress = worker.progress
+        targetWorker.extractSpeed = parseInt(worker.extractSpeed) + '条/s'
       }
     }
   },
@@ -105,12 +118,12 @@ export default {
   },
   [type.SET_INCIMP_DETAIL_STATUS] (state, data) {
     if (data.data.data.length) {
-      for (let task of data.data.data) {
-        let targetTask = state.incimport.detail.pollingList.find((el) => {
-          return el.taskId === task.taskId
+      for (let worker of data.data.data) {
+        let targetWorker = state.incimport.detail.pollingList.find((el) => {
+          return el.workerId === worker.workerId
         })
-        targetTask.progress = task.progress
-        targetTask.extractSpeed = parseInt(task.extractSpeed) + '条/s'
+        targetWorker.progress = worker.progress
+        targetWorker.extractSpeed = parseInt(worker.extractSpeed) + '条/s'
       }
     }
   },
@@ -145,11 +158,11 @@ export default {
   },
   [type.SET_OFFEXP_DETAIL_STATUS] (state, data) {
     if (data.data.data.length) {
-      for (let task of data.data.data) {
-        let targetTask = state.export.detail.pollingList.find((el) => {
-          return el.workerId === task.workerId
+      for (let worker of data.data.data) {
+        let targetWorker = state.export.detail.pollingList.find((el) => {
+          return el.workerId === worker.workerId
         })
-        targetTask.progress = task.progress
+        targetWorker.progress = worker.progress
       }
     }
   },

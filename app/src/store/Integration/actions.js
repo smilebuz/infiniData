@@ -54,13 +54,17 @@ const actions = {
     })
   },
   restartOffImpTask ({ commit, getters }, params) {
-    return Api.restartFull.get(params).then(data => {
-      return Promise.resolve(data)
+    Api.restartFull.get(params).then(data => {
+      actions.stopOffImpPolling({ commit })
+      commit(type.RESTART_OFFIMP_TASK, params)
+      actions.pollingOffImp({ commit, getters })
     })
   },
   stopOffImpTask ({ commit, getters }, params) {
-    return Api.stopFull.get(params).then(data => {
-      return Promise.resolve(data)
+    Api.stopFull.get(params).then(data => {
+      actions.stopOffImpPolling({ commit })
+      commit(type.STOP_OFFIMP_TASK, params)
+      actions.pollingOffImp({ commit, getters })
     })
   },
   editOffImpTask ({ commit, getters }, params) {
