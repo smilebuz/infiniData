@@ -343,7 +343,6 @@ export default {
   }
   .setting {
     flex-grow: 1;
-    min-width: 300px;
     text-align: left;
   }
   .radiogroup {

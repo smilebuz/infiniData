@@ -400,9 +400,22 @@ export default {
           this.$router.push('CreateOffImp')
           break
         case 'delete':
-          this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
-            this.getTaskList(this.searchParams)
-          })
+          let isDeletable = true
+          for (let taskId of this.selectedTaskIds) {
+            let targetTask = this.taskList.find(task => {
+              return task.taskId === taskId
+            })
+            if (targetTask.status === 1) {
+              isDeletable = false
+            }
+          }
+          if (isDeletable) {
+            this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams).then(data => {})
+            })
+          } else {
+            alert('删除任务中含有正在运行的任务, 请重新选择')
+          }
           break
         case 'run':
           let isRunnable = true
@@ -416,9 +429,7 @@ export default {
             }
           }
           if (isRunnable) {
-            this.startTask({taskIds: this.selectedTaskIds}).then(data => {
-              this.getTaskList(this.searchParams)
-            })
+            this.startTask({taskIds: this.selectedTaskIds})
           } else {
             alert('选择任务中含有非手动运行任务, 请重新选择')
           }
@@ -459,7 +470,7 @@ export default {
           break
       }
       this.editTask(this.editParams).then(data => {
-        this.getTaskList(this.searchParams)
+        this.getTaskList(this.searchParams).then(data => {})
       })
     },
     cancelEdit () {},
@@ -480,13 +491,7 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTaskList(newParams).then(data => {
-          this.taskList.forEach(task => {
-            if (this.selectedTaskIds.indexOf(task.taskId) >= 0) {
-              task._checked = true
-            }
-          })
-        })
+        this.getTaskList(newParams).then(data => {})
       },
       deep: true
     }

@@ -334,7 +334,7 @@ export default {
               on: {
                 click: () => {
                   this.stopTask({taskId: params.row.taskId}).then(data => {
-                    this.getTaskList(this.searchParams)
+                    this.getTaskList(this.searchParams).then(data => {})
                   })
                 }
               }
@@ -374,11 +374,45 @@ export default {
     },
     operateTask (opType) {
       switch (opType) {
+        case 'run':
+          let isRunnable = true
+          // 判断有没有非手动运行
+          for (let taskId of this.selectedTaskIds) {
+            let targetTask = this.taskList.find(task => {
+              return task.taskId === taskId
+            })
+            if (targetTask.scheduleMode !== 1) {
+              isRunnable = false
+            }
+          }
+          if (isRunnable) {
+            this.startTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams).then(data => {})
+            })
+          } else {
+            alert('选择任务中含有非手动运行任务, 请重新选择')
+          }
+          break
         case 'create':
           this.$router.push('CreateOffExp')
           break
         case 'delete':
-          this.deleteTask({taskIds: this.selectedTaskIds})
+          let isDeletable = true
+          for (let taskId of this.selectedTaskIds) {
+            let targetTask = this.taskList.find(task => {
+              return task.taskId === taskId
+            })
+            if (targetTask.status === 1) {
+              isDeletable = false
+            }
+          }
+          if (isDeletable) {
+            this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams).then(data => {})
+            })
+          } else {
+            alert('删除任务中含有正在运行的任务, 请重新选择')
+          }
           break
         default:
           break
@@ -426,7 +460,9 @@ export default {
         default:
           break
       }
-      this.editTask(this.editParams)
+      this.editTask(this.editParams).then(data => {
+        this.getTaskList(this.searchParams).then(data => {})
+      })
     },
     cancelEdit () {
     },
@@ -453,13 +489,13 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTaskList(newParams)
+        this.getTaskList(newParams).then(data => {})
       },
       deep: true
     }
   },
   mounted () {
-    this.getTaskList(this.searchParams)
+    this.getTaskList(this.searchParams).then(data => {})
   }
 }
 </script>

@@ -118,13 +118,13 @@ const actions = {
     })
   },
   editIncImpTask ({ commit }, params) {
-    Api.editInc.post(params).then(data => {
-      actions.getIncImpList({ commit })
+    return Api.editInc.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   deleteIncImpTask ({ commit }, params) {
-    Api.deleteInc.post(params).then(data => {
-      actions.getIncImpList({ commit })
+    return Api.deleteInc.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   startIncImpTask ({ commit }, params) {
@@ -173,23 +173,23 @@ const actions = {
     })
   },
   deleteOffExpTask ({ commit }, params) {
-    Api.deleteExport.post(params).then(data => {
-      actions.getOffExpList({ commit })
+    return Api.deleteExport.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   startOffExpTask ({ commit }, params) {
     Api.startExport.post(params).then(data => {
-      actions.getOffExpList({ commit })
+      // actions.getOffExpList({ commit })
     })
   },
   stopOffExpTask ({ commit }, params) {
     Api.stopExport.get(params).then(data => {
-      actions.getOffExpList({ commit })
+      // actions.getOffExpList({ commit })
     })
   },
   editOffExpTask ({ commit }, params) {
-    Api.editExport.post(params).then(data => {
-      actions.getOffExpList({ commit })
+    return Api.editExport.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   getOffExpDetailList ({ commit, getters }, params) {
