@@ -82,7 +82,7 @@ let router = new Router({
         },
         {
           path: 'CreateIncImp',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateIncImp
         },
         {
@@ -97,7 +97,7 @@ let router = new Router({
         },
         {
           path: 'CreateOffExp',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateOffExp
         },
         {

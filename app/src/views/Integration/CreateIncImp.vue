@@ -44,17 +44,26 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical v-model="createParams.scheduleMode" class="radiogroup">
-            <Radio :label="1">手动</Radio>
-            <Radio :label="2">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 200px;" v-model="scheduleCornTiming" transfer></DatePicker>
-            </Radio>
-            <Radio :label="3">
-              <span>周期</span>
-              <TimePicker size="small" style="width: 120px;" v-model="scheduleCornPeriod"></TimePicker>
-            </Radio>
-            <Radio :label="-1">无效</Radio>
+          <RadioGroup vertical class="radiogroup"
+            v-model="createParams.scheduleMode"
+            @on-change="changeScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">定时</Radio>
+              <DatePicker transfer type="datetime" size="small" style="width: 200px;"
+                v-model="scheduleCornTiming"
+                :options="scheduleOptions"
+                :disabled="disableSettingDatePicker"
+              ></DatePicker>
+            </div>
+            <div class="radiopicker">
+              <Radio :label="3">周期</Radio>
+              <TimePicker transfer size="small" style="width: 120px;"
+                v-model="scheduleCornPeriod"
+                :disabled="disableSettingTimePicker"
+              ></TimePicker>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">无效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -141,6 +150,13 @@ export default {
       ],
       */
       tableParams: [],
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
+      },
+      disableSettingDatePicker: true,
+      disableSettingTimePicker: true,
       createParams: {
         connId: '',
         tbInfos: [],
@@ -252,6 +268,22 @@ export default {
           }
         })
       ])
+    },
+    changeScheduleMode (value) {
+      switch (value) {
+        case 2:
+          this.disableSettingDatePicker = false
+          this.disableSettingTimePicker = true
+          break
+        case 3:
+          this.disableSettingDatePicker = true
+          this.disableSettingTimePicker = false
+          break
+        default:
+          this.disableSettingDatePicker = true
+          this.disableSettingTimePicker = true
+          break
+      }
     },
     selectAllinDB (selected) {
       // this.createParams.tbInfos = []
@@ -413,6 +445,7 @@ export default {
   }
   .setting {
     flex-grow: 1;
+    min-width: 300px;
     text-align: left;
   }
   .btncontainer {

@@ -54,22 +54,27 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical class="radiogroup" v-model="createParams.type">
+          <RadioGroup vertical class="radiogroup"
+            v-model="createParams.type"
+            @on-change="changeType">
             <Radio :label="1">CSV</Radio>
             <div class="setting__group">
               <span class="setting__group-label">编码</span>
-              <Select class="setting__group-select">
+              <Select class="setting__group-select" size="small"
+                :disabled="disableEncodingSelect">
               </Select>
             </div>
             <div class="setting__group">
               <span class="setting__group-label">分隔符</span>
-              <Select class="setting__group-select">
+              <Select class="setting__group-select" size="small"
+                :disabled="disableSeperatorSelect">
               </Select>
             </div>
             <Radio :label="2">数据库</Radio>
             <div class="setting__group">
               <span class="setting__group-label">数据源</span>
-              <Select class="setting__group-select">
+              <Select class="setting__group-select" size="small"
+                :disabled="disableSourceSelect">
               </Select>
             </div>
           </RadioGroup>
@@ -79,17 +84,26 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <RadioGroup vertical v-model="createParams.scheduleMode" class="radiogroup">
-            <Radio :label="1">手动</Radio>
-            <Radio :label="2">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 200px;" transfer v-model="scheduleCornTiming"></DatePicker>
-            </Radio>
-            <Radio :label="3">
-              <span>周期</span>
-              <TimePicker size="small" style="width: 120px;" transfer v-model="scheduleCornPeriod"></TimePicker>
-            </Radio>
-            <Radio :label="-1">失效</Radio>
+          <RadioGroup vertical class="radiogroup"
+            v-model="createParams.scheduleMode"
+            @on-change="changeScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">定时</Radio>
+              <DatePicker type="datetime" size="small" style="width: 200px;" transfer
+                v-model="scheduleCornTiming"
+                :options="scheduleOptions"
+                :disabled="disableDatePicker"
+              ></DatePicker>
+            </div>
+            <div class="radiopicker">
+              <Radio :label="3">周期</Radio>
+              <TimePicker size="small" style="width: 120px;" transfer
+                v-model="scheduleCornPeriod"
+                :disabled="disableTimePicker"
+              ></TimePicker>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -150,6 +164,16 @@ export default {
           key: ''
         }
       ],
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
+      },
+      disableEncodingSelect: true,
+      disableSeperatorSelect: true,
+      disableSourceSelect: true,
+      disableDatePicker: true,
+      disableTimePicker: true,
       createParams: {
         type: '',
         connId: '',
@@ -179,6 +203,33 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffExpTask'
     }),
+    changeType (value) {
+      if (value === 1) {
+        this.disableEncodingSelect = false
+        this.disableSeperatorSelect = false
+        this.disableSourceSelect = true
+      } else {
+        this.disableEncodingSelect = true
+        this.disableSeperatorSelect = true
+        this.disableSourceSelect = false
+      }
+    },
+    changeScheduleMode (value) {
+      switch (value) {
+        case 2:
+          this.disableDatePicker = false
+          this.disableTimePicker = true
+          break
+        case 3:
+          this.disableDatePicker = true
+          this.disableTimePicker = false
+          break
+        default:
+          this.disableDatePicker = true
+          this.disableTimePicker = true
+          break
+      }
+    },
     selectAllinDB (selected) {
       this.selectAllFlag = selected
       this.tableList.forEach(table => {
@@ -292,6 +343,7 @@ export default {
   }
   .setting {
     flex-grow: 1;
+    min-width: 300px;
     text-align: left;
   }
   .radiogroup {
@@ -299,16 +351,16 @@ export default {
   }
   .setting__group {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 10px;
   }
   .setting__group-label {
     margin-left: 20px;
-    min-width: 30px;
+    min-width: 50px;
   }
   .setting__group-select {
-    // max-width: 120px;
+    max-width: 180px;
   }
   .btncontainer {
     padding: 30px;

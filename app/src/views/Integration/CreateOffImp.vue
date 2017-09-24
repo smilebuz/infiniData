@@ -287,6 +287,7 @@ export default {
     display: flex;
   }
   .setting {
+    min-width: 300px;
     text-align: left;
   }
   .btncontainer {
