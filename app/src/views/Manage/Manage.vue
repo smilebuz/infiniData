@@ -27,9 +27,6 @@
 </template>
 
 <script>
-import '../../assets/css/common.scss'
-import '../../assets/css/pagination.scss'
-
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -117,8 +114,8 @@ export default {
               },
               on: {
                 click: () => {
-                  // this.$router.push('/Manage/Analysis/' + this.tbParams.pdbId + '/post/' + params.row.tbId)
-                  this.$router.push('/Manage/Analysis')
+                  this.$router.push('/Manage/Analysis/' + this.tbParams.pdbId + '/post/' + params.row.tbId)
+                  // this.$router.push('/Manage/Analysis')
                 }
               }
             }, '分析')
@@ -180,6 +177,9 @@ export default {
   .tree {
     margin-left: 5px;
     margin-bottom: 50px;
+  }
+  .tbcontainer {
+    overflow: hidden;
   }
 </style>
 

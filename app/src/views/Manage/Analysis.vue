@@ -1,14 +1,13 @@
 <template>
   <div class="analysis">
-    分析
-    <!--p>表XXX的数据画像</p>
+    <h3 class="analysis__title">表XXX的数据画像</h3>
     <div class="tbcontainer">
       <Table border stripe class="table" size="default"
         :columns="columns"
         :data="analysisList"
         @on-selection-change="selectTask"
       ></Table>
-    </div-->
+    </div>
   </div>
 </template>
 
@@ -18,7 +17,32 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      columns: [],
+      columns: [
+        {
+          type: 'index',
+          width: 80
+        },
+        {
+          title: '字段名',
+          key: 'field'
+        },
+        {
+          title: '类型',
+          key: ''
+        },
+        {
+          title: '空占比值',
+          key: ''
+        },
+        {
+          title: '长度',
+          key: ''
+        },
+        {
+          title: '大小',
+          key: ''
+        }
+      ],
       searchParams: {
         pdbId: '',
         tbId: ''
@@ -46,7 +70,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .analysis {
+    flex-direction: column
+  }
+  .analysis__title {
+    padding: 10px;
+    text-align: left;
+  }
 </style>
+
 
 

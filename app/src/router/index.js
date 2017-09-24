@@ -19,7 +19,7 @@ import CreateSource from '../views/Integration/CreateSource'
 
 import Handle from '../views/Handle'
 
-import Manage from '../views/Manage'
+import Manage from '../views/Manage/Manage'
 import Analysis from '../views/Manage/Analysis'
 
 import Op from '../views/Op/Op'
@@ -122,14 +122,13 @@ let router = new Router({
       path: '/Manage',
       name: 'Manage',
       meta: { requiresAuth: true },
-      component: Manage,
-      children: [
-        {
-          path: 'Analysis',
-          meta: { requiresAuth: true },
-          component: Analysis
-        }
-      ]
+      component: Manage
+    },
+    {
+      path: '/Analysis/:pdbId/:tbId',
+      name: 'Analysis',
+      meta: { requiresAuth: true },
+      component: Analysis
     },
     {
       path: '/Op',
