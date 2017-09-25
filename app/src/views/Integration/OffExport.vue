@@ -373,6 +373,30 @@ export default {
               }
             }, '停止')
           ])
+        case 3:
+          return h('div', [
+            h('a', {
+              domProps: {
+                href: 'http://' + params.row.downloadUrl,
+                download: '1.csv'
+                // href: 'www.baidu.com'
+              },
+              style: {
+                marginRight: '5px'
+              }
+            }, '下载'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.openEditModal(params.row)
+                }
+              }
+            }, '编辑')
+          ])
         case 99:
           return h('div', [
             h('Button', {

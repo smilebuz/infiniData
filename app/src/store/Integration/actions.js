@@ -182,6 +182,7 @@ const actions = {
   // 离线导出
   getOffExpList ({ commit, getters }, params) {
     return Api.exportQuery.post(params).then(data => {
+      // debugger
       commit(type.SET_OFFEXP_LIST, data)
       actions.pollingOffExp({ commit, getters })
       return Promise.resolve(data)
@@ -228,26 +229,29 @@ const actions = {
   },
   getOffExpDetailList ({ commit, getters }, params) {
     Api.exportDetail.post(params).then(data => {
-      commit(type.SET_OFFEXP_DETAIL_LIST, params)
+      commit(type.SET_OFFEXP_DETAIL_LIST, data)
       actions.pollingOffExpDetail({ commit, getters })
     })
   },
-  pollingOffExpDetail ({ commit, getters }, params) {
-    actions.stopOffExpDetailPolling({ commit, getters })
+  pollingOffExpDetail ({ commit, getters }) {
+    actions.stopOffExpDetailPolling({ commit })
     let pollingList = getters.offExpDetailPollingList
     let workerIds = []
-    for (let worker of pollingList) {
-      workerIds.push(worker.workerId)
+    pollingList.forEach((worker) => {
+      workerIds.push(worker.workerId) // 子任务id
+    })
+    let params = {
+      workerIds: workerIds
     }
-    polling('getOffExpDetailProgress', workerIds, (data) => {
+    polling('getOffExpDetailProgress', params, (data) => {
       commit(type.SET_OFFEXP_DETAIL_STATUS, {
         data: data
       })
-      console.log('任务timer:', getters.incImpDetail.timer)
+      console.log('任务timer:', getters.offExpDetail.timer)
     }, getters.offExpDetail)
   },
   stopOffExpDetailPolling ({ commit }) {
-    commit(type.CLEAR_OffEXP_DETAIL_TIMER)
+    commit(type.CLEAR_OFFEXP_DETAIL_TIMER)
   },
 
   // 数据源

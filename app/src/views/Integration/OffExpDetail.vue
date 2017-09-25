@@ -66,7 +66,7 @@ export default {
           key: 'extractSpeed'
         },
         {
-          title: '调度状态',
+          title: '状态',
           key: 'status',
           width: 150,
           render: (h, params) => {
@@ -74,7 +74,7 @@ export default {
               return h('div', [
                 h('Progress', {
                   props: {
-                    percent: parseFloat((params.row.progress * 100).toFixed(2))
+                    percent: params.row.progress
                   }
                 })
               ])

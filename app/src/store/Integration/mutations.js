@@ -213,7 +213,7 @@ export default {
   [type.SET_OFFEXP_DETAIL_STATUS] (state, data) {
     if (data.data.data.length) {
       for (let worker of data.data.data) {
-        let targetWorker = state.export.detail.pollingList.find((el) => {
+        let targetWorker = state.offexport.detail.pollingList.find((el) => {
           return el.workerId === worker.workerId
         })
         targetWorker.progress = worker.progress

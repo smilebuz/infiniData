@@ -21,6 +21,23 @@ export const dateFormatter = inputDate => {
   return dateConversion.year + '-' + dateConversion.month + '-' + dateConversion.date + ' ' + dateConversion.hours + ':' + dateConversion.minutes + ':' + dateConversion.seconds
 }
 
+export const dateFormatter2 = inputDate => {
+  let dateConversion = {
+    year: '',
+    month: '',
+    date: ''
+  }
+  dateConversion.year = inputDate.getFullYear()
+  dateConversion.month = inputDate.getMonth() + 1
+  dateConversion.date = inputDate.getDate()
+  for (let prop in dateConversion) {
+    if (dateConversion.hasOwnProperty(prop)) {
+      dateConversion[prop] = dateConversion[prop] < 10 ? ('0' + dateConversion[prop]) : dateConversion[prop].toString()
+    }
+  }
+  return dateConversion.year + '-' + dateConversion.month + '-' + dateConversion.date
+}
+
 export const timeFormatter = inputTime => {
   let timeConversion = {
     hours: '',

@@ -76,7 +76,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
+import { dateFormatter, dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
@@ -225,7 +225,6 @@ export default {
         h('DatePicker', {
           props: {
             size: 'small',
-            type: 'datetime',
             transfer: true,
             placeholder: 'null',
             disabled: this.disableTableDatePicker,
@@ -237,7 +236,7 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                targetTable.condition1 = dateFormatter(value)
+                targetTable.condition1 = dateFormatter2(value)
               }
             }
           }
@@ -251,7 +250,6 @@ export default {
         h('DatePicker', {
           props: {
             size: 'small',
-            type: 'datetime',
             transfer: true,
             placeholder: 'null',
             disabled: this.disableTableDatePicker,
@@ -263,7 +261,7 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                targetTable.condition2 = dateFormatter(value)
+                targetTable.condition2 = dateFormatter2(value)
               }
             }
           }
