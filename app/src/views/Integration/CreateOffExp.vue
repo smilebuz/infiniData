@@ -175,6 +175,7 @@ export default {
       createParams: {
         type: 1,
         connId: '',
+        dbName: '',
         user: '',
         tbInfos: [],
         scheduleMode: 1,
@@ -309,6 +310,9 @@ export default {
       handler: function (newParams) {
         this.getTableList(newParams).then(data => {
           this.createParams.connId = this.searchParams.connId
+          this.createParams.dbName = this.dataSources.find(el => {
+            return this.createParams.connId === el.connId
+          }).dbName
           this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
             this.tableList.forEach(table => {
