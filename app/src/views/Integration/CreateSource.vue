@@ -12,27 +12,30 @@
       </div>
     </div>
     <div class="maincontainer configcontainer" v-else>
-      <Form :model="configForm" :label-width="80" class="configform">
+      <Form :model="createParams" :label-width="100" class="createParams">
         <FormItem label="连接名称">
-          <Input v-model="configForm.connName"></Input>
+          <Input v-model="createParams.connName"></Input>
         </FormItem>
         <FormItem label="主机IP">
-          <Input v-model="configForm.host"></Input>
+          <Input v-model="createParams.host"></Input>
         </FormItem>
         <FormItem label="数据库名称">
-          <Input v-model="configForm.dbName"></Input>
+          <Input v-model="createParams.dbName"></Input>
         </FormItem>
         <FormItem label="端口号">
-          <Input v-model="configForm.port"></Input>
+          <Input v-model="createParams.port"></Input>
         </FormItem>
         <FormItem label="用户名">
-          <Input v-model="configForm.userName"></Input>
+          <Input v-model="createParams.userName"></Input>
         </FormItem>
         <FormItem label="密码">
-          <Input v-model="configForm.password"></Input>
+          <Input v-model="createParams.password"></Input>
+        </FormItem>
+        <FormItem label="最大并发连接数">
+          <Input v-model="createParams.maxConn"></Input>
         </FormItem>
         <FormItem label="编码设置">
-          <Select v-model="configForm.encoding">
+          <Select v-model="createParams.encoding">
             <Option value="utf8">UTF-8</Option>
             <Option value="gbk">GBK</Option>
           </Select>
@@ -43,7 +46,6 @@
           <Button @click="cancelConfig">取消</Button>
         </FormItem>
       </Form>
-      <Modal title="连接测试" on-ok="" on-cancel="" v-model="modals.connModal">
       </Modal>
     </div>
   </div>
@@ -78,18 +80,17 @@ export default {
           sourceImg: require('../../assets/images/icon/mysql.png')
         }
       ],
-      configForm: {
+      createParams: {
         connName: '',
         encoding: '',
         host: '',
         port: '',
+        maxConn: '',
         dbType: '',
         dbName: '',
         userName: '',
-        password: ''
-      },
-      modals: {
-        connModal: false
+        password: '',
+        user: ''
       }
     }
   },
@@ -104,26 +105,36 @@ export default {
       testSourceConn: 'testSourceConn'
     }),
     selectSourceType (sourcetype) {
-      this.configForm.dbType = sourcetype
+      this.createParams.dbType = sourcetype
       this.currentStep = 2
     },
     testConn () {
       // 测试请求
       let connParams = {
-        type: this.configForm.dbType,
-        host: this.configForm.host,
-        port: this.configForm.port,
-        database_name: this.configForm.dbName,
-        user_name: this.configForm.userName,
-        password: this.configForm.password
+        type: this.createParams.dbType,
+        host: this.createParams.host,
+        port: this.createParams.port,
+        database_name: this.createParams.dbName,
+        user_name: this.createParams.userName,
+        password: this.createParams.password
       }
       this.testSourceConn(connParams).then(data => {
-        this.modals.connModal = true
+        let content = ''
+        if (data.success) {
+          content = '连接成功'
+        } else {
+          content = '连接失败'
+        }
+        this.$Message.info({
+          content: content,
+          top: 50,
+          duration: 1.5
+        })
       })
     },
     saveConfig () {
       // 保存请求
-      this.createSource(this.configForm).then(data => {
+      this.createSource(this.createParams).then(data => {
         this.$router.push('Source')
       })
     },
@@ -132,7 +143,7 @@ export default {
     }
   },
   mounted () {
-    this.configForm.userName = this.user.name
+    this.createParams.user = this.user.userName
   }
 }
 </script>
@@ -167,7 +178,7 @@ export default {
     padding-top: 50px;
     padding-bottom: 50px;
   }
-  .configform {
+  .createParams {
     width: 40%;
     margin: 0 auto;
     overflow: auto;

@@ -41,17 +41,19 @@
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editParams.scheduleMode" vertical>
-            <Radio :label="1">
-              <span>手动</span>
-            </Radio>
-            <Radio :label="2">
-              <span>定时</span>
-              <DatePicker type="datetime" style="width: 200px;" :transfer="true" v-model="editParams.scheduleCorn"></DatePicker>
-            </Radio>
-            <Radio :label="-1">
-              <span>失效</span>
-            </Radio>
+          <RadioGroup vertical class="radiogroup"
+            v-model="editParams.scheduleMode"
+            @on-change="changeEditScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">定时</Radio>
+              <DatePicker type="datetime" style="width: 200px;" transfer
+                v-model="editParams.scheduleCorn"
+                :options="scheduleOptions"
+                :disabled="disableEditDatePicker"
+              ></DatePicker>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -173,7 +175,7 @@ export default {
           key: 'status',
           width: 200,
           render: (h, params) => {
-            if (params.row.progress > 0 && params.row.progress < 100) {
+            if (params.row.status === 2) {
               return h('div', [
                 h('Progress', {
                   props: {
@@ -222,6 +224,7 @@ export default {
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
+              case 4:
               case 5:
                 if (params.row.scheduleMode === 1) {
                   // 判断是不是手动
@@ -237,7 +240,9 @@ export default {
                       on: {
                         click: () => {
                           let taskIds = [params.row.taskId]
-                          this.startTask({taskIds: taskIds})
+                          this.startTask({taskIds: taskIds}).then(data => {
+                            this.getTaskList(this.searchParams).then(data => {})
+                          })
                         }
                       }
                     }, '启动'),
@@ -277,7 +282,9 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.stopTask({taskId: params.row.taskId})
+                        this.stopTask({taskId: params.row.taskId}).then(data => {
+                          this.getTaskList(this.searchParams).then(data = {})
+                        })
                       }
                     }
                   }, '停止')
@@ -311,7 +318,9 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.restartTask({taskId: params.row.taskId})
+                        this.restartTask({taskId: params.row.taskId}).then(data => {
+                          this.getTaskList(this.searchParams).then(data => {})
+                        })
                       }
                     }
                   }, '重启'),
@@ -344,6 +353,12 @@ export default {
         scheduleMode: '',
         scheduleCorn: '',
         scheduleState: -2
+      },
+      disableEditDatePicker: true,
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
       },
       statusList: {
         0: '不运行',
@@ -388,6 +403,13 @@ export default {
         marginLeft: '20px'
       }
     },
+    changeEditScheduleMode (value) {
+      if (value === 2) {
+        this.disableEditDatePicker = false
+      } else {
+        this.disableEditDatePicker = true
+      }
+    },
     selectTask (selection) {
       this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
       for (let task of selection) {
@@ -405,7 +427,7 @@ export default {
             let targetTask = this.taskList.find(task => {
               return task.taskId === taskId
             })
-            if (targetTask.status === 1) {
+            if (targetTask.status === 2) {
               isDeletable = false
             }
           }
@@ -429,7 +451,9 @@ export default {
             }
           }
           if (isRunnable) {
-            this.startTask({taskIds: this.selectedTaskIds})
+            this.startTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams).then(data => {})
+            })
           } else {
             alert('选择任务中含有非手动运行任务, 请重新选择')
           }
@@ -445,10 +469,13 @@ export default {
       if (task.scheduleState) {
         // 失效
         this.editParams.scheduleMode = -1
+        this.disableEditDatePicker = true
       } else {
         this.editParams.scheduleMode = task.scheduleMode
+        this.disableEditDatePicker = true
         if (task.scheduleMode === 2) {
           this.editParams.scheduleCorn = task.scheduleCorn
+          this.disableEditDatePicker = false
         }
       }
     },

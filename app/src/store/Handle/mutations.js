@@ -8,7 +8,6 @@ export default {
     state.tbList = [...data.data]
   },
   [type.HANDLE_SET_TB_INFO] (state, data) {
-    debugger
     state.tbInfo.fieldList = [...data.fields]
     state.tbInfo.partitionList = [...data.partitions]
   },

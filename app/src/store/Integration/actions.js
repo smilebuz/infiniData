@@ -3,7 +3,7 @@ import type from '../mutation-type'
 
 const actions = {
   getOffImpList ({ commit, getters }, params) {
-    actions.stopOffImpPolling({ commit, getters })
+    actions.stopOffImpPolling({ commit })
     return Api.fullQuery.post(params).then(data => {
       commit(type.SET_OFFIMP_LIST, data)
       actions.pollingOffImp({ commit, getters })
@@ -41,11 +41,8 @@ const actions = {
     commit(type.CLEAR_OFFIMP_TIMER)
   },
   startOffImpTask ({ commit, getters }, params) {
-    Api.startFull.post(params).then(data => {
-      actions.stopOffImpPolling({ commit })
-      commit(type.START_OFFIMP_TASK, params)
-      actions.pollingOffImp({ commit, getters })
-      // return Promise.resolve(data)
+    return Api.startFull.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   deleteOffImpTask ({ commit, getters }, params) {
@@ -54,17 +51,18 @@ const actions = {
     })
   },
   restartOffImpTask ({ commit, getters }, params) {
-    Api.restartFull.get(params).then(data => {
-      actions.stopOffImpPolling({ commit })
-      commit(type.RESTART_OFFIMP_TASK, params)
-      actions.pollingOffImp({ commit, getters })
+    return Api.restartFull.get(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   stopOffImpTask ({ commit, getters }, params) {
-    Api.stopFull.get(params).then(data => {
+    return Api.stopFull.get(params).then(data => {
+      /*
       actions.stopOffImpPolling({ commit })
       commit(type.STOP_OFFIMP_TASK, params)
       actions.pollingOffImp({ commit, getters })
+      */
+      return Promise.resolve(data)
     })
   },
   editOffImpTask ({ commit, getters }, params) {
@@ -107,10 +105,27 @@ const actions = {
   },
 
   // 定时导入
-  getIncImpList ({ commit }, params) {
-    Api.incQuery.post(params).then(data => {
+  getIncImpList ({ commit, getters }, params) {
+    actions.stopIncImpPolling({ commit })
+    return Api.incQuery.post(params).then(data => {
       commit(type.SET_INCIMP_LIST, data)
+      actions.pollingIncImp({ commit, getters })
+      return Promise.resolve(data)
     })
+  },
+  pollingIncImp ({ commit, getters }) {
+    let pollinglist = getters.incImpPollingList
+    let taskIds = [...pollinglist]
+    // debugger
+    polling('getIncStatus', {taskIds: taskIds}, (data) => {
+      commit(type.SET_INCIMP_TASK_STATUS, {
+        data: data.data
+      })
+      console.log('任务timer:', getters.incImport.timer)
+    }, getters.incImport)
+  },
+  stopIncImpPolling ({ commit }) {
+    commit(type.CLEAR_INCIMP_TIMER)
   },
   createIncImpTask ({ commit }, params) {
     return Api.createInc.post(params).then(data => {
@@ -128,13 +143,13 @@ const actions = {
     })
   },
   startIncImpTask ({ commit }, params) {
-    Api.startInc.post(params).then(data => {
-      actions.getIncImpList({ commit })
+    return Api.startInc.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   stopIncImpTask ({ commit }, params) {
-    Api.stopInc.get(params).then(data => {
-      actions.getIncImpList({ commit })
+    return Api.stopInc.get(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   getIncImpDetail ({ commit, getters }, params) {
@@ -162,10 +177,26 @@ const actions = {
   },
 
   // 离线导出
-  getOffExpList ({ commit }, params) {
-    Api.exportQuery.post(params).then(data => {
+  getOffExpList ({ commit, getters }, params) {
+    return Api.exportQuery.post(params).then(data => {
       commit(type.SET_OFFEXP_LIST, data)
+      actions.pollingOffExp({ commit, getters })
+      return Promise.resolve(data)
     })
+  },
+  pollingOffExp ({ commit, getters }) {
+    let pollinglist = getters.offExpPollingList
+    let taskIds = [...pollinglist]
+    // debugger
+    polling('getExpStatus', {taskIds: taskIds}, (data) => {
+      commit(type.SET_OFFEXP_TASK_STATUS, {
+        data: data.data
+      })
+      console.log('任务timer:', getters.offExport.timer)
+    }, getters.offExport)
+  },
+  stopOffExpPolling ({ commit }) {
+    commit(type.CLEAR_OFFEXP_TIMER)
   },
   createOffExpTask ({ commit }, params) {
     return Api.createExport.post(params).then(data => {
@@ -178,13 +209,13 @@ const actions = {
     })
   },
   startOffExpTask ({ commit }, params) {
-    Api.startExport.post(params).then(data => {
-      // actions.getOffExpList({ commit })
+    return Api.startExport.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   stopOffExpTask ({ commit }, params) {
-    Api.stopExport.get(params).then(data => {
-      // actions.getOffExpList({ commit })
+    return Api.stopExport.get(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   editOffExpTask ({ commit }, params) {
@@ -223,8 +254,8 @@ const actions = {
     })
   },
   deleteSource ({ commit }, params) {
-    Api.deleteSource.post(params).then(data => {
-      actions.getSourceList({ commit })
+    return Api.deleteSource.post(params).then(data => {
+      return Promise.resolve(data)
     })
   },
   editSource ({ commit }, params) {
@@ -233,7 +264,7 @@ const actions = {
     })
   },
   testSourceConn ({ commit }, params) {
-    return Api.testSource.post(params).then(data => {
+    return Api.testSource.get(params).then(data => {
       return Promise.resolve(data)
     })
   },

@@ -15,13 +15,13 @@
             </Option>
           </Select>
         </FormItem>
-        <FormItem prop="connState" label="数据源状态" class="form__item">
+        <!--FormItem prop="connState" label="数据源状态" class="form__item">
           <Select v-model="filterForm.connState" placeholder="请选择" style="width:100px;">
             <Option v-for="(value, key) in connStateList" :key="key" :value="key">
               {{ value }}
             </Option>
           </Select>
-        </FormItem>
+        </FormItem-->
         <FormItem class="form__item form__item-button">
           <Button type="primary" @click="changeSearchParams">筛选</Button>
         </FormItem>
@@ -36,28 +36,34 @@
       <Table border stripe :columns="columns" :data="sourceList" class="table" size="default" @on-selection-change="selectSource"></Table>
       <Modal v-model="editModal.show" :title="editModal.title">
         <div class="modal__content">
-          <Form :model="configForm" :label-width="80" class="configform">
+          <Form :model="editParams" :label-width="80" class="editParams">
             <FormItem label="连接名称">
-              <Input v-model="configForm.connName"></Input>
+              <Input v-model="editParams.connName"></Input>
             </FormItem>
             <FormItem label="主机IP">
-              <Input v-model="configForm.host"></Input>
+              <Input v-model="editParams.host"></Input>
             </FormItem>
             <FormItem label="数据库名称">
-              <Input v-model="configForm.dbName"></Input>
+              <Input v-model="editParams.dbName"></Input>
+            </FormItem>
+            <FormItem label="数据库类型">
+              <Input v-model="editParams.dbType" disabled></Input>
             </FormItem>
             <FormItem label="端口号">
-              <Input v-model="configForm.port"></Input>
+              <Input v-model="editParams.port"></Input>
             </FormItem>
             <FormItem label="用户名">
-              <Input v-model="configForm.userName"></Input>
+              <Input v-model="editParams.userName"></Input>
             </FormItem>
             <FormItem label="密码">
-              <Input v-model="configForm.password"></Input>
+              <Input v-model="editParams.password"></Input>
+            </FormItem>
+            <FormItem label="最大并发连接数">
+              <Input v-model="editParams.maxConn"></Input>
             </FormItem>
             <FormItem label="编码设置">
-              <Select v-model="configForm.encoding">
-                <Option value="utf8">UTF-8</Option>
+              <Select v-model="editParams.encoding">
+                <Option value="utf-8">UTF-8</Option>
                 <Option value="gbk">GBK</Option>
               </Select>
             </FormItem>
@@ -93,8 +99,8 @@ export default {
         connState: 0,
         pageNum: 1,
         pageSize: 10,
-        orderBy: '',
-        sort: ''
+        orderBy: 'id',
+        sort: 'desc'
       },
       filterForm: {
         connName: '',
@@ -187,6 +193,11 @@ export default {
           width: 100
         },
         {
+          title: '最大并发连接数',
+          key: 'maxConn',
+          width: 140
+        },
+        {
           title: '创建时间',
           key: 'createTime',
           ellipsis: true,
@@ -220,13 +231,15 @@ export default {
           }
         }
       ],
-      configForm: {
+      editParams: {
         connId: '',
         connName: '',
         encoding: '',
         host: '',
         port: '',
+        maxConn: '',
         dbName: '',
+        dbType: '',
         userName: '',
         password: ''
       },
@@ -276,7 +289,9 @@ export default {
           this.$router.push('CreateSource')
           break
         case 'delete':
-          this.deleteSource({connIds: this.selectedSourceIds})
+          this.deleteSource({connIds: this.selectedSourceIds}).then(data => {
+            this.getSourceList(this.searchParams).then(data = {})
+          })
           break
         default:
           break
@@ -284,16 +299,16 @@ export default {
     },
     openEditModal (source) {
       this.editModal.show = true
-      this.configForm.host = source.IP
-      for (let prop in this.configForm) {
-        if (this.configForm.hasOwnProperty(prop) && prop !== 'host') {
-          this.configForm[prop] = source[prop]
+      this.editParams.host = source.IP
+      for (let prop in this.editParams) {
+        if (this.editParams.hasOwnProperty(prop) && prop !== 'host') {
+          this.editParams[prop] = source[prop]
         }
       }
     },
     saveEdit () {
       // 编辑请求
-      this.editSource(this.configForm).then(data => {
+      this.editSource(this.editParams).then(data => {
         this.editModal.show = false
         this.getSourceList(this.searchParams)
       })
@@ -304,12 +319,12 @@ export default {
     testConn () {
       // 测试请求
       let connParams = {
-        type: this.configForm.dbType,
-        host: this.configForm.host,
-        port: this.configForm.port,
-        database_name: this.configForm.dbName,
-        user_name: this.configForm.userName,
-        password: this.configForm.password
+        type: this.editParams.dbType,
+        host: this.editParams.host,
+        port: this.editParams.port,
+        database_name: this.editParams.dbName,
+        user_name: this.editParams.userName,
+        password: this.editParams.password
       }
       this.testSourceConn(connParams).then(data => {
         alert(data.message)
@@ -368,7 +383,7 @@ export default {
   .modal__content {
     display: flex;
   }
-  .configform {
+  .editParams {
     width: 70%;
     margin: 0 auto;
   }

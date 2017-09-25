@@ -35,6 +35,7 @@ export default {
     },
     incimport: {
       taskList: [],
+      pollingList: [],
       pageInfo: {
         pageNum: -1,
         pageSize: -1,
@@ -59,6 +60,7 @@ export default {
     },
     offexport: {
       taskList: [],
+      pollingList: [],
       pageInfo: {
         pageNum: -1,
         pageSize: -1,

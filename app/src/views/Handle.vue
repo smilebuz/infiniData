@@ -256,27 +256,35 @@ export default {
     operate (action) {
       switch (action) {
         case 'run':
-          this.hasSqlRunning = true
-          let targetTab = this.sqlTabs.find((tab) => {
-            return tab.id === this.currentTabId
-          })
-          let params = {
-            sql: targetTab.editor.getValue()
+          if (this.hasSqlRunning) {
+            this.$Message.warning({
+              content: '当前有正在运行的语句，请等待运行完成后再运行新的sql语句',
+              top: 50,
+              duration: 1.5
+            })
+          } else {
+            this.hasSqlRunning = true
+            let targetTab = this.sqlTabs.find((tab) => {
+              return tab.id === this.currentTabId
+            })
+            let params = {
+              sql: targetTab.editor.getValue()
+            }
+            this.runSql(params).then(data => {
+              this.hasSqlRunning = false
+              this.log = this.sqlInfo.log
+              this.columns = this.sqlInfo.columns
+              this.columns.forEach(column => {
+                column.width = 200
+              })
+              /*
+              this.columns.unshift({
+                type: 'index',
+                title: '#'
+              })
+              */
+            })
           }
-          this.runSql(params).then(data => {
-            this.hasSqlRunning = false
-            this.log = this.sqlInfo.log
-            this.columns = this.sqlInfo.columns
-            this.columns.forEach(column => {
-              column.width = 200
-            })
-            /*
-            this.columns.unshift({
-              type: 'index',
-              title: '#'
-            })
-            */
-          })
           break
         case 'stop':
 

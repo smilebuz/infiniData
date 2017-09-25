@@ -39,7 +39,7 @@ const Apilist = {
   'createSource': '/api/datasource/create', // post
   'editSource': '/api/datasource/edit', // post
   'deleteSource': '/api/datasource/delete', // get
-  'testSource': '/api/schema/databaseConn_test', // get
+  'testSource': '/apiSchema/Export_schema/schema/databaseConn_test', // get
 
   // general
   'sourceGet': '/api/task/get/datasource', // post
@@ -49,7 +49,9 @@ const Apilist = {
   // polling
   'getFullProgress': '/api/task/full/progress', // post
   'getFullDetailProgress': '/api/task/full/detail/progress', // post
+  'getIncStatus': '/api/task/inc/progress', // post
   'getIncDetailProgress': '/api/task/inc/progress', // post
+  'getExpStatus': '/api/task/export/progress', // post
   'getOffExpDetailProgress': '/api/task/export/progress', // post
 
   // handle

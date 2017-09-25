@@ -2,10 +2,11 @@ import type from '../mutation-type'
 
 export default {
   // 离线导入
+  // 主页轮询
   [type.SET_OFFIMP_LIST] (state, data) {
     state.offimport.taskList = data.data
     state.offimport.taskList.forEach((task) => {
-      if (task.progress > 0 && task.progress < 100) {
+      if (task.status === 2 || task.status === 3 || task.scheduleMode === 2) {
         state.offimport.pollingList.push(task.taskId) // pollingList存的是taskId
       }
     })
@@ -58,7 +59,7 @@ export default {
       state.offimport.pollingList.splice(targetIndex, 1)
     }
   },
-
+  // 详情轮询
   [type.SET_OFFIMP_DETAIL_LIST] (state, data) {
     state.offimport.detail.detailList = data.data
     state.offimport.detail.pollingList = data.data
@@ -94,14 +95,41 @@ export default {
   },
 
   // 定时导入
+  // 主页轮询
   [type.SET_INCIMP_LIST] (state, data) {
     state.incimport.taskList = data.data
+    state.incimport.taskList.forEach((task) => {
+      if (task.status === 2 || task.status === 3 || task.scheduleMode === 2 || task.scheduleMode === 3) {
+        state.incimport.pollingList.push(task.taskId) // pollingList存的是taskId
+      }
+    })
     for (let prop in state.incimport.pageInfo) {
       if (state.incimport.pageInfo.hasOwnProperty(prop)) {
         state.incimport.pageInfo[prop] = data[prop]
       }
     }
   },
+  [type.SET_INCIMP_TASK_STATUS] (state, data) {
+    // debugger
+    if (data.data.length) {
+      for (let task of data.data) {
+        let targetTaskId = state.incimport.pollingList.find((el) => {
+          return el === task.taskId
+        })
+        let targetTask = state.incimport.taskList.find((el) => {
+          return el.taskId === targetTaskId
+        })
+        targetTask.status = task.status
+      }
+    }
+  },
+  [type.CLEAR_INCIMP_TIMER] (state) {
+    if (state.incimport.timer) {
+      console.log('停止轮询', state.incimport.timer)
+      clearTimeout(state.incimport.timer)
+    }
+  },
+  // 详情轮询
   [type.SET_INCIMP_DETAIL_LIST] (state, data) {
     state.incimport.detail.taskList = data.data
     state.incimport.detail.pollingList = data.data
@@ -134,17 +162,44 @@ export default {
   },
 
   // 离线导出
+  // 主页轮询
   [type.SET_OFFEXP_LIST] (state, data) {
     state.offexport.taskList = data.data
+    state.offexport.taskList.forEach((task) => {
+      if (task.status === 2 || task.status === 3 || task.scheduleMode === 2 || task.scheduleMode === 3) {
+        state.offexport.pollingList.push(task.taskId) // pollingList存的是taskId
+      }
+    })
     for (let prop in state.offexport.pageInfo) {
       if (state.offexport.pageInfo.hasOwnProperty(prop)) {
         state.offexport.pageInfo[prop] = data[prop]
       }
     }
   },
+  [type.SET_OFFEXP_TASK_STATUS] (state, data) {
+    // debugger
+    if (data.data.length) {
+      for (let task of data.data) {
+        let targetTaskId = state.offexport.pollingList.find((el) => {
+          return el === task.taskId
+        })
+        let targetTask = state.offexport.taskList.find((el) => {
+          return el.taskId === targetTaskId
+        })
+        targetTask.status = task.status
+      }
+    }
+  },
+  [type.CLEAR_OFFEXP_TIMER] (state) {
+    if (state.offexport.timer) {
+      console.log('停止轮询', state.offexport.timer)
+      clearTimeout(state.offexport.timer)
+    }
+  },
+  // 详情轮询
   [type.SET_OFFEXP_DETAIL_LIST] (state, data) {
     state.offexport.detail.detailList = data.data
-    state.incimport.detail.detailList = data.data
+    state.offexport.detail.pollingList = data.data
     for (let prop in state.offexport.detail.detailInfo) {
       if (state.offexport.detail.detailInfo.hasOwnProperty(prop)) {
         state.offexport.detail.detailInfo[prop] = data[prop]

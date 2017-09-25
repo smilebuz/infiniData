@@ -42,7 +42,6 @@
             :total="pageInfo.totalCount"
             :current="pageInfo.currentPage"
             :page-size="pageInfo.pageSize"
-            :page-size-opts="pageopts"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"
           ></Page>
@@ -135,16 +134,23 @@ export default {
       columns: [
         {
           type: 'selection',
-          aling: 'center'
+          aling: 'center',
+          width: 80
         },
         {
           type: 'index',
           align: 'center',
-          title: '序号'
+          title: '序号',
+          width: 80
         },
         {
           title: '库名',
-          key: 'dbName'
+          key: 'dbName',
+          render: (h, params) => {
+            return h('div', {}, this.dataSources.find((el) => {
+              return el.connId === this.searchParams.connId
+            }).dbName)
+          }
         },
         {
           title: '表名',
@@ -152,16 +158,8 @@ export default {
         },
         {
           title: '总记录数',
-          key: 'count',
+          key: 'totalRows',
           sortable: true
-        },
-        {
-          title: '存储类型',
-          key: ''
-        },
-        {
-          title: '描述',
-          key: ''
         }
       ],
       scheduleOptions: {
@@ -175,14 +173,15 @@ export default {
       disableDatePicker: true,
       disableTimePicker: true,
       createParams: {
-        type: '',
+        type: 1,
         connId: '',
         user: '',
         tbInfos: [],
-        scheduleMode: 0,
+        scheduleMode: 1,
         scheduleState: '',
         scheduleCorn: '',
-        selectAll: false
+        selectAll: false,
+        totalCount: 0
       },
       selectAllFlag: false,
       scheduleCornTiming: '',
@@ -278,10 +277,11 @@ export default {
     },
     submitCreateParams () {
       this.createParams.selectAll = this.selectAllFlag
+      this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
-          this.editParams.scheduleCorn = ''
+          this.createParams.scheduleCorn = ''
           break
         case 2:
           this.createParams.scheduleState = 0
@@ -327,7 +327,7 @@ export default {
   },
   mounted () {
     this.getDataSource().then(data => {
-      this.createParams.user = this.user.name
+      this.createParams.user = this.user.userName
       this.filterForm.connId = data.dataSources[0].connId
       this.changeSearchParams()
     })

@@ -42,7 +42,6 @@
             :total="pageInfo.totalCount"
             :current="pageInfo.currentPage"
             :page-size="pageInfo.pageSize"
-            :page-size-opts="pageopts"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"></Page>
         </div>
@@ -93,7 +92,6 @@ import { dateFormatter } from '../../utils/dateFormatter'
 export default {
   data () {
     return {
-      pageopts: [5, 10, 20],
       searchParams: {
         connId: '',
         tables: '',
@@ -151,10 +149,11 @@ export default {
         blocks: 0,
         user: '',
         priority: 1,
-        scheduleMode: '',
+        scheduleMode: 1,
         scheduleCorn: '',
         scheduleState: '',
-        selectAll: false
+        selectAll: false,
+        totalCount: 0
       },
       selectAllFlag: false
     }
@@ -229,6 +228,7 @@ export default {
     },
     submitCreateParams () {
       this.createParams.selectAll = this.selectAllFlag
+      this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
@@ -272,7 +272,7 @@ export default {
   },
   created () {
     this.getDataSource().then(data => {
-      this.createParams.user = this.user.name
+      this.createParams.user = this.user.userName
       this.filterForm.connId = this.dataSources[0].connId
       this.changeSearchParams()
     })

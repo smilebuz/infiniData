@@ -32,6 +32,12 @@ export default {
   incImpList (state) {
     return state.incimport.taskList
   },
+  incImport (state) {
+    return state.incimport
+  },
+  incImpPollingList (state) {
+    return state.incimport.pollingList
+  },
   incImpPageInfo (state) {
     return state.incimport.pageInfo
   },
@@ -54,6 +60,12 @@ export default {
   // 离线导出
   offExpList (state) {
     return state.offexport.taskList
+  },
+  offExport (state) {
+    return state.offexport
+  },
+  offExpPollingList (state) {
+    return state.offexport.pollingList
   },
   offExpPageInfo (state) {
     return state.offexport.pageInfo

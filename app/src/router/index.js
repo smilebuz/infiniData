@@ -48,7 +48,7 @@ let router = new Router({
       path: '/Integration',
       name: 'Integration',
       component: Integration,
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
       children: [
         {
           path: 'Dashboard',
@@ -67,7 +67,7 @@ let router = new Router({
         },
         {
           path: 'CreateOffImp',
-          // meta: { requiresAuth: true },
+          meta: { requiresAuth: true },
           component: CreateOffImp
         },
         {
@@ -82,7 +82,7 @@ let router = new Router({
         },
         {
           path: 'CreateIncImp',
-          // meta: { requiresAuth: true },
+          meta: { requiresAuth: true },
           component: CreateIncImp
         },
         {
@@ -97,7 +97,7 @@ let router = new Router({
         },
         {
           path: 'CreateOffExp',
-          // meta: { requiresAuth: true },
+          meta: { requiresAuth: true },
           component: CreateOffExp
         },
         {
@@ -159,7 +159,7 @@ let router = new Router({
     {
       path: '/SelectTest',
       name: 'SelectTest',
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
       component: SelectTest
     }
   ]

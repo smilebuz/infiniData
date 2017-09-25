@@ -61,7 +61,6 @@ export default {
     })
   },
   mounted () {
-    debugger
     this.searchParams.pdbId = this.$route.params.pdbId
     this.searchParams.tbId = this.$route.params.tbId
     this.getAnalysisList(this.searchParams).then(data => {})

@@ -32,7 +32,6 @@
             :total="pageInfo.totalCount"
             :current="pageInfo.currentPage"
             :page-size="pageInfo.pageSize"
-            :page-size-opts="pageopts"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"
           ></Page>
@@ -82,7 +81,6 @@ import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
 export default {
   data () {
     return {
-      pageopts: [5, 10, 20],
       searchParams: {
         connId: '',
         tables: '',
@@ -161,7 +159,7 @@ export default {
         connId: '',
         tbInfos: [],
         user: '',
-        scheduleMode: '',
+        scheduleMode: 1,
         scheduleCorn: '',
         scheduleState: '',
         selectAll: false
@@ -370,11 +368,9 @@ export default {
           break
       }
       console.log(JSON.stringify(this.createParams.tbInfos))
-      /*
       this.createTask(this.createParams).then(data => {
         this.$router.push('IncImport')
       })
-      */
     }
   },
   watch: {
@@ -429,7 +425,7 @@ export default {
     // this.tableParams[0].incField = 'name' 测试render v-model
     // 保留
     this.getDataSource().then(data => {
-      this.createParams.user = this.user.name
+      this.createParams.user = this.user.userName
       this.filterForm.connId = data.dataSources[0].connId
       this.changeSearchParams()
     })

@@ -50,21 +50,26 @@
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editParams.scheduleMode" vertical>
-            <Radio :label="1">
-              <span>手动</span>
-            </Radio>
-            <Radio :label="2">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 150px;" v-model="scheduleCornTiming" transfer></DatePicker>
-            </Radio>
-            <Radio :label="3">
-              <span>周期</span>
-              <TimePicker size="small" style="width: 150px;" v-model="scheduleCornPeriod" transfer></TimePicker>
-            </Radio>
-            <Radio :label="-1">
-              <span>失效</span>
-            </Radio>
+          <RadioGroup vertical
+            v-model="editParams.scheduleMode"
+            @on-change="changeEditScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">定时</Radio>
+              <DatePicker transfer type="datetime" size="small" style="width: 150px;"
+                v-model="scheduleCornTiming"
+                :options="scheduleOptions"
+                :disabled="disableEditDatePicker"
+              ></DatePicker>
+            </div>
+            <div class="radiopicker">
+              <Radio :label="3">周期</Radio>
+              <TimePicker transfer size="small" style="width: 150px;"
+                v-model="scheduleCornPeriod"
+                :disabled="disableEditTimePicker"
+              ></TimePicker>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -94,8 +99,8 @@ export default {
         status: '',
         pageNum: 1,
         pageSize: 10,
-        orderBy: '',
-        sort: ''
+        orderBy: 'id',
+        sort: 'desc'
       },
       filterForm: {
         taskId: '',
@@ -222,6 +227,13 @@ export default {
         show: false,
         title: '任务编辑'
       },
+      disableEditDatePicker: true,
+      disableEditTimePicker: true,
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
+      },
       editParams: {
         taskId: '',
         type: '',
@@ -266,7 +278,8 @@ export default {
       deleteTask: 'deleteOffExpTask',
       editTask: 'editOffExpTask',
       startTask: 'startOffExpTask',
-      stopTask: 'stopOffExpTask'
+      stopTask: 'stopOffExpTask',
+      stopPolling: 'stopOffExpPolling'
     }),
     opStyle (imgUrl) {
       return {
@@ -292,7 +305,9 @@ export default {
                 on: {
                   click: () => {
                     let taskIds = [params.row.taskId]
-                    this.startTask({taskIds: taskIds})
+                    this.startTask({taskIds: taskIds}).then(data => {
+                      this.getTaskList(this.searchParams).then(data => {})
+                    })
                   }
                 }
               }, '启动'),
@@ -352,7 +367,9 @@ export default {
               },
               on: {
                 click: () => {
-                  this.restartTask({taskId: params.row.taskId})
+                  this.restartTask({taskId: params.row.taskId}).then(data => {
+                    this.getTaskList(this.searchParams).then(data => {})
+                  })
                 }
               }
             }, '重启'),
@@ -402,7 +419,7 @@ export default {
             let targetTask = this.taskList.find(task => {
               return task.taskId === taskId
             })
-            if (targetTask.status === 1) {
+            if (targetTask.status === 2) {
               isDeletable = false
             }
           }
@@ -425,8 +442,12 @@ export default {
       if (task.scheduleState) {
         // 失效
         this.editParams.scheduleMode = -1
+        this.disableEditDatePicker = true
+        this.disableEditTimePicker = true
       } else {
         this.editParams.scheduleMode = task.scheduleMode
+        this.disableEditDatePicker = !(task.scheduleMode === 2)
+        this.disableEditTimePicker = !(task.scheduleMode === 3)
         switch (task.scheduleMode) {
           case 2:
             this.scheduleCornTiming = task.scheduleCorn
@@ -466,6 +487,10 @@ export default {
     },
     cancelEdit () {
     },
+    changeEditScheduleMode (value) {
+      this.disableEditDatePicker = !(value === 2)
+      this.disableEditTimePicker = !(value === 3)
+    },
     selectTask (selection) {
       this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
       for (let task of selection) {
@@ -496,6 +521,9 @@ export default {
   },
   mounted () {
     this.getTaskList(this.searchParams).then(data => {})
+  },
+  beforeDestroy () {
+    this.stopPolling()
   }
 }
 </script>

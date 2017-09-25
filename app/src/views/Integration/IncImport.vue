@@ -33,22 +33,26 @@
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup v-model="editParams.scheduleMode" vertical>
-            <Radio :label="1">
-              <span>手动</span>
-            </Radio>
-            <Radio :label="2">
-              <span>定时</span>
-              <DatePicker type="datetime" size="small" style="width: 200px;"
-              v-model="scheduleCornTiming" transfer></DatePicker>
-            </Radio>
-            <Radio :label="3">
-              <span>周期</span>
-              <TimePicker size="small" style="width: 120px;" v-model="scheduleCornPeriod" transfer></TimePicker>
-            </Radio>
-            <Radio :label="-1">
-              <span>失效</span>
-            </Radio>
+          <RadioGroup vertical class="radiogroup"
+            v-model="editParams.scheduleMode"
+            @on-change="changeEditScheduleMode">
+            <Radio :label="1" class="radiogroup__radio">手动</Radio>
+            <div class="radiopicker">
+              <Radio :label="2">定时</Radio>
+              <DatePicker transfer type="datetime" size="small" style="width: 200px;"
+                v-model="scheduleCornTiming"
+                :options="scheduleOptions"
+                :disabled="disableEditDatePicker"
+              ></DatePicker>
+            </div>
+            <div class="radiopicker">
+              <Radio :label="3">周期</Radio>
+              <TimePicker size="small" style="width: 120px;" transfer
+                v-model="scheduleCornPeriod"
+                :disabled="disableEditTimePicker"
+              ></TimePicker>
+            </div>
+            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -78,8 +82,8 @@ export default {
         scheduleState: '',
         pageNum: 1,
         pageSize: 10,
-        orderBy: '',
-        sort: ''
+        orderBy: 'id',
+        sort: 'desc'
       },
       filterForm: {
         taskId: '',
@@ -211,6 +215,7 @@ export default {
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
+              case 4:
               case 5:
                 if (params.row.scheduleMode === 1) {
                   // 判断是不是手动
@@ -226,7 +231,9 @@ export default {
                       on: {
                         click: () => {
                           let taskIds = [params.row.taskId]
-                          this.startTask({taskIds: taskIds})
+                          this.startTask({taskIds: taskIds}).then(data => {
+                            this.getTaskList(this.searchParams).then(data => {})
+                          })
                         }
                       }
                     }, '启动'),
@@ -267,7 +274,7 @@ export default {
                     on: {
                       click: () => {
                         this.stopTask({taskId: params.row.taskId}).then(data => {
-                          this.getTaskList(this.searchParams)
+                          this.getTaskList(this.searchParams).then(data => {})
                         })
                       }
                     }
@@ -302,7 +309,9 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.restartTask({taskId: params.row.taskId})
+                        this.restartTask({taskId: params.row.taskId}).then(data => {
+                          this.getTaskList(this.searchParams).then(data => {})
+                        })
                       }
                     }
                   }, '重启'),
@@ -328,6 +337,13 @@ export default {
       editModal: {
         show: false,
         title: '任务编辑'
+      },
+      disableEditDatePicker: true,
+      disableEditTimePicker: true,
+      scheduleOptions: {
+        disabledDate (date) {
+          return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
+        }
       },
       editParams: {
         taskId: '',
@@ -360,7 +376,8 @@ export default {
       editTask: 'editIncImpTask',
       deleteTask: 'deleteIncImpTask',
       startTask: 'startIncImpTask',
-      stopTask: 'stopIncImpTask'
+      stopTask: 'stopIncImpTask',
+      stopPolling: 'stopIncImpPolling'
     }),
     changeSearchParams () {
       for (let prop in this.filterForm) {
@@ -368,6 +385,10 @@ export default {
           this.searchParams[prop] = this.filterForm[prop]
         }
       }
+    },
+    changeEditScheduleMode (value) {
+      this.disableEditDatePicker = !(value === 2)
+      this.disableEditTimePicker = !(value === 3)
     },
     selectTask (selection) {
       this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
@@ -393,7 +414,7 @@ export default {
             let targetTask = this.taskList.find(task => {
               return task.taskId === taskId
             })
-            if (targetTask.status === 1) {
+            if (targetTask.status === 2) {
               isDeletable = false
             }
           }
@@ -417,7 +438,9 @@ export default {
             }
           }
           if (isRunnable) {
-            this.startTask({taskIds: this.selectedTaskIds})
+            this.startTask({taskIds: this.selectedTaskIds}).then(data => {
+              this.getTaskList(this.searchParams).then(data => {})
+            })
           } else {
             alert('选择任务中含有非手动运行任务, 请重新选择')
           }
@@ -431,8 +454,12 @@ export default {
       this.editParams.taskId = task.taskId
       if (task.scheduleState) {
         this.editParams.scheduleMode = -1
+        this.disableEditDatePicker = true
+        this.disableEditTimePicker = true
       } else {
         this.editParams.scheduleMode = task.scheduleMode
+        this.disableEditDatePicker = !(task.scheduleMode === 2)
+        this.disableEditTimePicker = !(task.scheduleMode === 3)
         if (task.scheduleMode === 2) {
           this.scheduleCornTiming = task.scheduleCorn
         }
@@ -484,6 +511,9 @@ export default {
   },
   mounted () {
     this.getTaskList(this.searchParams)
+  },
+  beforeDestroy () {
+    this.stopPolling()
   }
 }
 </script>
