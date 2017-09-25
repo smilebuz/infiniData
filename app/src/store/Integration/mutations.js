@@ -22,7 +22,6 @@ export default {
     }
   },
   [type.SET_OFFIMP_TASK_STATUS] (state, data) {
-    // debugger
     if (data.data.length) {
       for (let task of data.data) {
         let targetTaskId = state.offimport.pollingList.find((el) => {
@@ -131,7 +130,7 @@ export default {
   },
   // 详情轮询
   [type.SET_INCIMP_DETAIL_LIST] (state, data) {
-    state.incimport.detail.taskList = data.data
+    state.incimport.detail.detailList = data.data
     state.incimport.detail.pollingList = data.data
     for (let prop in state.incimport.detail.detailInfo) {
       if (state.incimport.detail.detailInfo.hasOwnProperty(prop)) {

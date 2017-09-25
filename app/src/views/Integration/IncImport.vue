@@ -181,6 +181,14 @@ export default {
           width: 155
         },
         {
+          title: '状态',
+          key: 'status',
+          width: 100,
+          render: (h, params) => {
+            return h('div', this.statusList[params.row.status])
+          }
+        },
+        {
           title: '调度类型',
           key: 'scheduleMode',
           width: 120,
@@ -299,6 +307,7 @@ export default {
               */
               case 99:
                 return h('div', [
+                  /*
                   h('Button', {
                     props: {
                       type: 'primary',
@@ -315,6 +324,7 @@ export default {
                       }
                     }
                   }, '重启'),
+                  */
                   h('Button', {
                     props: {
                       type: 'primary',
@@ -361,6 +371,15 @@ export default {
       scheduleStateList: {
         '0': '有效',
         '1': '无效'
+      },
+      statusList: {
+        0: '不运行',
+        1: '待运行',
+        2: '抽取数据',
+        3: '生成parquet',
+        4: '已完成',
+        5: '已停止',
+        99: '已失败'
       }
     }
   },

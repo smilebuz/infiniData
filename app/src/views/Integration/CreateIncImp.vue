@@ -155,6 +155,7 @@ export default {
       },
       disableSettingDatePicker: true,
       disableSettingTimePicker: true,
+      disableTableDatePicker: false,
       createParams: {
         connId: '',
         tbInfos: [],
@@ -227,6 +228,7 @@ export default {
             type: 'datetime',
             transfer: true,
             placeholder: 'null',
+            disabled: this.disableTableDatePicker,
             value: targetTable.condition1
           },
           style: {
@@ -252,6 +254,7 @@ export default {
             type: 'datetime',
             transfer: true,
             placeholder: 'null',
+            disabled: this.disableTableDatePicker,
             value: targetTable.condition2
           },
           style: {
@@ -408,9 +411,10 @@ export default {
     },
     createParams: {
       handler: function (newParams) {
-        if (newParams.scheduleMode === 2) {
-          alert(newParams.scheduleMode)
-          //  条件无效
+        if (newParams.scheduleMode === 3) {
+          this.disableTableDatePicker = true
+        } else {
+          this.disableTableDatePicker = false
         }
       },
       deep: true

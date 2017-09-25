@@ -40,7 +40,7 @@
           </div>
           <Page show-sizer show-elevator
             :total="pageInfo.totalCount"
-            :current="pageInfo.currentPage"
+            :current="pageInfo.pageNum"
             :page-size="pageInfo.pageSize"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"></Page>

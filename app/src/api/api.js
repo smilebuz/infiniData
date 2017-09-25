@@ -50,9 +50,9 @@ const Apilist = {
   'getFullProgress': '/api/task/full/progress', // post
   'getFullDetailProgress': '/api/task/full/detail/progress', // post
   'getIncStatus': '/api/task/inc/progress', // post
-  'getIncDetailProgress': '/api/task/inc/progress', // post
+  'getIncDetailProgress': '/api/task/inc/detail/progress', // post
   'getExpStatus': '/api/task/export/progress', // post
-  'getOffExpDetailProgress': '/api/task/export/progress', // post
+  'getOffExpDetailProgress': '/api/task/export/detail/progress', // post
 
   // handle
   'handledbList': '/api/hive/platformdb/all', // get

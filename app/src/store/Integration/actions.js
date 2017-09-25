@@ -76,7 +76,7 @@ const actions = {
     })
   },
   getOffImpDetail ({ commit, getters }, params) {
-    actions.stopOffImpDetailPolling({ commit, getters })
+    actions.stopOffImpDetailPolling({ commit })
     Api.fullDetail.post(params).then(data => {
       commit(type.SET_OFFIMP_DETAIL_LIST, data)
       actions.pollingOffImpDetail({ commit, getters }, data.taskId)
@@ -165,7 +165,10 @@ const actions = {
     pollingList.forEach((worker) => {
       workerIds.push(worker.workerId) // 子任务id
     })
-    polling('IncDetailProgress', workerIds, (data) => {
+    let params = {
+      workerIds: workerIds
+    }
+    polling('getIncDetailProgress', params, (data) => {
       commit(type.SET_INCIMP_DETAIL_STATUS, {
         data: data
       })

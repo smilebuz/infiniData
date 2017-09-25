@@ -33,24 +33,32 @@
       <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">导出目标</span>
-          <RadioGroup v-model="editParams.type" vertical>
-            <Radio :label="1" class="radio-custom">
-              <span class="radio__label">CSV</span>
+          <RadioGroup vertical class="radiogroup"
+            v-model="editParams.type"
+            @on-change="changeEditType">
+            <div class="radioselect">
+              <Radio :label="1" class="radioselect__type">CSV</Radio>
               <span class="radiogroup__item-label">编码</span>
-              <Select class="select"></Select>
-              <span class="radiogroup__item-label">分隔符</span>
-              <Select class="select"></Select>
-            </Radio>
-            <Radio :label="2" class="radio-custom">
-              <span class="radio__label">数据库</span>
+              <Select class="select" style="width:300px;" size="small"
+                :disabled="disableEditCSVSelect">
+              </Select>
+              <span class="radiogroup__item-label" size="small">分隔符</span>
+              <Select class="select"
+                :disabled="disableEditCSVSelect"
+              ></Select>
+            </div>
+            <div class="radioselect">
+              <Radio :label="2" class="radioselect__type">数据库</Radio>
               <span class="radiogroup__item-label">数据源</span>
-              <Select class="select"></Select>
-            </Radio>
+              <Select class="select" size="small"
+                :disabled="disableEditDBSelect"
+              ></Select>
+            </div>
           </RadioGroup>
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
-          <RadioGroup vertical
+          <RadioGroup vertical class="radiogroup"
             v-model="editParams.scheduleMode"
             @on-change="changeEditScheduleMode">
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
@@ -186,6 +194,14 @@ export default {
           ellipsis: true
         },
         {
+          title: '状态',
+          key: 'status',
+          width: 100,
+          render: (h, params) => {
+            return h('div', this.statusList[params.row.status])
+          }
+        },
+        {
           title: '调度类型',
           key: 'scheduleMode',
           width: 120,
@@ -227,6 +243,8 @@ export default {
         show: false,
         title: '任务编辑'
       },
+      disableEditCSVSelect: true,
+      disableEditDBSelect: true,
       disableEditDatePicker: true,
       disableEditTimePicker: true,
       scheduleOptions: {
@@ -254,10 +272,10 @@ export default {
         '3': '周期'
       },
       statusList: {
-        '0': '不运行',
         '1': '待运行',
         '2': '运行中',
-        '3': '成功',
+        '3': '已完成',
+        '5': '已停止',
         '99': '失败'
       },
       typeList: {
@@ -439,6 +457,8 @@ export default {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
       this.editParams.type = task.type
+      this.disableEditCSVSelect = !(task.type === 1)
+      this.disableEditDBSelect = !(task.type === 2)
       if (task.scheduleState) {
         // 失效
         this.editParams.scheduleMode = -1
@@ -486,6 +506,10 @@ export default {
       })
     },
     cancelEdit () {
+    },
+    changeEditType (value) {
+      this.disableEditCSVSelect = !(value === 1)
+      this.disableEditDBSelect = !(value === 2)
     },
     changeEditScheduleMode (value) {
       this.disableEditDatePicker = !(value === 2)
@@ -535,9 +559,6 @@ export default {
   }
   .modal__content {
     display: flex;
-  }
-  .radio-custom {
-    margin-bottom: 10px;
   }
   .radiogroup__item-label {
     min-width: 40px;

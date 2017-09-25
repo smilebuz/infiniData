@@ -29,6 +29,14 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      statusList: {
+        0: '不运行',
+        1: '待运行',
+        2: '抽取数据',
+        3: '生成parquet',
+        4: '已完成',
+        99: '已失败'
+      },
       columns: [
         {
           type: 'index',
@@ -37,7 +45,7 @@ export default {
         },
         {
           title: '调度时间',
-          key: 'scheduleDate',
+          key: 'scheduleCorn',
           ellipsis: true
         },
         {
@@ -73,7 +81,7 @@ export default {
           key: 'extractSpeed'
         },
         {
-          title: '调度状态',
+          title: '状态',
           key: 'status',
           width: 150,
           render: (h, params) => {
@@ -86,9 +94,7 @@ export default {
                 })
               ])
             } else {
-              return h('div', [
-                h('span', {}, params.row.status)
-              ])
+              return h('div', {}, this.statusList[params.row.status])
             }
           }
         },
