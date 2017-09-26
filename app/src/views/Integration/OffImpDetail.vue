@@ -23,6 +23,12 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      statusList: {
+        1: '待运行',
+        2: '运行中',
+        3: '已完成',
+        99: '失败'
+      },
       columns: [
         {
           type: 'index',
@@ -78,26 +84,26 @@ export default {
         {
           title: '抽取速度',
           key: 'extractSpeed',
-          width: 100
+          width: 120,
+          render: (h, params) => {
+            return h('div', {}, parseInt(params.row.extractSpeed) + '条/s')
+          }
         },
         {
           title: '状态',
           key: 'status',
           width: 200,
           render: (h, params) => {
-            switch (params.row.status) {
-              case 2:
-                return h('div', [
-                  h('Progress', {
-                    props: {
-                      percent: params.row.progress
-                    }
-                  })
-                ])
-              case 3:
-                return h('div', '完成')
-              default:
-                break
+            if (params.row.status === 2) {
+              return h('div', [
+                h('Progress', {
+                  props: {
+                    percent: params.row.progress
+                  }
+                })
+              ])
+            } else {
+              return h('div', {}, this.statusList[params.row.status])
             }
           }
         },

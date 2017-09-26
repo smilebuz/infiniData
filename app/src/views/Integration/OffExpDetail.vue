@@ -29,6 +29,12 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      statusList: {
+        1: '待运行',
+        2: '运行中',
+        3: '已完成',
+        99: '失败'
+      },
       columns: [
         {
           type: 'index',
@@ -63,26 +69,17 @@ export default {
         },
         {
           title: '抽取速度',
-          key: 'extractSpeed'
+          key: 'extractSpeed',
+          render: (h, params) => {
+            return h('div', {}, parseInt(params.row.extractSpeed) + '条/s')
+          }
         },
         {
           title: '状态',
           key: 'status',
           width: 150,
           render: (h, params) => {
-            if (params.row.status === 2) {
-              return h('div', [
-                h('Progress', {
-                  props: {
-                    percent: params.row.progress
-                  }
-                })
-              ])
-            } else {
-              return h('div', [
-                h('span', {}, params.row.status)
-              ])
-            }
+            return h('div', {}, this.statusList[params.row.status])
           }
         },
         {

@@ -81,8 +81,12 @@ export default {
         let targetWorker = state.offimport.detail.pollingList.find((el) => {
           return el.workerId === worker.workerId
         })
+        targetWorker.startTime = worker.startTime
+        targetWorker.endTime = worker.endTime
+        targetWorker.spendTime = worker.spendTime
         targetWorker.progress = worker.progress
-        targetWorker.extractSpeed = parseInt(worker.extractSpeed) + '条/s'
+        targetWorker.status = worker.status
+        targetWorker.extractSpeed = worker.extractSpeed
       }
     }
   },
@@ -149,8 +153,11 @@ export default {
         let targetWorker = state.incimport.detail.pollingList.find((el) => {
           return el.workerId === worker.workerId
         })
+        targetWorker.startTime = worker.startTime
+        targetWorker.endTime = worker.endTime
+        targetWorker.spendTime = worker.spendTime
+        targetWorker.status = worker.status
         targetWorker.progress = worker.progress
-        targetWorker.extractSpeed = parseInt(worker.extractSpeed) + '条/s'
       }
     }
   },
@@ -185,6 +192,7 @@ export default {
         let targetTask = state.offexport.taskList.find((el) => {
           return el.taskId === targetTaskId
         })
+        targetTask.targetPath = task.targetPath
         targetTask.status = task.status
       }
     }
@@ -216,7 +224,12 @@ export default {
         let targetWorker = state.offexport.detail.pollingList.find((el) => {
           return el.workerId === worker.workerId
         })
+        targetWorker.startTime = worker.startTime
+        targetWorker.endTime = worker.endTime
+        targetWorker.spendTime = worker.spendTime
+        targetWorker.status = worker.status
         targetWorker.progress = worker.progress
+        targetWorker.extractSpeed = worker.extractSpeed
       }
     }
   },

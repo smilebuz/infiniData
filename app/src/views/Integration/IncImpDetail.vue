@@ -30,11 +30,9 @@ export default {
         pageSize: 10
       },
       statusList: {
-        0: '不运行',
         1: '待运行',
         2: '抽取数据',
-        3: '生成parquet',
-        4: '已完成',
+        3: '已完成',
         99: '已失败'
       },
       columns: [
@@ -56,11 +54,13 @@ export default {
           title: '增量条件',
           key: 'incCondition'
         },
+        /*
         {
           title: '总记录数',
           key: 'totalRows',
           sortable: true
         },
+        */
         {
           title: '开始时间',
           key: 'startTime',
@@ -76,10 +76,12 @@ export default {
           title: '耗时',
           key: 'spendTime'
         },
+        /*
         {
           title: '抽取速度',
           key: 'extractSpeed'
         },
+        */
         {
           title: '状态',
           key: 'status',

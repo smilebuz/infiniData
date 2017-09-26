@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import updateCompletions from '../utils/updateCompletions.js'
+// import updateCompletions from '../utils/updateCompletions.js'
 import { mapGetters, mapActions } from 'vuex'
 
 let ace = require('brace')
@@ -362,7 +362,7 @@ export default {
       this.saveModal.saveName = ''
     },
     setBrace (newSqlTab) {
-      updateCompletions(this.schemaInfo)
+      // updateCompletions(this.schemaInfo)
       let editor = ace.edit(newSqlTab.id)
       newSqlTab.editor = editor
       newSqlTab.editor.setValue(newSqlTab.content)
@@ -375,7 +375,7 @@ export default {
       })
     },
     setBraces () {
-      updateCompletions(this.schemaInfo)
+      // updateCompletions(this.schemaInfo)
       for (let tab of this.sqlTabs) {
         let editor = ace.edit(tab.id)
         tab.editor = editor

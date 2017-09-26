@@ -173,7 +173,7 @@ export default {
         {
           title: '增量字段',
           key: 'incField',
-          width: 120
+          width: 150
         },
         {
           title: '增量条件',
@@ -183,7 +183,7 @@ export default {
         {
           title: '状态',
           key: 'status',
-          width: 100,
+          width: 150,
           render: (h, params) => {
             return h('div', this.statusList[params.row.status])
           }
@@ -199,7 +199,7 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 120
+          width: 160
         },
         {
           title: '调度状态',

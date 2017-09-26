@@ -375,16 +375,30 @@ export default {
           ])
         case 3:
           return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.openEditModal(params.row)
+                }
+              }
+            }, '编辑'),
+            /*
             h('a', {
               domProps: {
-                href: 'http://' + params.row.downloadUrl,
-                download: '1.csv'
-                // href: 'www.baidu.com'
+                href: 'http://' + params.row.downloadUrl
               },
               style: {
                 marginRight: '5px'
               }
-            }, '下载'),
+            }, '下载')
+            */
             h('Button', {
               props: {
                 type: 'primary',
@@ -392,10 +406,10 @@ export default {
               },
               on: {
                 click: () => {
-                  this.openEditModal(params.row)
+                  window.location.href = 'http://' + params.row.downloadUrl
                 }
               }
-            }, '编辑')
+            }, '下载')
           ])
         case 99:
           return h('div', [
