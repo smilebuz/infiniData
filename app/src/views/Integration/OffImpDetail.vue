@@ -5,7 +5,7 @@
       <Progress :percent="detailProgress" class="progress"></Progress>
     </div>
     <div class="tbcontainer">
-      <Table :columns="columns" :data="detailList"></Table>
+      <Table :columns="columns" :data="detailList" class="table"></Table>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -34,7 +34,7 @@ export default {
           type: 'index',
           title: '序号',
           fixed: 'left',
-          width: 60
+          width: 70
         },
         {
           title: '调度时间',
@@ -111,7 +111,7 @@ export default {
           title: '备注',
           key: 'info',
           ellipsis: true,
-          width: 120
+          width: 150
         }
       ],
       searchParams: {

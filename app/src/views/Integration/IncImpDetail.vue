@@ -4,7 +4,7 @@
       <p>{{ detailInfo.dbName }}库的{{ detailInfo.tbName }}表的定时任务{{ detailInfo.taskId }}执行历史记录</p>
     </div>
     <div class="tbcontainer">
-      <Table :columns="columns" :data="detailList"></Table>
+      <Table :columns="columns" :data="detailList" class="table"></Table>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -39,53 +39,45 @@ export default {
         {
           type: 'index',
           title: '序号',
-          width: 60
+          fixed: 'left',
+          width: 70
         },
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          ellipsis: true
+          width: 160
         },
         {
           title: '增量字段',
-          key: 'incField'
+          key: 'incField',
+          width: 120
         },
         {
           title: '增量条件',
-          key: 'incCondition'
+          key: 'incCondition',
+          width: 120
         },
-        /*
-        {
-          title: '总记录数',
-          key: 'totalRows',
-          sortable: true
-        },
-        */
         {
           title: '开始时间',
           key: 'startTime',
           sortable: true,
-          ellipsis: true
+          width: 160
         },
         {
           title: '结束时间',
           key: 'endTime',
-          sortable: true
+          sortable: true,
+          width: 160
         },
         {
           title: '耗时',
-          key: 'spendTime'
+          key: 'spendTime',
+          width: 100
         },
-        /*
-        {
-          title: '抽取速度',
-          key: 'extractSpeed'
-        },
-        */
         {
           title: '状态',
           key: 'status',
-          width: 150,
+          width: 200,
           render: (h, params) => {
             if (params.row.status === 2) {
               return h('div', [
@@ -103,7 +95,7 @@ export default {
         {
           title: '备注',
           key: 'info',
-          ellipsis: true
+          width: 150
         }
       ]
     }
