@@ -133,23 +133,22 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 15px 10px;
+    padding-right: 0;
   }
   .overview__box {
+    flex: 1;
     padding-left: 90px;
     padding-right: 70px;
     padding-top: 10px;
     padding-bottom: 10px;
+    margin-right: 10px;
+    text-align: left;
   }
   .overview__box-title {
     font-size: 16px;
   }
-  .overview__box-detail {
-    text-align: left;
-  }
   .taskPanel {
     width: calc(100% - 20px);
     margin-left: 10px;
-  }
-  .tbcontainer {
   }
 </style>

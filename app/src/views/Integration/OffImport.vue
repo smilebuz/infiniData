@@ -24,7 +24,11 @@
       </Form>
     </div>
     <div class="opgroup">
-      <div class="opgroup__item" v-for="operation in operations" :key="operation.value" :style="opStyle(operation.imgUrl)" @click="operateTask(operation.value)">
+      <div class="opgroup__item"
+        v-for="operation in operations"
+        :key="operation.value"
+        :style="opStyle(operation)"
+        @click="operateTask(operation.value)">
         {{ operation.text }}
       </div>
     </div>
@@ -34,7 +38,11 @@
         :data="taskList"
         @on-selection-change="selectTask"
       ></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
+      <Modal
+        v-model="editModal.show"
+        :title="editModal.title"
+        @on-ok="submitEditParams"
+        @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">分片设置</span>
           <Input v-model="editParams.blocks" size="small" class="modal__input" number></Input>
@@ -101,16 +109,19 @@ export default {
         {
           value: 'run',
           text: '立即运行',
+          bgColor: '#80c58c',
           imgUrl: require('../../assets/images/icon/run.png')
         },
         {
           value: 'delete',
           text: '删除任务',
+          bgColor: '#e87178',
           imgUrl: require('../../assets/images/icon/nored.png')
         },
         {
           value: 'create',
           text: '创建导入任务',
+          bgColor: '#66b8ef',
           imgUrl: require('../../assets/images/icon/new.png')
         }
       ],
@@ -395,10 +406,11 @@ export default {
       editTask: 'editOffImpTask',
       stopPolling: 'stopOffImpPolling'
     }),
-    opStyle (imgUrl) {
+    opStyle (op) {
       return {
-        background: 'url(' + imgUrl + ') no-repeat left center',
-        paddingLeft: '20px',
+        background: 'url(' + op.imgUrl + ') no-repeat 5px center' + op.bgColor,
+        paddingLeft: '25px',
+        paddingRight: '5px',
         marginLeft: '20px'
       }
     },
@@ -532,10 +544,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .opgroup {
-    height: 30px;
-    line-height: 30px;
-  }
   .modal__content {
     display: flex;
     margin-bottom: 10px;

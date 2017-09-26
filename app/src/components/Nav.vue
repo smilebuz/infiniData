@@ -3,9 +3,13 @@
     <div class="nav__logo">
     </div>
     <div class="nav__menu">
-      <router-link tag="span" class="nav__menu-item" v-for="(item, index) in menu" :key="item.name" :to="item.path">
+      <span class="nav__menu-item"
+        v-for="(item, index) in menu"
+        :key="item.name"
+        :class="{ item__selected: item.isSelected }"
+        @click="selectNav(item)">
         {{ item.name }}
-      </router-link>
+      </span>
     </div>
     <div class="nav__user">
       <Avatar icon="person" />
@@ -30,24 +34,29 @@ export default {
       menu: [
         {
           name: '数据集成',
-          path: '/Integration/Dashboard'
+          path: '/Integration/OffImport',
+          isSelected: false
         },
         {
           name: '数据处理',
-          path: '/Handle'
+          path: '/Handle',
+          isSelected: false
         },
         {
           name: '数据管理',
-          path: '/Manage'
+          path: '/Manage',
+          isSelected: false
         },
         {
           name: '运维管理',
-          path: '/Op/LogManage'
+          path: '/Op/LogManage',
+          isSelected: false
         }
         /*
         {
           name: '全选测试',
-          path: '/SelectTest'
+          path: '/SelectTest',
+          isSelected: false
         }
         */
       ]
@@ -61,7 +70,13 @@ export default {
   methods: {
     ...mapActions([
       'logout'
-    ])
+    ]),
+    selectNav (nav) {
+      this.menu.forEach(item => {
+        item.isSelected = (item.name === nav.name)
+      })
+      this.$router.push(nav.path)
+    }
   }
 }
 </script>
@@ -87,14 +102,17 @@ export default {
     color: #fff;
   }
   .nav__menu-item {
-    width: 70px;
+    width: 150px;
     line-height: 50px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
     &:hover {
-      background: #66b8f0;
+      background: #393d41;
     }
+  }
+  .item__selected {
+    background: #393d41;
   }
   .nav__user {
     position: absolute;

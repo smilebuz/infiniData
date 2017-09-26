@@ -6,11 +6,15 @@
     <div class="sidebar__trigger" v-show="!showMenu" @click="triggerMenu">
       <Icon type="arrow-right-b" />
     </div>
-    <router-link :to="item.path" tag="div" class="sidebar__item" v-for="(item, index) in menu" :key="item.name">
+    <div class="sidebar__item"
+      v-for="(item, index) in menu"
+      :key="item.name"
+      :class="{ sidebar__selected: item.isSelected }"
+      @click="selectSidebar(item)">
       <img :src="item.imgUrl" :alt="item.name" v-show="showMenu" class="sidebar__icon">
       <img :src="item.imgUrlBG" :alt="item.name" v-show="!showMenu" class="sidebar__icon-bg">
       <span v-show="showMenu">{{ item.name }}</span>
-    </router-link>
+    </div>
   </div>
 </template>
 
@@ -20,33 +24,39 @@ export default {
     return {
       showMenu: true,
       menu: [
+        /*
         {
           name: '仪表盘',
           path: '/Integration/Dashboard',
           imgUrl: require('../assets/images/icon/menu1.png'),
           imgUrlBG: require('../assets/images/icon/menu01.png')
         },
+        */
         {
           name: '离线导入',
           path: '/Integration/OffImport',
+          isSelected: true,
           imgUrl: require('../assets/images/icon/menu2.png'),
           imgUrlBG: require('../assets/images/icon/menu02.png')
         },
         {
           name: '定时导入',
           path: '/Integration/IncImport',
+          isSelected: false,
           imgUrl: require('../assets/images/icon/menu3.png'),
           imgUrlBG: require('../assets/images/icon/menu03.png')
         },
         {
           name: '离线导出',
           path: '/Integration/OffExport',
+          isSelected: false,
           imgUrl: require('../assets/images/icon/menu4.png'),
           imgUrlBG: require('../assets/images/icon/menu04.png')
         },
         {
           name: '数据源',
           path: '/Integration/Source',
+          isSelected: false,
           imgUrl: require('../assets/images/icon/menu5.png'),
           imgUrlBG: require('../assets/images/icon/menu05.png')
         }
@@ -61,6 +71,12 @@ export default {
   methods: {
     triggerMenu () {
       this.showMenu = !this.showMenu
+    },
+    selectSidebar (sidebar) {
+      this.menu.forEach(item => {
+        item.isSelected = (item.name === sidebar.name)
+      })
+      this.$router.push(sidebar.path)
     }
   }
 }
@@ -89,6 +105,9 @@ export default {
     &:hover {
       background: #434d5f;
     }
+  }
+  .sidebar__selected {
+    background: #434d5f;
   }
   .sidebar__icon {
     width: 16px;

@@ -51,12 +51,14 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: 60
+          width: '60',
+          fixed: 'left'
         },
         {
           type: 'index',
           title: '序号',
-          width: 100
+          width: '70',
+          fixed: 'left'
         },
         {
           title: '姓名',

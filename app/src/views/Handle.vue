@@ -46,9 +46,13 @@
     </div>
     <div class="sqlpad">
       <div class="handlegroup">
-        <div class="handlegroup__item" v-for="(item, index) in operations" :key="item.name" :style="operationStyle(item.imgUrl)" @click="operate(item.action)">
-          <!-- img :src="item.imgUrl" :alt="item.name" -->
-          <span>{{ item.name }}</span>
+        <div class="handlegroup__item"
+          v-for="(operation, index) in operations"
+          :key="operation.name"
+          :style="opStyle(operation)"
+          @click="operate(operation.action)">
+          <!-- img :src="operation.imgUrl" :alt="operation.name" -->
+          <span>{{ operation.name }}</span>
         </div>
       </div>
       <div class="sqlpad__mainPad">
@@ -151,21 +155,25 @@ export default {
         {
           name: '运行',
           action: 'run',
+          bgColor: '#80c58c',
           imgUrl: require('../assets/images/icon/run.png')
         },
         {
           name: '停止',
           action: 'stop',
+          bgColor: '#e87178',
           imgUrl: require('../assets/images/icon/stop.png')
         },
         {
           name: '新建',
           action: 'new',
+          bgColor: '#66b8ef',
           imgUrl: require('../assets/images/icon/new.png')
         },
         {
           name: '保存',
           action: 'save',
+          bgColor: '#52bfab',
           imgUrl: require('../assets/images/icon/save.png')
         }
         /*
@@ -248,9 +256,9 @@ export default {
       }
       this.radios[radioName].checked = true
     },
-    operationStyle (imgUrl) {
+    opStyle (op) {
       return {
-        background: 'url(' + imgUrl + ') no-repeat left center'
+        background: 'url(' + op.imgUrl + ') no-repeat 8px center' + op.bgColor
       }
     },
     operate (action) {
@@ -540,8 +548,13 @@ export default {
     background: #f8f8f8;
   }
   .handlegroup__item {
-    padding-left: 20px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 30px;
+    padding-right: 10px;
     margin-left: 20px;
+    border-radius: 2px;
+    color: #fff;
   }
   .sqlpad__mainPad {
     padding: 1em;
