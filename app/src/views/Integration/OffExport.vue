@@ -143,7 +143,7 @@ export default {
           type: 'index',
           title: '序号',
           fixed: 'left',
-          width: 80
+          width: 70
         },
         {
           title: '任务编号',
@@ -176,7 +176,6 @@ export default {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          ellipsis: true,
           width: 150
         },
         {
@@ -190,8 +189,7 @@ export default {
         {
           title: '目标位置',
           key: 'targetPath',
-          width: 120,
-          ellipsis: true
+          width: 120
         },
         {
           title: '状态',
@@ -212,8 +210,7 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 120,
-          ellipsis: true
+          width: 150
         },
         {
           title: '调度状态',

@@ -118,7 +118,7 @@ export default {
           type: 'index',
           title: '序号',
           fixed: 'left',
-          width: 80
+          width: 70
         },
         {
           title: '任务编号',
@@ -134,7 +134,6 @@ export default {
                 },
                 on: {
                   click: () => {
-                    // alert(params.row.taskId)
                     this.$router.push('/Integration/IncImpDetail/' + params.row.taskId)
                   }
                 }
@@ -150,8 +149,7 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 180,
-          ellipsis: true
+          width: 180
         },
         {
           title: '库名',
@@ -288,43 +286,8 @@ export default {
                     }
                   }, '停止')
                 ])
-              /*
-              case 3:
-              case 4:
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    on: {
-                      click: () => {
-                        this.openEditModal(params.row)
-                      }
-                    }
-                  }, '编辑')
-                ])
-              */
               case 99:
                 return h('div', [
-                  /*
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.restartTask({taskId: params.row.taskId}).then(data => {
-                          this.getTaskList(this.searchParams).then(data => {})
-                        })
-                      }
-                    }
-                  }, '重启'),
-                  */
                   h('Button', {
                     props: {
                       type: 'primary',

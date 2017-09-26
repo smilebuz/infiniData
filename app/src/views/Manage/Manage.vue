@@ -99,7 +99,8 @@ export default {
           title: '创建时间',
           key: 'create_time',
           width: 160
-        },
+        }
+        /*
         {
           title: '操作',
           key: '',
@@ -121,6 +122,7 @@ export default {
             }, '分析')
           }
         }
+        */
       ]
     }
   },

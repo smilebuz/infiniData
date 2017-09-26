@@ -124,7 +124,7 @@ export default {
           type: 'index',
           title: '序号',
           fixed: 'left',
-          width: 80
+          width: 70
         },
         {
           title: '任务编号',
@@ -199,8 +199,7 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 180,
-          ellipsis: true
+          width: 180
         },
         {
           title: '调度状态',

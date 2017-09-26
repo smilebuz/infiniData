@@ -135,13 +135,14 @@ export default {
         {
           type: 'selection',
           aling: 'center',
-          width: 80
+          width: 60,
+          fixed: 'left'
         },
         {
           type: 'index',
-          align: 'center',
           title: '序号',
-          width: 80
+          width: 70,
+          fixed: 'left'
         },
         {
           title: '库名',

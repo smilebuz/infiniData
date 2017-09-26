@@ -48,7 +48,7 @@
       </div>
       <div class="setting">
         <Card>
-          <p slot="title">分片设置</p>
+          <p slot="title">单个线程抽取记录数</p>
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
@@ -106,13 +106,14 @@ export default {
         {
           type: 'selection',
           align: 'center',
-          width: 80
+          width: 60,
+          fixed: 'left'
         },
         {
           type: 'index',
-          align: 'center',
           title: '序号',
-          width: 80
+          width: 70,
+          fixed: 'left'
         },
         {
           title: '库名',

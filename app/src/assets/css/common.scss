@@ -28,8 +28,9 @@
   margin-right: 10px;
 }
 .createPanel {
-  flex-grow: 3;
+  flex-grow: 1;
   padding-right: 10px;
+  overflow: hidden;
 }
 .tbcontainer {
   padding: 15px 10px;

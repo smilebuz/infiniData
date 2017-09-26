@@ -95,29 +95,39 @@ export default {
         {
           type: 'selection',
           align: 'center',
-          width: 80
+          width: 60,
+          fixed: 'left'
         },
         {
           type: 'index',
           title: '序号',
-          width: 80
+          width: 70,
+          fixed: 'left'
         },
         {
           title: '库名',
-          key: 'dbName'
+          key: 'dbName',
+          width: 120,
+          render: (h, params) => {
+            return h('div', {}, this.dataSources.find((el) => {
+              return el.connId === this.searchParams.connId
+            }).dbName)
+          }
         },
         {
           title: '表名',
+          width: 120,
           key: 'tbName'
         },
         {
           title: '主键字段',
+          width: 140,
           key: 'priKey'
         },
         {
           title: '增量字段',
           key: '',
-          width: 120,
+          width: 180,
           render: (h, params) => {
             return this.buildIncFiledSelect(h, params)
           }
@@ -131,22 +141,6 @@ export default {
           }
         }
       ],
-      /*
-      tableList: [
-        {
-          totalRows: 3000,
-          priKey: 'ID',
-          tbName: 'export',
-          fields: ['name', 'id']
-        },
-        {
-          totalRows: 4000,
-          priKey: 'ID',
-          tbName: 'import',
-          fields: ['age', 'sex']
-        }
-      ],
-      */
       tableParams: [],
       scheduleOptions: {
         disabledDate (date) {
@@ -341,11 +335,6 @@ export default {
             table[prop] = targetTable[prop]
           }
         }
-        /*
-        table.incField = targetTable.incField
-        table.condition1 = targetTable.condition1
-        table.condition2 = targetTable.condition2
-        */
       }
       this.createParams.selectAll = this.selectAllFlag
       switch (this.createParams.scheduleMode) {
@@ -398,11 +387,6 @@ export default {
               this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
             }
           })
-          /* 填充tableParams
-          for (let table of this.tableList) {
-            this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
-          }
-          */
         })
       },
       deep: true
@@ -419,13 +403,6 @@ export default {
     }
   },
   created () {
-    /* 测试用 调试时取消
-    for (let table of this.tableList) {
-      this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
-    }
-    */
-    // this.tableParams[0].incField = 'name' 测试render v-model
-    // 保留
     this.getDataSource().then(data => {
       this.createParams.user = this.user.userName
       this.filterForm.connId = data.dataSources[0].connId
