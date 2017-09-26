@@ -44,7 +44,7 @@ export default {
     }),
     submitLoginParams () {
       this.login(this.loginParams).then(data => {
-        this.$router.push('/Integration/Dashboard')
+        this.$router.push('/Integration/OffImport')
       })
     }
   }
