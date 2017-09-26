@@ -2,6 +2,18 @@ import { Api, polling } from '../../api/Api'
 import type from '../mutation-type'
 
 const actions = {
+  // 仪表盘
+  queryDashboard ({ commit, getters }, params) {
+    actions.stopDashboardPolling({ commit, getters })
+  },
+  pollingDashboard ({ commit, getters }, params) {
+
+  },
+  stopDashboardPolling ({ commit, getters }) {
+
+  },
+
+  // 离线导入
   getOffImpList ({ commit, getters }, params) {
     actions.stopOffImpPolling({ commit })
     return Api.fullQuery.post(params).then(data => {

@@ -12,7 +12,8 @@
           <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
         <FormItem prop="status" label="任务状态" class="form__item">
-          <Select v-model="filterForm.status" placeholder="请选择" style="width: 80px;">
+          <Select v-model="filterForm.status" placeholder="请选择" style="width: 120px;">
+            <Option value=""></Option>
             <Option v-for="(value, key) in statusList" :key="key" :value="key">
               {{ value }}
             </Option>
@@ -164,9 +165,12 @@ export default {
                   type: 'text',
                   size: 'small'
                 },
+                style: {
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
+                },
                 on: {
                   click: () => {
-                    // alert(params.row.taskId)
                     this.$router.push('/Integration/OffExpDetail/' + params.row.taskId)
                   }
                 }

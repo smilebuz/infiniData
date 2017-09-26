@@ -6,6 +6,9 @@ const Apilist = {
 
   // integration
 
+  // dashboard
+  'dashboardQuery': '', // get
+
   // offimport
   'fullQuery': '/api/task/full/query', // post
   'createFull': '/api/task/full/create', // post

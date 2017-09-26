@@ -10,6 +10,7 @@
         </FormItem>
         <FormItem prop="dbType" label="数据库类型" class="form__item">
           <Select v-model="filterForm.dbType" placeholder="请选择" style="width:120px;">
+            <Option value=""></Option>
             <Option v-for="(item, index) in dbList" :key="item.type" :value="item.type">
               {{ item.type }}
             </Option>

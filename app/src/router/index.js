@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import Login from '../views/Login'
 
 import Integration from '../views/Integration'
-// import Dashboard from '../views/Integration/Dashboard'
+import Dashboard from '../views/Integration/Dashboard'
 import OffImport from '../views/Integration/OffImport'
 import OffImpDetail from '../views/Integration/OffImpDetail'
 import CreateOffImp from '../views/Integration/CreateOffImp'
@@ -50,13 +50,11 @@ let router = new Router({
       component: Integration,
       meta: { requiresAuth: true },
       children: [
-        /*
         {
           path: 'Dashboard',
           meta: { requiresAuth: true },
           component: Dashboard
         },
-        */
         {
           path: 'OffImport',
           meta: { requiresAuth: true },

@@ -34,7 +34,7 @@ export default {
       menu: [
         {
           name: '数据集成',
-          path: '/Integration/OffImport',
+          path: '/Integration/Dashboard',
           isSelected: true
         },
         {

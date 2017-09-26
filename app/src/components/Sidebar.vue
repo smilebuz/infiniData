@@ -24,18 +24,17 @@ export default {
     return {
       showMenu: true,
       menu: [
-        /*
         {
           name: '仪表盘',
           path: '/Integration/Dashboard',
+          isSelected: true,
           imgUrl: require('../assets/images/icon/menu1.png'),
           imgUrlBG: require('../assets/images/icon/menu01.png')
         },
-        */
         {
           name: '离线导入',
           path: '/Integration/OffImport',
-          isSelected: true,
+          isSelected: false,
           imgUrl: require('../assets/images/icon/menu2.png'),
           imgUrlBG: require('../assets/images/icon/menu02.png')
         },

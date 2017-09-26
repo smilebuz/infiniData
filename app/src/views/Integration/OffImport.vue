@@ -13,6 +13,7 @@
         </FormItem>
         <FormItem prop="status" label="任务状态" class="form__item">
           <Select v-model="filterForm.status" placeholder="请选择" style="width: 120px;">
+            <Option value=""></Option>
             <Option v-for="(value, key) in statusList" :value="key" :key="key">
               {{ value }}
             </Option>
@@ -148,6 +149,10 @@ export default {
                 props: {
                   type: 'text',
                   size: 'small'
+                },
+                style: {
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {

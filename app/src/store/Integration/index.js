@@ -4,6 +4,10 @@ import mutations from './mutations'
 
 export default {
   state: {
+    dashboard: {
+      overview: {},
+      tasks: {}
+    },
     offimport: {
       taskList: [],
       pollingList: [],
