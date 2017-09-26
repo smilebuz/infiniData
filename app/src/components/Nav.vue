@@ -35,7 +35,7 @@ export default {
         {
           name: '数据集成',
           path: '/Integration/OffImport',
-          isSelected: false
+          isSelected: true
         },
         {
           name: '数据处理',

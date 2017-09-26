@@ -23,7 +23,8 @@ export default {
 
 <style lang='scss' scoped>
   #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    //font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-family: Microsoft Yahei, Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
