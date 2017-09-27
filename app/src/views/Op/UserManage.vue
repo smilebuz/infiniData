@@ -18,7 +18,7 @@
           </Select>
         </FormItem>
         <FormItem class="form__item form__item-button">
-          <Button type="primary" size="small"
+          <Button type="primary" class="filter__button"
             @click="changeSearchParams"
           >筛选</Button>
         </FormItem>
@@ -28,7 +28,7 @@
       <div class="opgroup__item"
         v-for="operation in operations"
         :key="operation.value"
-        :style="opStyle(operation.imgUrl)"
+        :style="opStyle(operation)"
         @click="operateUser(operation.value)">
         {{ operation.text }}
       </div>
@@ -126,11 +126,13 @@ export default {
         {
           value: 'delete',
           text: '删除用户',
+          bgColor: '#e87178',
           imgUrl: require('../../assets/images/icon/nored.png')
         },
         {
           value: 'create',
           text: '创建用户',
+          bgColor: '#66b8ef',
           imgUrl: require('../../assets/images/icon/new.png')
         }
       ],
@@ -177,6 +179,9 @@ export default {
               props: {
                 size: 'small',
                 type: 'primary'
+              },
+              'class': {
+                table__button: true
               },
               on: {
                 click: () => {
@@ -229,10 +234,11 @@ export default {
       'createUser': 'createUser',
       'editUser': 'editUser'
     }),
-    opStyle (imgUrl) {
+    opStyle (op) {
       return {
-        background: 'url(' + imgUrl + ') no-repeat left center',
-        paddingLeft: '20px',
+        background: 'url(' + op.imgUrl + ') no-repeat 5px center ' + op.bgColor,
+        paddingLeft: '25px',
+        paddingRight: '5px',
         marginLeft: '20px'
       }
     },

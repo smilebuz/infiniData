@@ -113,6 +113,9 @@ export default {
                 size: 'small',
                 type: 'primary'
               },
+              'class': {
+                table__button: true
+              },
               on: {
                 click: () => {
                   this.$router.push('/Manage/Analysis/' + this.tbParams.pdbId + '/post/' + params.row.tbId)
@@ -168,6 +171,7 @@ export default {
 <style lang="scss" scoped>
   .side {
     max-width: 170px;
+    min-width: 170px;
     text-align: left;
   }
   .dbSelect {

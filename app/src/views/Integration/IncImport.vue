@@ -19,8 +19,10 @@
             </Option>
           </Select>
         </FormItem>
-        <FormItem class="form__item">
-          <Button type="primary" @click="changeSearchParams">筛选</Button>
+        <FormItem class="form__item form__item-button">
+          <Button type="primary" class="filter__button"
+            @click="changeSearchParams"
+          >筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -246,6 +248,9 @@ export default {
                       style: {
                         marginRight: '5px'
                       },
+                      'class': {
+                        table__button: true
+                      },
                       on: {
                         click: () => {
                           let taskIds = [params.row.taskId]
@@ -260,6 +265,9 @@ export default {
                         type: 'primary',
                         size: 'small'
                       },
+                      'class': {
+                        table__button: true
+                      },
                       on: {
                         click: () => {
                           this.openEditModal(params.row)
@@ -273,6 +281,9 @@ export default {
                       props: {
                         type: 'primary',
                         size: 'small'
+                      },
+                      'class': {
+                        table__button: true
                       },
                       on: {
                         click: () => {
@@ -289,6 +300,9 @@ export default {
                       type: 'primary',
                       size: 'small'
                     },
+                    'class': {
+                      table__button: true
+                    },
                     on: {
                       click: () => {
                         this.stopTask({taskId: params.row.taskId}).then(data => {
@@ -304,6 +318,9 @@ export default {
                     props: {
                       type: 'primary',
                       size: 'small'
+                    },
+                    'class': {
+                      table__button: true
                     },
                     on: {
                       click: () => {

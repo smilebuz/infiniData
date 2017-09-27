@@ -44,7 +44,7 @@ export default {
     }),
     submitLoginParams () {
       this.login(this.loginParams).then(data => {
-        this.$router.push('/Integration/OffImport')
+        this.$router.push('/Integration/Dashboard')
       })
     }
   }
@@ -59,7 +59,8 @@ export default {
     align-items: center;
     height: 100%;
     padding-bottom: 20px;
-    background: url('../assets/images/icon/loginbg.png');
+    background: url('../assets/images/icon/loginbg.png') no-repeat;
+    background-size: 100% 100%;
   }
   .login__logo {
     width: 300px;

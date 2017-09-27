@@ -81,7 +81,8 @@ export default {
   .sidebar__item {
     display: flex;
     align-items: center;
-    height: 40px;
+    height: 50px;
+    border-bottom: 1px solid #2c2c2c;
     padding-left: 10px;
     padding-right: 10px;
     font-size: 13px;

@@ -8,7 +8,7 @@
         <FormItem prop="dbName" label="库名" class="form__item">
           <Input type="text" v-model="filterForm.dbName"></Input>
         </FormItem>
-        <FormItem prop="tbeName" label="表名" class="form__item">
+        <FormItem prop="tbName" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
         <FormItem prop="status" label="任务状态" class="form__item">
@@ -20,7 +20,9 @@
           </Select>
         </FormItem>
         <FormItem class="form__item form__item-button">
-          <Button type="primary" @click="changeSearchParams">筛选</Button>
+          <Button type="primary" class="filter__button"
+            @click="changeSearchParams"
+          >筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -329,6 +331,9 @@ export default {
                 style: {
                   marginRight: '5px'
                 },
+                'class': {
+                  table__button: true
+                },
                 on: {
                   click: () => {
                     let taskIds = [params.row.taskId]
@@ -346,6 +351,9 @@ export default {
                 style: {
                   marginRight: '5px'
                 },
+                'class': {
+                  table__button: true
+                },
                 on: {
                   click: () => {
                     this.openEditModal(params.row)
@@ -358,6 +366,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              'class': {
+                table__button: true
               },
               on: {
                 click: () => {
@@ -372,6 +383,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              'class': {
+                table__button: true
               },
               on: {
                 click: () => {
@@ -391,6 +405,9 @@ export default {
               },
               style: {
                 marginRight: '5px'
+              },
+              'class': {
+                table__button: true
               },
               on: {
                 click: () => {
@@ -413,6 +430,9 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              'class': {
+                table__button: true
+              },
               on: {
                 click: () => {
                   window.location.href = 'http://' + params.row.downloadUrl
@@ -430,6 +450,9 @@ export default {
               style: {
                 marginRight: '5px'
               },
+              'class': {
+                table__button: true
+              },
               on: {
                 click: () => {
                   this.restartTask({taskId: params.row.taskId}).then(data => {
@@ -442,6 +465,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              'class': {
+                table__button: true
               },
               on: {
                 click: () => {

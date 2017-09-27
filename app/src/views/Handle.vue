@@ -487,6 +487,7 @@ export default {
 <style lang="scss" scoped>
   .side {
     max-width: 170px;
+    min-width: 170px;
     text-align: left;
   }
   .dbSelect {

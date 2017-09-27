@@ -24,12 +24,18 @@
           </Select>
         </FormItem-->
         <FormItem class="form__item form__item-button">
-          <Button type="primary" @click="changeSearchParams">筛选</Button>
+          <Button type="primary" class="filter__button"
+            @click="changeSearchParams"
+          >筛选</Button>
         </FormItem>
       </Form>
     </div>
     <div class="opgroup">
-      <div class="opgroup__item" v-for="operation in operations" :key="operation.value" :style="opStyle(operation.imgUrl)" @click="operateTask(operation.value)">
+      <div class="opgroup__item"
+        v-for="operation in operations"
+        :key="operation.value"
+        :style="opStyle(operation)"
+        @click="operateTask(operation.value)">
         {{ operation.text }}
       </div>
     </div>
@@ -126,14 +132,16 @@ export default {
       ],
       operations: [
         {
-          value: 'create',
-          text: '创建新数据源',
-          imgUrl: require('../../assets/images/icon/new.png')
-        },
-        {
           value: 'delete',
           text: '删除数据源',
+          bgColor: '#e87178',
           imgUrl: require('../../assets/images/icon/nored.png')
+        },
+        {
+          value: 'create',
+          text: '创建新数据源',
+          bgColor: '#66b8ef',
+          imgUrl: require('../../assets/images/icon/new.png')
         }
       ],
       columns: [
@@ -222,6 +230,9 @@ export default {
                   type: 'primary',
                   size: 'small'
                 },
+                'class': {
+                  table__button: true
+                },
                 on: {
                   click: () => {
                     this.openEditModal(params.row)
@@ -277,10 +288,11 @@ export default {
         this.selectedSourceIds.push(source.connId)
       }
     },
-    opStyle (imgUrl) {
+    opStyle (op) {
       return {
-        background: 'url(' + imgUrl + ') no-repeat left center',
-        paddingLeft: '20px',
+        background: 'url(' + op.imgUrl + ') no-repeat 5px center ' + op.bgColor,
+        paddingLeft: '25px',
+        paddingRight: '5px',
         marginLeft: '20px'
       }
     },
@@ -354,33 +366,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .form-inline {
-    display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .form__item {
-    margin-bottom: 0;
-  }
-  .opgroup {
-    display: flex;
-    height: 30px;
-    line-height: 30px;
-    background: #f9f9f9;
-  }
-  .opgroup__item {
-    height: 100%;
-    cursor: pointer;
-  }
-  .tbcontainer {
-    padding: 15px 10px;
-    background: #f0f0f0;
-    width: 100%;
-    overflow: scroll;
-  }
-  .table {
-    max-width: 100%;
-  }
   .modal__content {
     display: flex;
   }

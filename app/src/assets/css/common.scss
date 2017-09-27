@@ -8,6 +8,10 @@
 }
 .form__item-button {
   margin-left: -60px;
+  .filter__button {
+    background: #66b8ef!important;
+    border-color: #66b8ef!important;
+  }
 }
 .opgroup {
   display: flex;
@@ -44,7 +48,11 @@
   table {
     width: 100%!important;
   }
-} 
+}
+.table__button {
+  background: #66b8ef!important;
+  border-color: #66b8ef!important;
+}
 .setting {
   min-width: 300px;
 }

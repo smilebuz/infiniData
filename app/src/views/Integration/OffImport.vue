@@ -20,7 +20,9 @@
           </Select>
         </FormItem>
         <FormItem class="form__item form__item-button">
-          <Button type="primary" @click="changeSearchParams">筛选</Button>
+          <Button type="primary" class="filter__button"
+            @click="changeSearchParams"
+          >筛选</Button>
         </FormItem>
       </Form>
     </div>
@@ -252,6 +254,9 @@ export default {
                       style: {
                         marginRight: '5px'
                       },
+                      'class': {
+                        table__button: true
+                      },
                       on: {
                         click: () => {
                           let taskIds = [params.row.taskId]
@@ -265,6 +270,9 @@ export default {
                       props: {
                         type: 'primary',
                         size: 'small'
+                      },
+                      'class': {
+                        table__button: true
                       },
                       on: {
                         click: () => {
@@ -280,6 +288,9 @@ export default {
                         type: 'primary',
                         size: 'small'
                       },
+                      'class': {
+                        table__button: true
+                      },
                       on: {
                         click: () => {
                           this.openEditModal(params.row)
@@ -294,6 +305,9 @@ export default {
                     props: {
                       type: 'primary',
                       size: 'small'
+                    },
+                    'class': {
+                      table__button: true
                     },
                     on: {
                       click: () => {
@@ -331,6 +345,9 @@ export default {
                     style: {
                       marginRight: '5px'
                     },
+                    'class': {
+                      table__button: true
+                    },
                     on: {
                       click: () => {
                         this.restartTask({taskId: params.row.taskId}).then(data => {
@@ -343,6 +360,9 @@ export default {
                     props: {
                       type: 'primary',
                       size: 'small'
+                    },
+                    'class': {
+                      table__button: true
                     },
                     on: {
                       click: () => {
@@ -413,7 +433,7 @@ export default {
     }),
     opStyle (op) {
       return {
-        background: 'url(' + op.imgUrl + ') no-repeat 5px center' + op.bgColor,
+        background: 'url(' + op.imgUrl + ') no-repeat 5px center ' + op.bgColor,
         paddingLeft: '25px',
         paddingRight: '5px',
         marginLeft: '20px'
