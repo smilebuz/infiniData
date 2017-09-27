@@ -1,6 +1,17 @@
 import type from '../mutation-type'
 
 export default {
+  // 仪表盘
+  [type.SET_DASHBOARD_INFO] (state, data) {
+    state.dashboard.taskList = data.data.taskList
+    state.dashboard.overview = data.data.overview
+    for (let prop in state.dashboard.pageInfo) {
+      if (state.dashboard.pageInfo.hasOwnProperty(prop)) {
+        state.dashboard.pageInfo[prop] = data[prop]
+      }
+    }
+  },
+
   // 离线导入
   // 主页轮询
   [type.SET_OFFIMP_LIST] (state, data) {
@@ -15,7 +26,7 @@ export default {
       return task.progress > 0 && task.progress < 100
     })
     */
-    for (var prop in state.offimport.pageInfo) {
+    for (let prop in state.offimport.pageInfo) {
       if (state.offimport.pageInfo.hasOwnProperty(prop)) {
         state.offimport.pageInfo[prop] = data[prop]
       }
@@ -67,7 +78,7 @@ export default {
       return task.progress > 0 && task.progress < 100
     })
     */
-    for (var prop in state.offimport.detail.pageInfo) {
+    for (let prop in state.offimport.detail.pageInfo) {
       if (state.offimport.detail.pageInfo.hasOwnProperty(prop)) {
         state.offimport.detail.pageInfo[prop] = data[prop]
       }

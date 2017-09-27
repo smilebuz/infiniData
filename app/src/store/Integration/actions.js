@@ -3,13 +3,17 @@ import type from '../mutation-type'
 
 const actions = {
   // 仪表盘
-  queryDashboard ({ commit, getters }, params) {
-    actions.stopDashboardPolling({ commit, getters })
+  getDashboardTaskList ({ commit, getters }, params) {
+    actions.stopDashboardPolling({ commit })
+    return Api.dashboardQuery.post(params).then(data => {
+      commit(type.SET_DASHBOARD_INFO, data)
+      // 轮询
+      return Promise.resolve(data)
+    })
   },
   pollingDashboard ({ commit, getters }, params) {
-
   },
-  stopDashboardPolling ({ commit, getters }) {
+  stopDashboardPolling ({ commit }) {
 
   },
 

@@ -6,7 +6,13 @@ export default {
   state: {
     dashboard: {
       overview: {},
-      tasks: {}
+      taskList: [],
+      pageInfo: {
+        pageNum: -1,
+        pageSize: -1,
+        totalPage: -1,
+        totalCount: -1
+      }
     },
     offimport: {
       taskList: [],

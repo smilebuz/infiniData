@@ -1,4 +1,15 @@
 export default {
+  // 仪表盘
+  dashboardOverview (state) {
+    return state.dashboard.overview
+  },
+  dashboardTaskList (state) {
+    return state.dashboard.taskList
+  },
+  dashboardPageInfo (state) {
+    return state.dashboard.pageInfo
+  },
+
   // 离线导入
   offImpList (state) {
     return state.offimport.taskList
