@@ -285,12 +285,11 @@ export default {
               this.columns.forEach(column => {
                 column.width = 200
               })
-              /*
               this.columns.unshift({
                 type: 'index',
-                title: '#'
+                title: '#',
+                width: 70
               })
-              */
             })
           }
           break

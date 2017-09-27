@@ -51,22 +51,22 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: '60',
-          fixed: 'left'
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          width: '70',
-          fixed: 'left'
+          width: 70
         },
         {
           title: '姓名',
-          key: 'name'
+          key: 'name',
+          width: 150
         },
         {
           title: '年龄',
-          key: 'age'
+          key: 'age',
+          width: 200
         }
       ]
     }

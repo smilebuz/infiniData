@@ -51,14 +51,12 @@ export default {
           name: '运维管理',
           path: '/Op/LogManage',
           isSelected: false
-        }
-        /*
+        },
         {
           name: '全选测试',
           path: '/SelectTest',
           isSelected: false
         }
-        */
       ]
     }
   },
