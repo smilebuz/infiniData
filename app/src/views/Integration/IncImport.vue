@@ -13,7 +13,7 @@
         </FormItem>
         <FormItem prop="scheduleState" label="调度状态" class="form__item">
           <Select v-model="filterForm.scheduleState" placeholder="请选择" style="width:120px;">
-            <Option value=""></Option>
+            <Option value="">全部</Option>
             <Option v-for="(value, key) in scheduleStateList" :key="key" :value="key">
               {{ value }}
             </Option>

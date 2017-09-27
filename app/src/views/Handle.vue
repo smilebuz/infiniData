@@ -557,7 +557,7 @@ export default {
     padding-left: 30px;
     padding-right: 10px;
     margin-left: 20px;
-    border-radius: 2px;
+    border-radius: 5px;
     color: #fff;
   }
   .sqlpad__mainPad {

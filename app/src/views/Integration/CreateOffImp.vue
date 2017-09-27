@@ -13,7 +13,9 @@
           <Input type="text" v-model="filterForm.tables"></Input>
         </FormItem>
         <FormItem class="form__item form__item-button">
-          <Button type="primary" @click="changeSearchParams">查询</Button>
+          <Button type="primary" class="filter__button"
+            @click="changeSearchParams"
+          >筛选</Button>
         </FormItem>
       </Form>
     </div>
