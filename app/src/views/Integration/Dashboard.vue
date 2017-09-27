@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="dashboard">
     <div class="overview">
-      <div class="overview__box" v-for="(value, key) of overview" :key="key" :style="overviewStyle(value.imgUrl)">
+      <div class="overview__box" v-for="(value, key) of overview"
+        :key="key"
+        :style="overviewStyle(value.imgUrl)">
         <p class="overview__box-title">{{ value.count }}{{ value.name }}</p>
         <p class="overview__box-detail">离线导入数：{{ value.full }}</p>
         <p class="overview__box-detail">定时导入数：{{ value.inc }}</p>
@@ -48,6 +50,24 @@ export default {
         taskType: 'full',
         pageNum: 1,
         pageSize: 10
+      },
+      overviewInfo: {
+        total: {
+          name: '总任务数',
+          imgUrl: require('../../assets/images/icon/overview-total.png')
+        },
+        running: {
+          name: '运行中任务数',
+          imgUrl: require('../../assets/images/icon/overview-running.png')
+        },
+        success: {
+          name: '成功任务数',
+          imgUrl: require('../../assets/images/icon/overview-success.png')
+        },
+        fail: {
+          name: '失败任务数',
+          imgUrl: require('../../assets/images/icon/overview-fail.png')
+        }
       },
       overview: {
         total: {
@@ -124,19 +144,11 @@ export default {
             return h('div', [
               h('Progress', {
                 props: {
-                  percent: parseFloat((params.row.progress * 100).toFixed(2))
+                  percent: params.row.progress
                 }
               })
             ])
           }
-        }
-      ],
-      taskList: [
-        {
-          taskId: 87463,
-          dbName: 'Oracle',
-          tbName: 'ocr_task',
-          progress: 0.85
         }
       ],
       timer: ''
@@ -145,7 +157,7 @@ export default {
   computed: {
     ...mapGetters({
       overviewGet: 'dashboardOverview',
-      taskLisk: 'dashboardTaskList',
+      taskList: 'dashboardTaskList',
       pageInfo: 'dashboardPageInfo'
     })
   },
@@ -170,13 +182,19 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     stopPolling () {
+      console.log('停止轮询', this.timer)
       clearInterval(this.timer)
     },
     polling (params) {
       this.getTaskList(params).then(data => {
+        console.log('polling', this.timer)
         for (let prop in this.overviewGet) {
           if (this.overviewGet.hasOwnProperty(prop)) {
-            this.overview[prop] = this.overviewGet[prop]
+            for (let prop2 in this.overviewGet[prop]) {
+              if (this.overviewGet[prop].hasOwnProperty(prop2)) {
+                this.overview[prop][prop2] = this.overviewGet[prop][prop2]
+              }
+            }
           }
         }
       })

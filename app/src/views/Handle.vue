@@ -275,8 +275,12 @@ export default {
             let targetTab = this.sqlTabs.find((tab) => {
               return tab.id === this.currentTabId
             })
+            let dbName = this.dbList.find(el => {
+              return el.pdbId === this.selectedpdbId
+            }).pdbName
             let params = {
-              sql: targetTab.editor.getValue()
+              sql: targetTab.editor.getValue(),
+              db_name: dbName
             }
             this.runSql(params).then(data => {
               this.hasSqlRunning = false
