@@ -183,13 +183,13 @@ export default {
         {
           title: '平台库名',
           key: 'dbName',
-          width: 100
+          width: 120
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          width: 150
+          width: 120
         },
         {
           title: '类型',
@@ -202,7 +202,7 @@ export default {
         {
           title: '目标位置',
           key: 'targetPath',
-          width: 120
+          width: 180
         },
         {
           title: '状态',

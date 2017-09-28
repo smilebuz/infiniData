@@ -27,7 +27,7 @@ import LogManage from '../views/Op/LogManage'
 import UserManage from '../views/Op/UserManage'
 import SystemResource from '../views/Op/SystemResource'
 
-// import SelectTest from '../views/SelectTest'
+import SelectTest from '../views/SelectTest'
 
 import store from '../store'
 
@@ -155,15 +155,13 @@ let router = new Router({
           component: SystemResource
         }
       ]
-    }
-    /*
+    },
     {
       path: '/SelectTest',
       name: 'SelectTest',
       meta: { requiresAuth: true },
       component: SelectTest
     }
-    */
   ]
 })
 
