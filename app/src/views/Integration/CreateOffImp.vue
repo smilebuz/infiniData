@@ -29,6 +29,15 @@
         清空
       </Button>
     </div>
+    <div class="opgroup">
+      <div class="opgroup__item"
+        v-for="operation in operations"
+        :key="operation.value"
+        :style="opStyle(operation)"
+        @click="selectAllinDB(operation.selectAll)">
+        {{ operation.text }}
+      </div>
+    </div>
     <div class="main">
       <div class="createPanel">
         <Table border stripe class="table" size="small"
@@ -104,6 +113,22 @@ export default {
         connId: '',
         tables: ''
       },
+      operations: [
+        {
+          value: 'selectall',
+          selectAll: true,
+          text: '全选',
+          bgColor: '#80c58c',
+          imgUrl: require('../../assets/images/icon/run.png')
+        },
+        {
+          value: 'clear',
+          selectAll: false,
+          text: '清空',
+          bgColor: '#e87178',
+          imgUrl: require('../../assets/images/icon/nored.png')
+        }
+      ],
       columns: [
         {
           type: 'selection',
@@ -175,6 +200,14 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createOffImpTask'
     }),
+    opStyle (op) {
+      return {
+        background: 'url(' + op.imgUrl + ') no-repeat 5px center ' + op.bgColor,
+        paddingLeft: '25px',
+        paddingRight: '5px',
+        marginLeft: '20px'
+      }
+    },
     changeScheduleMode (value) {
       if (value === 2) {
         this.disableDatePicker = false
