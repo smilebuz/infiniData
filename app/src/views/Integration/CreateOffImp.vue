@@ -19,16 +19,6 @@
         </FormItem>
       </Form>
     </div>
-    <div class="opbuttons">
-      <Button type="success" class="opbutton" icon="checkmark" size="small"
-        @click="selectAllinDB(true)">
-        全选
-      </Button>
-      <Button type="error" class="opbutton" icon="close" size="small"
-        @click="selectAllinDB(false)">
-        清空
-      </Button>
-    </div>
     <div class="opgroup">
       <div class="opgroup__item"
         v-for="operation in operations"
@@ -119,14 +109,14 @@ export default {
           selectAll: true,
           text: '全选',
           bgColor: '#80c58c',
-          imgUrl: require('../../assets/images/icon/run.png')
+          imgUrl: require('../../assets/images/icon/yes.png')
         },
         {
           value: 'clear',
           selectAll: false,
           text: '清空',
           bgColor: '#e87178',
-          imgUrl: require('../../assets/images/icon/nored.png')
+          imgUrl: require('../../assets/images/icon/no.png')
         }
       ],
       columns: [
