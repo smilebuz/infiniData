@@ -468,7 +468,6 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    // alert(this.hasSqlRunning)
     if (this.hasSqlRunning) {
       this.$Modal.confirm({
         title: '前往其他页面？',
