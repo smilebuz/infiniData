@@ -340,7 +340,11 @@ export default {
         password: this.editParams.password
       }
       this.testSourceConn(connParams).then(data => {
-        alert(data.message)
+        this.$Message.info({
+          content: data.msg,
+          duration: 1.5,
+          top: 50
+        })
       })
     },
     changePageNum (pageNum) {

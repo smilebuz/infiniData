@@ -498,7 +498,11 @@ export default {
               this.getTaskList(this.searchParams).then(data => {})
             })
           } else {
-            alert('选择任务中含有非手动运行任务, 请重新选择')
+            this.$Message.warning({
+              content: '选择任务中含有非手动运行任务, 请重新选择',
+              duration: 1.5,
+              top: 50
+            })
           }
           break
         case 'create':
@@ -519,7 +523,11 @@ export default {
               this.getTaskList(this.searchParams).then(data => {})
             })
           } else {
-            alert('删除任务中含有正在运行的任务, 请重新选择')
+            this.$Message.warning({
+              content: '删除任务中含有正在运行的任务, 请重新选择',
+              duration: 1.5,
+              top: 50
+            })
           }
           break
         default:
