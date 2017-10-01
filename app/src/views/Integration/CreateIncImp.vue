@@ -359,7 +359,6 @@ export default {
         default:
           break
       }
-      console.log(JSON.stringify(this.createParams.tbInfos))
       this.createTask(this.createParams).then(data => {
         this.$router.push('IncImport')
       })

@@ -322,7 +322,6 @@ export default {
       }
     },
     saveSql () {
-      console.log(this.saveModal.saveName)
       // 在sessionStorage中保存 成功后在回调函数中关闭弹窗
       let currentTab = this.sqlTabs.find(tab => {
         return tab.id === this.currentTabId
