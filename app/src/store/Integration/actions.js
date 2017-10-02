@@ -28,7 +28,6 @@ const actions = {
   },
   pollingOffImp ({ commit, getters }) {
     // actions.stopPolling({ commit, getters })
-    let pollinglist = getters.offImpPollingList
     /*
     let taskList = getters.offImpList
     if (!taskList.length) {
@@ -38,14 +37,13 @@ const actions = {
       return task.progress > 0 && task.progress < 100
     })
     */
-
-    let taskIds = [...pollinglist]
     /*
     for (let task of pollinglist) {
       taskIds.push(task.taskId)
     }
     */
-    // debugger
+    let pollinglist = getters.offImpPollingList
+    let taskIds = [...pollinglist]
     polling('getFullProgress', {taskIds: taskIds}, (data) => {
       commit(type.SET_OFFIMP_TASK_STATUS, {
         data: data.data

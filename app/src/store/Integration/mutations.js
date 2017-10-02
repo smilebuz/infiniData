@@ -53,7 +53,6 @@ export default {
     }
   },
   [type.START_OFFIMP_TASK] (state, data) {
-    // debugger
     for (let taskId of data.taskIds) {
       state.offimport.pollingList.push(taskId)
     }
@@ -86,7 +85,6 @@ export default {
   },
   [type.SET_OFFIMP_DETAIL_TASK_STATUS] (state, data) {
     state.offimport.detail.progress = data.data.progress // 父任务进程
-    // debugger
     if (data.data.data.length) {
       for (let worker of data.data.data) {
         let targetWorker = state.offimport.detail.pollingList.find((el) => {
@@ -124,7 +122,6 @@ export default {
     }
   },
   [type.SET_INCIMP_TASK_STATUS] (state, data) {
-    // debugger
     if (data.data.length) {
       for (let task of data.data) {
         let targetTaskId = state.incimport.pollingList.find((el) => {
@@ -194,7 +191,6 @@ export default {
     }
   },
   [type.SET_OFFEXP_TASK_STATUS] (state, data) {
-    // debugger
     if (data.data.length) {
       for (let task of data.data) {
         let targetTaskId = state.offexport.pollingList.find((el) => {
