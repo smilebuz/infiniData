@@ -12,10 +12,13 @@ export default {
     state.tbInfo.partitionList = [...data.partitions]
   },
   [type.HANDLE_RUN_SQL] (state, data) {
+    /*
     state.runSqlInfo.columns = data.data.table.columns
     state.runSqlInfo.infoList = data.data.table.data
     state.runSqlInfo.log = data.data.log
     state.runSqlInfo.time_consum = data.data.timeConsum
     state.runSqlInfo.count = data.data.count
+    */
+    state.runSqlInfo.port = data.port
   }
 }

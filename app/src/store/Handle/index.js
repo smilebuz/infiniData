@@ -15,7 +15,8 @@ export default {
       count: '',
       columns: [],
       infoList: [],
-      log: ''
+      log: '',
+      port: ''
     }
   },
   actions,

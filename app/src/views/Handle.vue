@@ -70,9 +70,9 @@
             ></Input>
           </Modal>
         </Tabs>
-        <p class="sqlpad__mainPad-sqlInfo" v-show="!hasSqlRunning">
+        <!--p class="sqlpad__mainPad-sqlInfo" v-show="!hasSqlRunning">
           运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
-        </p>
+        </p-->
         <Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="运行信息" class="tabpane">
             <p v-show="hasSqlRunning">
@@ -95,7 +95,7 @@
             </div>
             <Table border stripe ref="dataTable"
               :columns="columns"
-              :data="sqlInfo.infoList"
+              :data="infoList"
               v-show="!hasSqlRunning"
             ></Table>
           </TabPane>
@@ -219,7 +219,9 @@ export default {
           ]
         }
       },
+      port: '',
       columns: [],
+      infoList: [],
       log: ''
     }
   },
@@ -283,6 +285,7 @@ export default {
               db_name: dbName
             }
             this.runSql(params).then(data => {
+              /*
               this.hasSqlRunning = false
               this.log = this.sqlInfo.log
               this.columns = this.sqlInfo.columns
@@ -294,6 +297,35 @@ export default {
                 title: '#',
                 width: 70
               })
+              */
+              console.log(data.port)
+              this.port = this.sqlInfo.port // 获取端口号
+              console.log(this.port)
+              // websocket
+              let wsCounter = 0
+              let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
+              let ws = new WebSocket(wsUrl)
+              ws.onopen = (e) => {
+                debugger
+              }
+              ws.onmessage = (e) => {
+                if (!wsCounter) {
+                  // table head
+                  // this.columns.push(...[e.data])
+                  this.columns = JSON.parse(e.data)
+                } else {
+                  // table body
+                  this.infoList.push(JSON.parse(e.data))
+                }
+                wsCounter++
+              }
+              ws.onclose = (e) => {
+                debugger
+                this.hasSqlRunning = false
+              }
+              ws.onerror = (e) => {
+                debugger
+              }
             })
           }
           break
