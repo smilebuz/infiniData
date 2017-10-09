@@ -285,7 +285,11 @@ const actions = {
   },
   testSourceConn ({ commit }, params) {
     return Api.testSource.get(params).then(data => {
-      return Promise.resolve(data)
+      if (data.response === 1) {
+        return Promise.resolve(data)
+      } else {
+        return Promise.reject(new Error(data.data))
+      }
     })
   },
   createSource ({ commit }, params) {

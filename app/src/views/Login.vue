@@ -45,6 +45,12 @@ export default {
     submitLoginParams () {
       this.login(this.loginParams).then(data => {
         this.$router.push('/Integration/Dashboard')
+      }).catch(error => {
+        this.$Message.warning({
+          content: error.message,
+          top: 50,
+          duration: 1.5
+        })
       })
     }
   }

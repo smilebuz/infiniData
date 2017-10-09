@@ -119,14 +119,14 @@ export default {
         password: this.createParams.password
       }
       this.testSourceConn(connParams).then(data => {
-        let content = ''
-        if (data.success) {
-          content = '连接成功'
-        } else {
-          content = '连接失败'
-        }
         this.$Message.info({
-          content: content,
+          content: '连接成功',
+          top: 50,
+          duration: 1.5
+        })
+      }).catch(error => {
+        this.$Message.warning({
+          content: error.message,
           top: 50,
           duration: 1.5
         })

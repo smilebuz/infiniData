@@ -95,6 +95,7 @@ export const Api = ((apilist) => {
                 return Promise.resolve(data.data)
               } else {
                 console.log('response is 0')
+                return Promise.resolve(data.data)
               }
             })
             .catch(error => {
