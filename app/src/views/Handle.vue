@@ -304,9 +304,7 @@ export default {
               let wsCounter = 0
               let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
               let ws = new WebSocket(wsUrl)
-              ws.onopen = (e) => {
-                debugger
-              }
+              ws.onopen = (e) => {}
               ws.onmessage = (e) => {
                 if (!wsCounter) {
                   // table head
@@ -321,9 +319,7 @@ export default {
               ws.onclose = (e) => {
                 this.hasSqlRunning = false
               }
-              ws.onerror = (e) => {
-                debugger
-              }
+              ws.onerror = (e) => {}
             })
           }
           break

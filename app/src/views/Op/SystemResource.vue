@@ -37,11 +37,17 @@
         @on-cancel="cancelCreate">
         <div class="modal__content">
           <Form :model="createParams" :label-width="80" class="model__form">
-            <FormItem label="配置键">
+            <FormItem label="配置名">
               <Input v-model="createParams.key"></Input>
             </FormItem>
-            <FormItem label="配置值">
+            <FormItem label="取值">
               <Input v-model="createParams.value"></Input>
+            </FormItem>
+            <FormItem label="缺省值">
+              <Input v-model="createParams.default_value"></Input>
+            </FormItem>
+            <FormItem label="描述">
+              <Input v-model="createParams.info"></Input>
             </FormItem>
           </Form>
         </div>
@@ -53,11 +59,17 @@
         @on-cancel="cancelEdit">
         <div class="modal__content">
           <Form :model="editParams" :label-width="80" class="model__form">
-            <FormItem label="配置键">
+            <FormItem label="配置名">
               <Input v-model="editParams.key"></Input>
             </FormItem>
-            <FormItem label="配置值">
+            <FormItem label="取值">
               <Input v-model="editParams.value"></Input>
+            </FormItem>
+            <FormItem label="缺省值">
+              <Input v-model="editParams.default_value"></Input>
+            </FormItem>
+            <FormItem label="描述">
+              <Input v-model="editParams.info"></Input>
             </FormItem>
           </Form>
         </div>
@@ -168,7 +180,9 @@ export default {
       },
       createParams: {
         key: '',
-        value: ''
+        value: '',
+        default_value: '',
+        info: ''
       },
 
       editModal: {
@@ -178,7 +192,9 @@ export default {
       editParams: {
         id: '',
         key: '',
-        value: ''
+        value: '',
+        default_value: '',
+        info: ''
       }
     }
   },
@@ -257,6 +273,8 @@ export default {
       this.editParams.id = resource.id
       this.editParams.key = resource.key
       this.editParams.value = resource.value
+      this.editParams.default_value = resource.default_value
+      this.editParams.info = resource.info
     },
     submitEditParams () {
       this.editResource(this.editParams).then(data => {
