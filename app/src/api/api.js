@@ -106,7 +106,7 @@ export const Api = ((apilist) => {
               if (data.data.response === 1) {
                 return Promise.resolve(data.data)
               } else {
-                console.log('response is 0')
+                console.log('response is 0', data.data.msg)
               }
             })
             .catch(error => {
@@ -121,7 +121,8 @@ export const Api = ((apilist) => {
             if (data.data.response === 1) {
               return Promise.resolve(data.data)
             } else {
-              console.log('response is 0')
+              console.log('response is 0', data.data.msg)
+              return Promise.resolve(data.data)
             }
           })
           .catch(error => {

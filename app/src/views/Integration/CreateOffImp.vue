@@ -164,7 +164,7 @@ export default {
       createParams: {
         connId: '',
         tbInfos: [],
-        blocks: 0,
+        blocks: 10000000,
         user: '',
         priority: 1,
         scheduleMode: 1,

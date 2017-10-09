@@ -136,6 +136,12 @@ export default {
       // 保存请求
       this.createSource(this.createParams).then(data => {
         this.$router.push('Source')
+      }).catch(error => {
+        this.$Message.warning({
+          content: error.message,
+          top: 50,
+          duration: 1.5
+        })
       })
     },
     cancelConfig () {

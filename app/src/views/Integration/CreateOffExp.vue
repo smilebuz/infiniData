@@ -2,16 +2,16 @@
   <div class="createOffImp">
     <div class="form-inline">
       <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
-        <FormItem prop="connId" label="数据源" class="form__item">
-          <Select v-model="filterForm.connId" placeholder="请选择" style="width:120px;">
-            <Option v-for="(source, index) in dataSources" :key="source.connId" :value="source.connId">
-              {{ source.dbName }}
+        <FormItem prop="pdbId" label="平台数据源" class="form__item">
+          <Select v-model="filterForm.pdbId" placeholder="请选择" style="width:120px;">
+            <Option v-for="(pdb, index) in pdbList" :key="pdb.pdbId" :value="pdb.pdbId">
+              {{ pdb.pdbName }}
             </Option>
           </Select>
         </FormItem>
-        <FormItem prop="tbName" label="表名" class="form__item">
+        <!--FormItem prop="tbName" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tables"></Input>
-        </FormItem>
+        </FormItem-->
         <FormItem class="form__item form__item-button">
           <Button type="primary" class="filter__button"
             @click="changeSearchParams"
@@ -32,7 +32,7 @@
       <div class="createPanel">
         <Table border stripe class="table" size="small"
           :columns="columns"
-          :data="tableList"
+          :data="pdbTBList"
           @on-selection-change="selectTable"
         ></Table>
         <div class="pagination">
@@ -58,7 +58,7 @@
             v-model="createParams.type"
             @on-change="changeType">
             <Radio :label="1">CSV</Radio>
-            <div class="setting__group">
+            <!--div class="setting__group">
               <span class="setting__group-label">编码</span>
               <Select class="setting__group-select" size="small"
                 :disabled="disableEncodingSelect">
@@ -69,12 +69,18 @@
               <Select class="setting__group-select" size="small"
                 :disabled="disableSeperatorSelect">
               </Select>
-            </div>
+            </div-->
             <Radio :label="2">数据库</Radio>
             <div class="setting__group">
               <span class="setting__group-label">数据源</span>
               <Select class="setting__group-select" size="small"
-                :disabled="disableSourceSelect">
+                :disabled="disableSourceSelect"
+                @on-change="changeExportDB">
+                <Option v-for="(source, index) in dataSources"
+                  :key="source.connId"
+                  :value="source.connId">
+                  {{ source.dbName }}
+                </Option>
               </Select>
             </div>
           </RadioGroup>
@@ -123,13 +129,10 @@ export default {
   data () {
     return {
       searchParams: {
-        connId: '',
-        tables: '',
-        pageSize: 10,
-        pageNum: 1
+        pdbId: ''
       },
       filterForm: {
-        connId: '',
+        pdbId: '',
         tables: ''
       },
       operations: [
@@ -162,12 +165,12 @@ export default {
           fixed: 'left'
         },
         {
-          title: '库名',
+          title: '平台库名',
           key: 'dbName',
           render: (h, params) => {
-            return h('div', {}, this.dataSources.find((el) => {
-              return el.connId === this.searchParams.connId
-            }).dbName)
+            return h('div', {}, this.pdbList.find((el) => {
+              return el.pdbId === this.searchParams.pdbId
+            }).pdbName)
           }
         },
         {
@@ -192,8 +195,9 @@ export default {
       disableTimePicker: true,
       createParams: {
         type: 1,
+        pdbName: '',
+        pdbId: '',
         connId: '',
-        dbName: '',
         user: '',
         tbInfos: [],
         scheduleMode: 1,
@@ -212,14 +216,18 @@ export default {
       dataSources: 'dataSources',
       tableList: 'sourceTables',
       pageInfo: 'sourceTablePageInfo',
-      user: 'user'
+      user: 'user',
+      pdbList: 'dbList',
+      pdbTBList: 'tbList'
     })
   },
   methods: {
     ...mapActions({
       getDataSource: 'getDataSource',
       getTableList: 'getSourceTable',
-      createTask: 'createOffExpTask'
+      createTask: 'createOffExpTask',
+      getPDBList: 'getDBList',
+      getPDBTBList: 'getTBList'
     }),
     opStyle (op) {
       return {
@@ -240,6 +248,9 @@ export default {
         this.disableSourceSelect = false
       }
     },
+    changeExportDB (value) {
+      this.createParams.connId = value
+    },
     changeScheduleMode (value) {
       switch (value) {
         case 2:
@@ -256,9 +267,10 @@ export default {
           break
       }
     },
+
     selectAllinDB (selected) {
       this.selectAllFlag = selected
-      this.tableList.forEach(table => {
+      this.pdbTBList.forEach(table => {
         table._checked = selected
         table._disabled = selected
       })
@@ -274,7 +286,7 @@ export default {
       })
 
       let unSelection = []
-      for (let table of this.tableList) {
+      for (let table of this.pdbTBList) {
         let targetTable = selection.find(el => {
           return el.tbName === table.tbName
         })
@@ -333,14 +345,20 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getTableList(newParams).then(data => {
+        this.getPDBTBList(newParams).then(data => {
+          /*
           this.createParams.connId = this.searchParams.connId
           this.createParams.dbName = this.dataSources.find(el => {
             return this.createParams.connId === el.connId
           }).dbName
+          */
+          this.createParams.pdbId = this.searchParams.pdbId
+          this.createParams.pdbName = this.pdbList.find(el => {
+            return this.createParams.pdbId === el.pdbId
+          }).pdbName
           this.selectAllinDB(this.selectAllFlag)
-          this.tableList.forEach(table => {
-            this.tableList.forEach(table => {
+          this.pdbTBList.forEach(table => {
+            this.pdbTBList.forEach(table => {
               let targetTable = this.createParams.tbInfos.find(el => {
                 return el.tbName === table.tbName
               })
@@ -355,10 +373,12 @@ export default {
     }
   },
   mounted () {
+    this.getPDBList().then(data => {
+      this.filterForm.pdbId = this.pdbList[0].pdbId
+      this.changeSearchParams()
+    })
     this.getDataSource().then(data => {
       this.createParams.user = this.user.userName
-      this.filterForm.connId = data.dataSources[0].connId
-      this.changeSearchParams()
     })
   }
 }

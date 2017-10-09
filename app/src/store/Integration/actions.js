@@ -196,7 +196,6 @@ const actions = {
   // 离线导出
   getOffExpList ({ commit, getters }, params) {
     return Api.exportQuery.post(params).then(data => {
-      // debugger
       commit(type.SET_OFFEXP_LIST, data)
       actions.pollingOffExp({ commit, getters })
       return Promise.resolve(data)
@@ -291,7 +290,11 @@ const actions = {
   },
   createSource ({ commit }, params) {
     return Api.createSource.post(params).then(data => {
-      return Promise.resolve(data)
+      if (data.response === 1) {
+        return Promise.resolve(data)
+      } else {
+        return Promise.reject(new Error(data.msg))
+      }
     })
   },
 

@@ -195,6 +195,7 @@ export default {
       },
       dataTabs: [],
       hasSqlRunning: false,
+      // hasWsConnecting: false,
       schemaInfo: {
         fuzzy: {
           tbl_user: [
@@ -298,9 +299,7 @@ export default {
                 width: 70
               })
               */
-              console.log(data.port)
-              this.port = this.sqlInfo.port // 获取端口号
-              console.log(this.port)
+              this.port = this.sqlInfo.port // 端口号
               // websocket
               let wsCounter = 0
               let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
@@ -320,7 +319,6 @@ export default {
                 wsCounter++
               }
               ws.onclose = (e) => {
-                debugger
                 this.hasSqlRunning = false
               }
               ws.onerror = (e) => {
