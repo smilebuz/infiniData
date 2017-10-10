@@ -1,6 +1,7 @@
 export default {
-  // 登录
+  // 登录/登出
   SET_USER: 'SET_USER',
+  LOGOUT: 'LOGOUT',
 
   // 仪表盘
   SET_DASHBOARD_INFO: 'SET_DASHBOARD_INFO',

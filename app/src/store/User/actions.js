@@ -12,7 +12,10 @@ export default {
       }
     })
   },
-  logout ({ commit }) {
-    commit(type.DELETE_USER)
+  logout ({ commit }, params) {
+    return Api.logout.post(params).then(data => {
+      commit(type.LOGOUT)
+      return Promise.resolve(data)
+    })
   }
 }
