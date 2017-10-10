@@ -75,19 +75,22 @@
         </p-->
         <Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="运行信息" class="tabpane">
-            <p v-show="hasSqlRunning">
+            <!--p v-show="hasSqlRunning">
               正在运行sql语句 请稍等
+            </p-->
+            <p v-show="hasWsEstablishing">
+              正在建立socket连接
             </p>
-            <div v-show="!hasSqlRunning" class="mainPad__title-conatiner">
+            <div v-show="!hasWsEstablishing" class="mainPad__title-conatiner">
               <h3 class="sqlpad__mainPad-title">日志</h3>
             </div>
-            <div class="logpad" v-show="!hasSqlRunning">
+            <div class="logpad" v-show="!hasWsEstablishing">
               <Input type="textarea" placeholder="日志信息" readonly
                 v-model="log"
                 :rows="5">
               </Input>
             </div>
-            <div v-show="!hasSqlRunning" class="mainPad__title-conatiner">
+            <div v-show="!hasWsEstablishing" class="mainPad__title-conatiner">
               <h3 class="sqlpad__mainPad-title">数据</h3>
               <Button type="primary" size="small" @click="exportData">
                 导出数据至csv文件
@@ -96,7 +99,7 @@
             <Table border stripe ref="dataTable"
               :columns="columns"
               :data="infoList"
-              v-show="!hasSqlRunning"
+              v-show="!hasWsEstablishing"
             ></Table>
           </TabPane>
           <!--TabPane label="日志">
@@ -195,7 +198,7 @@ export default {
       },
       dataTabs: [],
       hasSqlRunning: false,
-      // hasWsConnecting: false,
+      hasWsEstablishing: false,
       schemaInfo: {
         fuzzy: {
           tbl_user: [
@@ -299,6 +302,8 @@ export default {
                 width: 70
               })
               */
+              this.infoList = []
+              this.hasWsEstablishing = true
               this.port = this.sqlInfo.port // 端口号
               // websocket
               let wsCounter = 0
@@ -306,6 +311,7 @@ export default {
               let ws = new WebSocket(wsUrl)
               ws.onopen = (e) => {}
               ws.onmessage = (e) => {
+                this.hasWsEstablishing = false
                 if (!wsCounter) {
                   // table head
                   // this.columns.push(...[e.data])
