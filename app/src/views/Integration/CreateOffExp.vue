@@ -41,7 +41,7 @@
           </div>
           <Page show-sizer show-elevator
             :total="pageInfo.totalCount"
-            :current="pageInfo.currentPage"
+            :current="pageInfo.pageNum"
             :page-size="pageInfo.pageSize"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"
@@ -208,18 +208,40 @@ export default {
       },
       selectAllFlag: false,
       scheduleCornTiming: '',
-      scheduleCornPeriod: ''
+      scheduleCornPeriod: '',
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10,
+        totalCount: -1,
+        totalPage: -1
+      }
     }
   },
   computed: {
     ...mapGetters({
       dataSources: 'dataSources',
       tableList: 'sourceTables',
-      pageInfo: 'sourceTablePageInfo',
+      // pageInfo: 'sourceTablePageInfo',
       user: 'user',
       pdbList: 'dbList',
-      pdbTBList: 'tbList'
-    })
+      tbList: 'tbList'
+      // pdbTBList: 'tbList'
+    }),
+    // 分页
+    pdbTBList: function () {
+      if (this.pageInfo.pageNum * this.pageInfo.pageSize >= this.pageInfo.totalCount) {
+        // 当前页为最后一页
+        return this.tbList.filter((el, index, arr) => {
+          return (index + 1) > (this.pageInfo.pageNum - 1) * this.pageInfo.pageSize
+        })
+      } else {
+        // 当前页不是最后一页
+        return this.tbList.filter((el, index, arr) => {
+          return (index + 1) > (this.pageInfo.pageNum - 1) * this.pageInfo.pageSize &&
+            (index + 1) <= this.pageInfo.pageNum * this.pageInfo.pageSize
+        })
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -270,7 +292,7 @@ export default {
 
     selectAllinDB (selected) {
       this.selectAllFlag = selected
-      this.pdbTBList.forEach(table => {
+      this.tbList.forEach(table => {
         table._checked = selected
         table._disabled = selected
       })
@@ -286,7 +308,7 @@ export default {
       })
 
       let unSelection = []
-      for (let table of this.pdbTBList) {
+      for (let table of this.tbList) {
         let targetTable = selection.find(el => {
           return el.tbName === table.tbName
         })
@@ -309,14 +331,14 @@ export default {
       }
     },
     changePageNum (pageNum) {
-      this.searchParams.pageNum = pageNum
+      this.pageInfo.pageNum = pageNum
     },
     changePageSize (pageSize) {
-      this.searchParams.pageSize = pageSize
+      this.pageInfo.pageSize = pageSize
     },
     submitCreateParams () {
       this.createParams.selectAll = this.selectAllFlag
-      this.createParams.totalCount = this.pageInfo.totalCount
+      // this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleState = 0
@@ -352,10 +374,14 @@ export default {
             return this.createParams.connId === el.connId
           }).dbName
           */
+          this.pageInfo.totalCount = this.tbList.length
+          this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
+
           this.createParams.pdbId = this.searchParams.pdbId
           this.createParams.pdbName = this.pdbList.find(el => {
             return this.createParams.pdbId === el.pdbId
           }).pdbName
+          /*
           this.selectAllinDB(this.selectAllFlag)
           this.pdbTBList.forEach(table => {
             this.pdbTBList.forEach(table => {
@@ -367,6 +393,23 @@ export default {
               }
             })
           })
+          */
+        })
+      },
+      deep: true
+    },
+    pageInfo: {
+      handler: function (newInfo) {
+        this.selectAllinDB(this.selectAllFlag)
+        this.pdbTBList.forEach(table => {
+          this.pdbTBList.forEach(table => {
+            let targetTable = this.createParams.tbInfos.find(el => {
+              return el.tbName === table.tbName
+            })
+            if (targetTable) {
+              table._checked = true
+            }
+          })
         })
       },
       deep: true
@@ -374,7 +417,7 @@ export default {
   },
   mounted () {
     this.getPDBList().then(data => {
-      this.filterForm.pdbId = this.pdbList[0].pdbId
+      this.filterForm.pdbId = this.pdbList[1].pdbId
       this.changeSearchParams()
     })
     this.getDataSource().then(data => {
