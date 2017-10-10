@@ -8,7 +8,7 @@
           v-model="loginParams.userName"
           @on-enter="submitLoginParams"
         ></Input>
-        <Input placeholder="密码" class="login__item"
+        <Input placeholder="密码" type="password" class="login__item"
           v-model="loginParams.password"
           @on-enter="submitLoginParams"
         ></Input>
