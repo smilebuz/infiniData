@@ -314,7 +314,6 @@ export default {
                 this.hasWsEstablishing = false
                 if (!wsCounter) {
                   // table head
-                  // this.columns.push(...[e.data])
                   this.columns = JSON.parse(e.data)
                 } else {
                   // table body
