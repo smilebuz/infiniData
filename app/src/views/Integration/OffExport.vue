@@ -84,7 +84,7 @@
                 :disabled="disableEditTimePicker"
               ></TimePicker>
             </div>
-            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
+            <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -226,14 +226,6 @@ export default {
           width: 150
         },
         {
-          title: '调度状态',
-          key: 'scheduleState',
-          width: 120,
-          render: (h, params) => {
-            return h('div', this.scheduleStateList[params.row.scheduleState])
-          }
-        },
-        {
           title: '用户',
           key: 'user',
           width: 150
@@ -266,17 +258,13 @@ export default {
         taskId: '',
         type: '',
         scheduleMode: 0,
-        scheduleCorn: '',
-        scheduleState: -1
+        scheduleCorn: ''
       },
       scheduleCornTiming: '',
       scheduleCornPeriod: '',
       selectedTaskIds: [],
-      scheduleStateList: {
-        '0': '有效',
-        '1': '失效'
-      },
       scheduleModeList: {
+        '0': '失效',
         '1': '手动',
         '2': '定时',
         '3': '周期'
@@ -538,15 +526,14 @@ export default {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
       this.editParams.type = task.type
+      this.editParams.scheduleMode = task.scheduleMode
       this.disableEditCSVSelect = !(task.type === 1)
       this.disableEditDBSelect = !(task.type === 2)
-      if (task.scheduleState) {
+      if (task.scheduleMode === 0) {
         // 失效
-        this.editParams.scheduleMode = -1
         this.disableEditDatePicker = true
         this.disableEditTimePicker = true
       } else {
-        this.editParams.scheduleMode = task.scheduleMode
         this.disableEditDatePicker = !(task.scheduleMode === 2)
         this.disableEditTimePicker = !(task.scheduleMode === 3)
         switch (task.scheduleMode) {
@@ -564,19 +551,15 @@ export default {
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 1:
-          this.editParams.scheduleState = 0
           this.editParams.scheduleCorn = ''
           break
         case 2:
-          this.editParams.scheduleState = 0
           this.editParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
           break
         case 3:
-          this.editParams.scheduleState = 0
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
           break
-        case -1:
-          this.editParams.scheduleState = 1
+        case 0:
           this.editParams.scheduleCorn = ''
           break
         default:

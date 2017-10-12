@@ -64,7 +64,7 @@
                 :disabled="disableEditDatePicker"
               ></DatePicker>
             </div>
-            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
+            <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -131,20 +131,13 @@ export default {
       columns: [
         {
           type: 'selection',
-          fixed: 'left',
           width: 60
-        },
-        {
-          type: 'index',
-          title: '序号',
-          fixed: 'left',
-          width: 70
         },
         {
           title: '任务编号',
           key: 'taskId',
           sortable: true,
-          width: 110,
+          width: 90,
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -173,34 +166,27 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 140
+          width: 110
         },
         {
           title: '库名',
           key: 'dbName',
           sortable: true,
-          width: 120
+          width: 80
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          ellipsis: true,
-          width: 120
+          width: 100
         },
         {
           title: '任务状态',
           key: 'status',
-          width: 200,
+          width: 90,
           render: (h, params) => {
             if (params.row.status === 2) {
-              return h('div', [
-                h('Progress', {
-                  props: {
-                    percent: params.row.progress
-                  }
-                })
-              ])
+              return h('div', {}, params.row.progress + '%')
             } else {
               return h('div', this.statusList[params.row.status])
             }
@@ -209,7 +195,7 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 150,
+          width: 90,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
@@ -217,26 +203,17 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 180
-        },
-        {
-          title: '调度状态',
-          key: 'scheduleState',
-          width: 150,
-          render: (h, params) => {
-            return h('div', this.scheduleStateList[params.row.scheduleState])
-          }
+          width: 150
         },
         {
           title: '用户',
           key: 'user',
-          width: 150
+          width: 90
         },
         {
           title: '操作',
           key: '',
           width: 140,
-          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             switch (params.row.status) {
@@ -386,8 +363,7 @@ export default {
         taskId: -1,
         blocks: '',
         scheduleMode: '',
-        scheduleCorn: '',
-        scheduleState: -2
+        scheduleCorn: ''
       },
       disableEditDatePicker: true,
       scheduleOptions: {
@@ -405,13 +381,9 @@ export default {
         99: '已失败'
       },
       scheduleModeList: {
+        '0': '失效',
         '1': '手动',
-        '2': '定时',
-        '3': '周期'
-      },
-      scheduleStateList: {
-        '0': '有效',
-        '1': '无效'
+        '2': '定时'
       }
     }
   },
@@ -510,12 +482,11 @@ export default {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
       this.editParams.blocks = task.blocks
-      if (task.scheduleState) {
+      this.editParams.scheduleMode = task.scheduleMode
+      if (task.scheduleMode === 0) {
         // 失效
-        this.editParams.scheduleMode = -1
         this.disableEditDatePicker = true
       } else {
-        this.editParams.scheduleMode = task.scheduleMode
         this.disableEditDatePicker = true
         if (task.scheduleMode === 2) {
           this.editParams.scheduleCorn = task.scheduleCorn
@@ -525,19 +496,11 @@ export default {
     },
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
-        case 1:
-          this.editParams.scheduleState = 0
-          this.editParams.scheduleCorn = ''
-          break
         case 2:
-          this.editParams.scheduleState = 0
           this.editParams.scheduleCorn = dateFormatter(this.editParams.scheduleCorn)
           break
-        case -1:
-          this.editParams.scheduleState = 1
-          this.editParams.scheduleCorn = ''
-          break
         default:
+          this.editParams.scheduleCorn = ''
           break
       }
       this.editTask(this.editParams).then(data => {

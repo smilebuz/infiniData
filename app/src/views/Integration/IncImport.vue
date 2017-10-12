@@ -11,14 +11,14 @@
         <FormItem prop="tbName" label="表名" class="form__item">
           <Input type="text" v-model="filterForm.tbName"></Input>
         </FormItem>
-        <FormItem prop="scheduleState" label="调度状态" class="form__item">
+        <!--FormItem prop="scheduleState" label="调度状态" class="form__item">
           <Select v-model="filterForm.scheduleState" placeholder="请选择" style="width:120px;">
             <Option value="">全部</Option>
             <Option v-for="(value, key) in scheduleStateList" :key="key" :value="key">
               {{ value }}
             </Option>
           </Select>
-        </FormItem>
+        </FormItem-->
         <FormItem class="form__item form__item-button">
           <Button type="primary" class="filter__button"
             @click="changeSearchParams"
@@ -59,7 +59,7 @@
                 :disabled="disableEditTimePicker"
               ></TimePicker>
             </div>
-            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
+            <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </div>
       </Modal>
@@ -86,7 +86,6 @@ export default {
         dbType: '',
         dbName: '',
         tbName: '',
-        scheduleState: '',
         pageNum: 1,
         pageSize: 10,
         orderBy: 'id',
@@ -95,8 +94,7 @@ export default {
       filterForm: {
         taskId: '',
         dbName: '',
-        tbName: '',
-        scheduleState: ''
+        tbName: ''
       },
       operations: [
         {
@@ -212,14 +210,6 @@ export default {
           title: '调度时间',
           key: 'scheduleCorn',
           width: 160
-        },
-        {
-          title: '调度状态',
-          key: 'scheduleState',
-          width: 120,
-          render: (h, params) => {
-            return h('div', this.scheduleStateList[params.row.scheduleState])
-          }
         },
         {
           title: '用户',
@@ -350,19 +340,15 @@ export default {
       editParams: {
         taskId: '',
         scheduleMode: -1,
-        scheduleState: -1,
         scheduleCorn: ''
       },
       scheduleCornPeriod: '',
       scheduleCornTiming: '',
       scheduleModeList: {
+        '0': '无效',
         '1': '手动',
         '2': '定时',
         '3': '周期'
-      },
-      scheduleStateList: {
-        '0': '有效',
-        '1': '无效'
       },
       statusList: {
         0: '不运行',
@@ -472,12 +458,12 @@ export default {
     openEditModal (task) {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
-      if (task.scheduleState) {
-        this.editParams.scheduleMode = -1
+      this.editParams.scheduleMode = task.scheduleMode
+      if (task.scheduleMode === 0) {
+        // 失效
         this.disableEditDatePicker = true
         this.disableEditTimePicker = true
       } else {
-        this.editParams.scheduleMode = task.scheduleMode
         this.disableEditDatePicker = !(task.scheduleMode === 2)
         this.disableEditTimePicker = !(task.scheduleMode === 3)
         if (task.scheduleMode === 2) {
@@ -491,19 +477,15 @@ export default {
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 1:
-          this.editParams.scheduleState = 0
           this.editParams.scheduleCorn = ''
           break
         case 2:
           this.editParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
-          this.editParams.scheduleState = 0
           break
         case 3:
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
-          this.editParams.scheduleState = 0
           break
-        case -1:
-          this.editParams.scheduleState = 1
+        case 0:
           this.editParams.scheduleCorn = ''
           break
         default:

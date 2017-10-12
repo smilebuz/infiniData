@@ -74,7 +74,7 @@
                 :disabled="disableDatePicker"
               ></DatePicker>
             </div>
-            <Radio :label="-1" class="radiogroup__radio">失效</Radio>
+            <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -169,7 +169,6 @@ export default {
         priority: 1,
         scheduleMode: 1,
         scheduleCorn: '',
-        scheduleState: '',
         selectAll: false,
         totalCount: 0
       },
@@ -256,19 +255,11 @@ export default {
       this.createParams.selectAll = this.selectAllFlag
       this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
-        case 1:
-          this.createParams.scheduleState = 0
-          this.createParams.scheduleCorn = ''
-          break
         case 2:
-          this.createParams.scheduleState = 0
           this.createParams.scheduleCorn = dateFormatter(this.createParams.scheduleCorn)
           break
-        case -1:
-          this.createParams.scheduleState = 1 // 失效
-          this.createParams.scheduleCorn = ''
-          break
         default:
+          this.createParams.scheduleCorn = ''
           break
       }
       this.createTask(this.createParams).then(data => {

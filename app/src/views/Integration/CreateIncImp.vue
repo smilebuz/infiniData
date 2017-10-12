@@ -64,7 +64,7 @@
                 :disabled="disableSettingTimePicker"
               ></TimePicker>
             </div>
-            <Radio :label="-1" class="radiogroup__radio">无效</Radio>
+            <Radio :label="0" class="radiogroup__radio">无效</Radio>
           </RadioGroup>
         </Card>
       </div>
@@ -158,7 +158,6 @@ export default {
         user: '',
         scheduleMode: 1,
         scheduleCorn: '',
-        scheduleState: '',
         selectAll: false
       },
       selectAllFlag: false,
@@ -341,19 +340,16 @@ export default {
       this.createParams.selectAll = this.selectAllFlag
       switch (this.createParams.scheduleMode) {
         case 1:
-          this.createParams.scheduleState = 0
           this.createParams.scheduleCorn = ''
           break
         case 2:
-          this.createParams.scheduleState = 0
           this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
           break
         case 3:
-          this.createParams.scheduleState = 0
           this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
           break
-        case -1:
-          this.createParams.scheduleState = 1 // 失效
+        case 0:
+          // 失效
           this.createParams.scheduleCorn = ''
           break
         default:

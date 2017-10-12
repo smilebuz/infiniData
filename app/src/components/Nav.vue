@@ -17,7 +17,7 @@
         <p class="user__info-name">{{ user.userName }}</p>
         <!--p class="user__info-position">{{ user.position }}</p-->
       </div>
-      <div class="user__logout" @click="submigLogout">
+      <div class="user__logout" @click="submitLogout">
         <Icon type="power" />
         <span>退出</span>
       </div>
@@ -78,10 +78,13 @@ export default {
       this.$router.push(nav.path)
     },
     submitLogout () {
+      /*
       let params = {}
       this.logout(params).then(data => {
         this.$router.push('Login')
       })
+      */
+      this.$router.push('/Login')
     }
   }
 }

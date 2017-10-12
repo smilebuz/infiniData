@@ -79,7 +79,7 @@
               正在运行sql语句 请稍等
             </p-->
             <p v-show="hasWsEstablishing">
-              正在建立socket连接
+              正在准备执行sql语句
             </p>
             <div v-show="!hasWsEstablishing" class="mainPad__title-conatiner">
               <h3 class="sqlpad__mainPad-title">日志</h3>
