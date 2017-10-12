@@ -414,7 +414,7 @@ export default {
   },
   mounted () {
     this.getPDBList().then(data => {
-      this.filterForm.pdbId = this.pdbList[1].pdbId
+      this.filterForm.pdbId = this.pdbList[0].pdbId
       this.changeSearchParams()
     })
     this.getDataSource().then(data => {

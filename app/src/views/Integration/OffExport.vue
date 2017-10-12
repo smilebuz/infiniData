@@ -45,21 +45,28 @@
             @on-change="changeEditType">
             <div class="radioselect">
               <Radio :label="1" class="radioselect__type">CSV</Radio>
-              <span class="radiogroup__item-label">编码</span>
+              <!--span class="radiogroup__item-label">编码</span>
               <Select class="select" style="width:300px;" size="small"
                 :disabled="disableEditCSVSelect">
               </Select>
               <span class="radiogroup__item-label" size="small">分隔符</span>
               <Select class="select"
                 :disabled="disableEditCSVSelect"
-              ></Select>
+              ></Select-->
             </div>
             <div class="radioselect">
               <Radio :label="2" class="radioselect__type">数据库</Radio>
               <span class="radiogroup__item-label">数据源</span>
-              <Select class="select" size="small"
+              <Select class="select" style="width:120px;" size="small"
                 :disabled="disableEditDBSelect"
-              ></Select>
+                v-model="editParams.connId"
+              >
+                <Option v-for="(source, index) in dataSources"
+                  :key="source.connId"
+                  :value="source.connId">
+                  {{ source.dbName }}
+                </Option>
+              </Select>
             </div>
           </RadioGroup>
         </div>
@@ -250,6 +257,7 @@ export default {
       editParams: {
         taskId: '',
         type: '',
+        connId: '',
         scheduleMode: 0,
         scheduleCorn: ''
       },
@@ -277,6 +285,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      dataSources: 'dataSources',
       taskList: 'offExpList',
       pageInfo: 'offExpPageInfo'
     })
@@ -288,7 +297,8 @@ export default {
       editTask: 'editOffExpTask',
       startTask: 'startOffExpTask',
       stopTask: 'stopOffExpTask',
-      stopPolling: 'stopOffExpPolling'
+      stopPolling: 'stopOffExpPolling',
+      getDataSource: 'getDataSource'
     }),
     opStyle (op) {
       return {
@@ -519,6 +529,10 @@ export default {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
       this.editParams.type = task.type
+      if (task.type === 2) {
+        // 数据库
+        this.editParams.connId = task.connId
+      }
       this.editParams.scheduleMode = task.scheduleMode
       this.disableEditCSVSelect = !(task.type === 1)
       this.disableEditDBSelect = !(task.type === 2)
@@ -602,6 +616,7 @@ export default {
   },
   mounted () {
     this.getTaskList(this.searchParams).then(data => {})
+    this.getDataSource().then(data => {})
   },
   beforeDestroy () {
     this.stopPolling()

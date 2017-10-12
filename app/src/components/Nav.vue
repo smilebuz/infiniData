@@ -114,7 +114,7 @@ export default {
     width: 150px;
     line-height: 50px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
     &:hover {
       background: #393d41;

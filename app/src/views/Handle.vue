@@ -73,15 +73,36 @@
         <!--p class="sqlpad__mainPad-sqlInfo" v-show="!hasSqlRunning">
           运行时间: {{ sqlInfo.time_consum }}  返回结果: {{ sqlInfo.count }}条
         </p-->
-        <Tabs type="card" class="sqlpad__mainPad-infoPad">
+        <p v-show="hasWsEstablishing">
+          正在准备执行sql语句
+        </p>
+        <div v-show="!hasWsEstablishing" class="mainPad__title-container">
+          <h3>执行结果</h3>
+        </div>
+        <div class="logpad" v-show="!hasWsEstablishing">
+          <Input type="textarea" placeholder="日志信息" readonly
+            v-model="sqlResult"
+            :rows="10">
+          </Input>
+        </div>
+        <!--Tabs type="card" class="sqlpad__mainPad-infoPad">
           <TabPane label="运行信息" class="tabpane">
-            <!--p v-show="hasSqlRunning">
+            <p v-show="hasSqlRunning">
               正在运行sql语句 请稍等
-            </p-->
+            </p>
             <p v-show="hasWsEstablishing">
               正在准备执行sql语句
             </p>
-            <div v-show="!hasWsEstablishing" class="mainPad__title-conatiner">
+            <div v-show="!hasWsEstablishing" class="mainPad__title-container">
+              <h3>执行结果</h3>
+            </div>
+            <div class="logpad" v-show="!hasWsEstablishing">
+              <Input type="textarea" placeholder="日志信息" readonly
+                v-model="sqlResult"
+                :rows="5">
+              </Input>
+            </div>
+            <div v-show="!hasWsEstablishing" class="mainPad__title-container">
               <h3 class="sqlpad__mainPad-title">日志</h3>
             </div>
             <div class="logpad" v-show="!hasWsEstablishing">
@@ -90,7 +111,7 @@
                 :rows="5">
               </Input>
             </div>
-            <div v-show="!hasWsEstablishing" class="mainPad__title-conatiner">
+            <div v-show="!hasWsEstablishing" class="mainPad__title-container">
               <h3 class="sqlpad__mainPad-title">数据</h3>
               <Button type="primary" size="small" @click="exportData">
                 导出数据至csv文件
@@ -102,14 +123,14 @@
               v-show="!hasWsEstablishing"
             ></Table>
           </TabPane>
-          <!--TabPane label="日志">
+          <TabPane label="日志">
             <div class="logpad">
               <p class="logpad__log">
                 {{ sqlInfo.log }}
               </p>
             </div>
-          </TabPane-->
-        </Tabs>
+          </TabPane>
+        </Tabs-->
       </div>
     </div>
   </div>
@@ -226,7 +247,8 @@ export default {
       port: '',
       columns: [],
       infoList: [],
-      log: ''
+      log: '',
+      sqlResult: ''
     }
   },
   computed: {
@@ -284,6 +306,9 @@ export default {
             let dbName = this.dbList.find(el => {
               return el.pdbId === this.selectedpdbId
             }).pdbName
+            let selectSql = targetTab.editor.getSelection()
+            console.log(selectSql)
+            // debugger
             let params = {
               sql: targetTab.editor.getValue(),
               db_name: dbName
@@ -306,12 +331,14 @@ export default {
               this.hasWsEstablishing = true
               this.port = this.sqlInfo.port // 端口号
               // websocket
-              let wsCounter = 0
+              // let wsCounter = 0
               let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
               let ws = new WebSocket(wsUrl)
               ws.onopen = (e) => {}
               ws.onmessage = (e) => {
                 this.hasWsEstablishing = false
+                this.sqlResult = this.sqlResult + e.data
+                /*
                 if (!wsCounter) {
                   // table head
                   this.columns = JSON.parse(e.data)
@@ -320,6 +347,7 @@ export default {
                   this.infoList.push(JSON.parse(e.data))
                 }
                 wsCounter++
+                */
               }
               ws.onclose = (e) => {
                 this.hasSqlRunning = false
@@ -329,7 +357,6 @@ export default {
           }
           break
         case 'stop':
-
           break
         case 'new':
           let newSqlTab = {
@@ -621,7 +648,7 @@ export default {
   .logpad {
     margin-bottom: 1em;
   }
-  .mainPad__title-conatiner {
+  .mainPad__title-container {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1em;
