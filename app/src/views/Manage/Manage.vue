@@ -21,7 +21,19 @@
     <div class="tbcontainer">
       <Table class="table" size="small" border stripe
         :columns="columns"
-        :data="tbList"></Table>
+        :data="tableList"></Table>
+      <div class="pagination">
+        <div>
+          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
+        </div>
+        <Page show-sizer show-elevator
+          :total="pageInfo.totalCount"
+          :current="pageInfo.pageNum"
+          :page-size="pageInfo.pageSize"
+          @on-change="changePageNum"
+          @on-page-size-change="changePageSize"
+        ></Page>
+      </div>
     </div>
   </div>
 </template>
@@ -125,14 +137,35 @@ export default {
           }
         }
         */
-      ]
+      ],
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10,
+        totalCount: -1,
+        totalPage: -1
+      }
     }
   },
   computed: {
     ...mapGetters({
       dbList: 'dbList',
       tbList: 'tbList'
-    })
+    }),
+    // 分页
+    tableList: function () {
+      if (this.pageInfo.pageNum * this.pageInfo.pageSize >= this.pageInfo.totalCount) {
+        // 当前页为最后一页
+        return this.tbList.filter((el, index, arr) => {
+          return (index + 1) > (this.pageInfo.pageNum - 1) * this.pageInfo.pageSize
+        })
+      } else {
+        // 当前页不是最后一页
+        return this.tbList.filter((el, index, arr) => {
+          return (index + 1) > (this.pageInfo.pageNum - 1) * this.pageInfo.pageSize &&
+            (index + 1) <= this.pageInfo.pageNum * this.pageInfo.pageSize
+        })
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -141,6 +174,12 @@ export default {
     }),
     selectDb (pdbId) {
       this.tbParams.pdbId = pdbId
+    },
+    changePageNum (pageNum) {
+      this.pageInfo.pageNum = pageNum
+    },
+    changePageSize (pageSize) {
+      this.pageInfo.pageSize = pageSize
     }
   },
   watch: {
@@ -154,6 +193,8 @@ export default {
           for (let table of this.tbList) {
             this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
           }
+          this.pageInfo.totalCount = this.tbList.length
+          this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
         })
       },
       deep: true
@@ -161,7 +202,7 @@ export default {
   },
   mounted () {
     this.getDBList().then(data => {
-      this.tbParams.pdbId = this.dbList[1].pdbId
+      this.tbParams.pdbId = this.dbList[0].pdbId
     })
   }
 }

@@ -257,8 +257,15 @@ export default {
           this.createModal.show = true
           break
         case 'delete':
-          this.deleteUser({userId: this.selectedUserIds}).then(data => {
-            this.getUserList(this.searchParams)
+          this.$Modal.confirm({
+            title: '是否确认删除',
+            content: '<p>确认删除用户?</p>',
+            onOk: () => {
+              this.deleteUser({userId: this.selectedUserIds}).then(data => {
+                this.getUserList(this.searchParams)
+              })
+            },
+            onCancel: () => {}
           })
           break
         default:
@@ -282,7 +289,13 @@ export default {
     submitCreateParams () {
       this.createUser(this.createParams).then(data => {
         this.createModal.show = false
-        this.getUserList(this.searchParams)
+        this.getUserList(this.searchParams).then(data => {
+          for (var prop in this.createParams) {
+            if (this.createParams.hasOwnProperty(prop)) {
+              this.createParams[prop] = ''
+            }
+          }
+        })
       })
     },
     cancelCreate () {

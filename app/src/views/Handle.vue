@@ -9,7 +9,10 @@
         </Select>
         <!--Button type="text" shape="circle" icon="refresh"></Button-->
       </div>
-      <Tree :data="tables" class="tree" @on-select-change="selectTable"></Tree>
+      <Tree class="tree"
+        :data="tables"
+        v-if="tables[0].children.length"
+        @on-select-change="selectTable"></Tree>
       <div class="radios">
         <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
           {{ value.label }}
@@ -82,7 +85,7 @@
         <div class="logpad" v-show="!hasWsEstablishing">
           <Input type="textarea" placeholder="日志信息" readonly
             v-model="sqlResult"
-            :rows="10">
+            :rows="20">
           </Input>
         </div>
         <!--Tabs type="card" class="sqlpad__mainPad-infoPad">
@@ -159,6 +162,7 @@ export default {
         pdbId: '',
         tbId: ''
       },
+      // tables: [],
       tables: [
         {
           title: '',
@@ -244,6 +248,7 @@ export default {
           ]
         }
       },
+      host: '',
       port: '',
       columns: [],
       infoList: [],
@@ -300,17 +305,18 @@ export default {
             })
           } else {
             this.hasSqlRunning = true
+            this.operations[0].bgColor = '#ccc'
             let targetTab = this.sqlTabs.find((tab) => {
               return tab.id === this.currentTabId
             })
+
             let dbName = this.dbList.find(el => {
               return el.pdbId === this.selectedpdbId
             }).pdbName
-            let selectSql = targetTab.editor.getSelection()
-            console.log(selectSql)
-            // debugger
+
             let params = {
-              sql: targetTab.editor.getValue(),
+              // sql: targetTab.editor.getValue(),
+              sql: targetTab.editor.getSession().getTextRange(),
               db_name: dbName
             }
             this.runSql(params).then(data => {
@@ -328,16 +334,21 @@ export default {
               })
               */
               this.infoList = []
+              this.sqlResult = ''
               this.hasWsEstablishing = true
+              this.host = this.sqlInfo.host
               this.port = this.sqlInfo.port // 端口号
               // websocket
               // let wsCounter = 0
-              let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
+              let wsUrl = 'ws://' + this.host + ':' + this.port + '/log'
+              // let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
               let ws = new WebSocket(wsUrl)
+              // let wsUrl = '/wsAddress:' + this.port + '/log'
+              // let ws = buildSocket(this.port)
               ws.onopen = (e) => {}
               ws.onmessage = (e) => {
                 this.hasWsEstablishing = false
-                this.sqlResult = this.sqlResult + e.data
+                this.sqlResult = this.sqlResult + e.data + '\n'
                 /*
                 if (!wsCounter) {
                   // table head
@@ -351,6 +362,12 @@ export default {
               }
               ws.onclose = (e) => {
                 this.hasSqlRunning = false
+                this.operations[0].bgColor = '#80c58c'
+                this.$Message.info({
+                  content: '运行结束',
+                  top: 50,
+                  duration: 1.5
+                })
               }
               ws.onerror = (e) => {}
             })
@@ -424,6 +441,7 @@ export default {
           this.setBrace(currentTab)
         })
       }
+      this.saveModal.saveName = ''
       this.saveModal.showModal = false
     },
     cancelSave () {

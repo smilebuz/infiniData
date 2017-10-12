@@ -19,6 +19,7 @@ export default {
     state.runSqlInfo.time_consum = data.data.timeConsum
     state.runSqlInfo.count = data.data.count
     */
+    state.runSqlInfo.host = data.host
     state.runSqlInfo.port = data.port
   }
 }

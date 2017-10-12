@@ -97,19 +97,17 @@ export default {
         {
           type: 'selection',
           align: 'center',
-          width: 60,
-          fixed: 'left'
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          width: 70,
-          fixed: 'left'
+          width: 70
         },
         {
           title: '库名',
           key: 'dbName',
-          width: 120,
+          width: 90,
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
@@ -118,12 +116,12 @@ export default {
         },
         {
           title: '表名',
-          width: 120,
+          width: 90,
           key: 'tbName'
         },
         {
           title: '主键字段',
-          width: 140,
+          width: 100,
           key: 'priKey'
         },
         {

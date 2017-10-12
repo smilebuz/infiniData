@@ -67,8 +67,13 @@
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+        <Page show-sizer show-elevator
+          :total="pageInfo.totalCount"
+          :current="pageInfo.currentPage"
+          :page-size="pageInfo.pageSize"
+          placement="top"
+          @on-change="changePageNum"
+          @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
@@ -410,8 +415,15 @@ export default {
             }
           }
           if (isDeletable) {
-            this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
-              this.getTaskList(this.searchParams).then(data => {})
+            this.$Modal.confirm({
+              title: '是否确认删除',
+              content: '<p>确认删除任务?</p>',
+              onOk: () => {
+                this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
+                  this.getTaskList(this.searchParams).then(data => {})
+                })
+              },
+              onCancel: () => {}
             })
           } else {
             this.$Message.warning({

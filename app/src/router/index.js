@@ -48,66 +48,66 @@ let router = new Router({
       path: '/Integration',
       name: 'Integration',
       component: Integration,
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       children: [
         {
           path: 'Dashboard',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: Dashboard
         },
         {
           path: 'OffImport',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: OffImport
         },
         {
           path: 'OffImpDetail/:taskId',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: OffImpDetail
         },
         {
           path: 'CreateOffImp',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateOffImp
         },
         {
           path: 'IncImport',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: IncImport
         },
         {
           path: 'IncImpDetail/:taskId',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: IncImpDetail
         },
         {
           path: 'CreateIncImp',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateIncImp
         },
         {
           path: 'OffExport',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: OffExport
         },
         {
           path: 'OffExpDetail/:taskId',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: OffExpDetail
         },
         {
           path: 'CreateOffExp',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateOffExp
         },
         {
           path: 'Source',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: Source
         },
         {
           path: 'CreateSource',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: CreateSource
         }
       ]
@@ -115,43 +115,43 @@ let router = new Router({
     {
       path: '/Handle',
       name: 'Handle',
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       component: Handle
     },
     {
       path: '/Manage',
       name: 'Manage',
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       component: Manage
     },
     {
       path: '/Analysis/:pdbId/:tbId',
       name: 'Analysis',
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       component: Analysis
     },
     {
       path: '/Op',
       name: 'Op',
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       component: Op,
       children: [
         {
           path: 'LogManage',
           name: 'LogManage',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: LogManage
         },
         {
           path: 'UserManage',
           name: 'UserManage',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: UserManage
         },
         {
           path: 'SystemResource',
           name: 'SystemResource',
-          meta: { requiresAuth: true },
+          // meta: { requiresAuth: true },
           component: SystemResource
         }
       ]
@@ -160,7 +160,7 @@ let router = new Router({
     {
       path: '/SelectTest',
       name: 'SelectTest',
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       component: SelectTest
     }
     */

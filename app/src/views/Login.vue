@@ -20,7 +20,7 @@
     </div>
     <div class="copyright">
       <p>版权所有 &copy; 中坤天行信息科技有限公司</p>
-      <p>Copyright &copy; Spacewalk Company Limited.. All Rights Reserved</p>
+      <!--p>Copyright &copy; Spacewalk Company Limited.. All Rights Reserved</p-->
     </div>
   </div>
 </template>

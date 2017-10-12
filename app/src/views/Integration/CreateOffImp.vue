@@ -123,18 +123,17 @@ export default {
         {
           type: 'selection',
           align: 'center',
-          width: 60,
-          fixed: 'left'
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          width: 70,
-          fixed: 'left'
+          width: 70
         },
         {
           title: '库名',
           key: 'dbName',
+          width: 90,
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
@@ -143,16 +142,19 @@ export default {
         },
         {
           title: '表名',
-          key: 'tbName'
+          key: 'tbName',
+          width: 90
         },
         {
           title: '总记录数',
           key: 'totalRows',
-          sortable: true
+          sortable: true,
+          width: 90
         },
         {
           title: '主键字段',
-          key: 'priKey'
+          key: 'priKey',
+          width: 90
         }
       ],
       scheduleOptions: {

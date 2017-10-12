@@ -99,8 +99,14 @@
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+        <Page
+          :total="pageInfo.totalCount"
+          :current="pageInfo.currentPage"
+          :page-size="pageInfo.pageSize"
+          placement="top"
+          show-sizer show-elevator
+          @on-change="changePageNum"
+          @on-page-size-change="changePageSize"></Page>
       </div>
     </div>
   </div>
@@ -388,49 +394,73 @@ export default {
             }, '停止')
           ])
         case 3:
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              'class': {
-                table__button: true
-              },
-              on: {
-                click: () => {
-                  this.openEditModal(params.row)
+          if (params.row.type === 2) {
+            // 数据库
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                'class': {
+                  table__button: true
+                },
+                on: {
+                  click: () => {
+                    this.openEditModal(params.row)
+                  }
                 }
-              }
-            }, '编辑'),
-            /*
-            h('a', {
-              domProps: {
-                href: 'http://' + params.row.downloadUrl
-              },
-              style: {
-                marginRight: '5px'
-              }
-            }, '下载')
-            */
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              'class': {
-                table__button: true
-              },
-              on: {
-                click: () => {
-                  window.location.href = 'http://' + params.row.downloadUrl
+              }, '编辑')
+            ])
+          } else {
+            // CSV
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                'class': {
+                  table__button: true
+                },
+                on: {
+                  click: () => {
+                    this.openEditModal(params.row)
+                  }
                 }
-              }
-            }, '下载')
-          ])
+              }, '编辑'),
+              /*
+              h('a', {
+                domProps: {
+                  href: 'http://' + params.row.downloadUrl
+                },
+                style: {
+                  marginRight: '5px'
+                }
+              }, '下载')
+              */
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                'class': {
+                  table__button: true
+                },
+                on: {
+                  click: () => {
+                    window.location.href = 'http://' + params.row.downloadUrl
+                  }
+                }
+              }, '下载')
+            ])
+          }
         case 99:
           return h('div', [
             h('Button', {
@@ -510,8 +540,15 @@ export default {
             }
           }
           if (isDeletable) {
-            this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
-              this.getTaskList(this.searchParams).then(data => {})
+            this.$Modal.confirm({
+              title: '是否确认删除',
+              content: '<p>确认删除任务?</p>',
+              onOk: () => {
+                this.deleteTask({taskIds: this.selectedTaskIds}).then(data => {
+                  this.getTaskList(this.searchParams).then(data => {})
+                })
+              },
+              onCancel: () => {}
             })
           } else {
             this.$Message.warning({

@@ -147,14 +147,13 @@ export default {
       columns: [
         {
           type: 'selection',
-          width: 60,
-          fixed: 'left'
+          align: 'center',
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          width: 80,
-          fixed: 'left'
+          width: 70
         },
         {
           title: '连接名称',
@@ -169,37 +168,37 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 150
+          width: 110
         },
         {
           title: '数据库名',
           key: 'dbName',
-          width: 110
+          width: 90
         },
         {
           title: '端口',
           key: 'port',
-          width: 100
+          width: 80
         },
         {
           title: '用户名',
           key: 'userName',
-          width: 110
+          width: 90
         },
         {
           title: '密码',
           key: 'password',
-          width: 140
+          width: 90
         },
         {
           title: '连接类型',
           key: 'connType',
-          width: 120
+          width: 90
         },
         {
           title: '编码',
           key: 'encoding',
-          width: 100
+          width: 80
         },
         {
           title: '最大并发连接数',
@@ -209,20 +208,18 @@ export default {
         {
           title: '创建时间',
           key: 'createTime',
-          ellipsis: true,
-          width: 180
+          width: 150
         },
         {
           title: '用户',
           key: 'user',
-          width: 120
+          width: 90
         },
         {
           title: '操作',
           key: '',
           align: 'center',
           width: 140,
-          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               h('Button', {
@@ -302,8 +299,15 @@ export default {
           this.$router.push('CreateSource')
           break
         case 'delete':
-          this.deleteSource({connIds: this.selectedSourceIds}).then(data => {
-            this.getSourceList(this.searchParams).then(data = {})
+          this.$Modal.confirm({
+            title: '是否确认删除',
+            content: '<p>确认删除任务?</p>',
+            onOk: () => {
+              this.deleteSource({connIds: this.selectedSourceIds}).then(data => {
+                this.getSourceList(this.searchParams).then(data = {})
+              })
+            },
+            onCancel: () => {}
           })
           break
         default:
@@ -341,9 +345,15 @@ export default {
       }
       this.testSourceConn(connParams).then(data => {
         this.$Message.info({
-          content: data.msg,
+          content: '连接成功',
           duration: 1.5,
           top: 50
+        })
+      }).catch(error => {
+        this.$Message.warning({
+          content: error.message,
+          top: 50,
+          duration: 1.5
         })
       })
     },

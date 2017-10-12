@@ -30,6 +30,7 @@
               :total="pageInfo.totalCount"
               :current="pageInfo.pageNum"
               :page-size="pageInfo.pageSize"
+              placement="top"
               @on-change="changePageNum"
               @on-page-size-change="changePageSize"
             ></Page>
@@ -249,5 +250,8 @@ export default {
   .taskPanel {
     width: calc(100% - 20px);
     margin-left: 10px;
+  }
+  .tabs {
+    overflow: auto!important;
   }
 </style>

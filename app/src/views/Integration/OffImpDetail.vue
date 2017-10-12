@@ -5,7 +5,9 @@
       <Progress :percent="detailProgress" class="progress"></Progress>
     </div>
     <div class="tbcontainer">
-      <Table :columns="columns" :data="detailList" class="table"></Table>
+      <Table class="table" stripe border
+        :columns="columns"
+        :data="detailList"></Table>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -33,58 +35,57 @@ export default {
         {
           type: 'index',
           title: '序号',
-          fixed: 'left',
           width: 70
         },
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 160
+          width: 110
         },
         {
           title: '抽取节点',
           key: 'IP',
-          width: 160
+          width: 110
         },
         {
           title: '总记录数',
           key: 'totalRows',
           sortable: true,
-          width: 120
+          width: 110
         },
         {
           title: '起始行号',
           key: 'firstRow',
           sortable: true,
-          width: 120
+          width: 110
         },
         {
           title: '终止行号',
           key: 'lastRow',
           sortable: true,
-          width: 120
+          width: 110
         },
         {
           title: '开始时间',
           key: 'startTime',
           sortable: true,
-          width: 160
+          width: 110
         },
         {
           title: '结束时间',
           key: 'endTime',
           sortable: true,
-          width: 160
+          width: 110
         },
         {
           title: '耗时',
           key: 'spendTime',
-          width: 100
+          width: 70
         },
         {
           title: '抽取速度',
           key: 'extractSpeed',
-          width: 120,
+          width: 110,
           render: (h, params) => {
             return h('div', {}, parseInt(params.row.extractSpeed) + '条/s')
           }
@@ -92,16 +93,10 @@ export default {
         {
           title: '状态',
           key: 'status',
-          width: 200,
+          width: 80,
           render: (h, params) => {
             if (params.row.status === 2) {
-              return h('div', [
-                h('Progress', {
-                  props: {
-                    percent: params.row.progress
-                  }
-                })
-              ])
+              return h('div', {}, params.row.progress + '%')
             } else {
               return h('div', {}, this.statusList[params.row.status])
             }
@@ -166,6 +161,7 @@ export default {
     padding: 10px;
   }
   .progress {
+    padding-left: 10px;
     flex-basis: 80%;
   }
 </style>
