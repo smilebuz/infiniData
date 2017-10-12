@@ -119,14 +119,8 @@ export default {
       columns: [
         {
           type: 'selection',
-          fixed: 'left',
+          align: 'center',
           width: 60
-        },
-        {
-          type: 'index',
-          title: '序号',
-          fixed: 'left',
-          width: 70
         },
         {
           title: '任务编号',
@@ -161,18 +155,18 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 180
+          width: 110
         },
         {
           title: '库名',
           key: 'dbName',
-          width: 90,
+          width: 80,
           sortable: true
         },
         {
           title: '表名',
           key: 'tbName',
-          width: 120,
+          width: 100,
           sortable: true
         },
         {
@@ -191,9 +185,9 @@ export default {
           width: 155
         },
         {
-          title: '状态',
+          title: '任务状态',
           key: 'status',
-          width: 150,
+          width: 90,
           render: (h, params) => {
             return h('div', this.statusList[params.row.status])
           }
@@ -201,7 +195,7 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 120,
+          width: 90,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
@@ -209,18 +203,17 @@ export default {
         {
           title: '调度时间',
           key: 'scheduleCorn',
-          width: 160
+          width: 150
         },
         {
           title: '用户',
           key: 'user',
-          width: 120
+          width: 90
         },
         {
           title: '操作',
           key: '',
           width: 140,
-          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             switch (params.row.status) {

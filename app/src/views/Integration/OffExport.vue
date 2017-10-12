@@ -146,14 +146,8 @@ export default {
       columns: [
         {
           type: 'selection',
-          fixed: 'left',
+          align: 'center',
           width: 60
-        },
-        {
-          type: 'index',
-          title: '序号',
-          fixed: 'left',
-          width: 70
         },
         {
           title: '任务编号',
@@ -183,18 +177,18 @@ export default {
         {
           title: '平台库名',
           key: 'dbName',
-          width: 120
+          width: 80
         },
         {
           title: '表名',
           key: 'tbName',
           sortable: true,
-          width: 120
+          width: 80
         },
         {
           title: '类型',
           key: 'type',
-          width: 120,
+          width: 100,
           render: (h, params) => {
             return h('div', this.typeList[params.row.type])
           }
@@ -205,9 +199,9 @@ export default {
           width: 180
         },
         {
-          title: '状态',
+          title: '任务状态',
           key: 'status',
-          width: 100,
+          width: 90,
           render: (h, params) => {
             return h('div', this.statusList[params.row.status])
           }
@@ -215,7 +209,7 @@ export default {
         {
           title: '调度类型',
           key: 'scheduleMode',
-          width: 120,
+          width: 90,
           render: (h, params) => {
             return h('div', this.scheduleModeList[params.row.scheduleMode])
           }
@@ -228,13 +222,12 @@ export default {
         {
           title: '用户',
           key: 'user',
-          width: 150
+          width: 90
         },
         {
           title: '操作',
           key: '',
           width: 140,
-          fixed: 'right',
           align: 'center',
           render: (h, params) => {
             return this.renderOperationButtons(h, params)

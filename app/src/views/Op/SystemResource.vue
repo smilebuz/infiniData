@@ -128,22 +128,23 @@ export default {
         },
         {
           type: 'index',
+          title: '序号',
           width: 80
         },
         {
           title: '配置名称',
           key: 'key',
-          width: 180
+          width: 150
         },
         {
-          title: '配置的值',
+          title: '设定值',
           key: 'value',
-          width: 180
+          width: 90
         },
         {
           title: '缺省值',
           key: 'default_value',
-          width: 180
+          width: 90
         },
         {
           title: '描述',

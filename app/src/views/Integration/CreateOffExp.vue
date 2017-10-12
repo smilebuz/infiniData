@@ -155,18 +155,17 @@ export default {
         {
           type: 'selection',
           aling: 'center',
-          width: 60,
-          fixed: 'left'
+          width: 60
         },
         {
           type: 'index',
           title: '序号',
-          width: 70,
-          fixed: 'left'
+          width: 70
         },
         {
           title: '平台库名',
           key: 'dbName',
+          width: 90,
           render: (h, params) => {
             return h('div', {}, this.pdbList.find((el) => {
               return el.pdbId === this.searchParams.pdbId
@@ -175,11 +174,13 @@ export default {
         },
         {
           title: '表名',
-          key: 'tbName'
+          key: 'tbName',
+          width: 90
         },
         {
           title: '总记录数',
           key: 'totalRows',
+          width: 90,
           sortable: true
         }
       ],

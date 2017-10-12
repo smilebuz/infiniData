@@ -131,6 +131,7 @@ export default {
       columns: [
         {
           type: 'selection',
+          align: 'center',
           width: 60
         },
         {
@@ -161,7 +162,7 @@ export default {
         {
           title: '数据库类型',
           key: 'dbType',
-          width: 110
+          width: 100
         },
         {
           title: 'IP',

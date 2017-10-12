@@ -47,13 +47,12 @@ export default {
         {
           type: 'index',
           title: '序号',
-          fixed: 'left',
-          width: 80
+          width: 70
         },
         {
           title: '表名',
           key: 'tbName',
-          width: 120
+          width: 80
         },
         {
           title: '类型',
@@ -63,17 +62,17 @@ export default {
         {
           title: '占用空间',
           key: 'spaceUsage',
-          width: 120
+          width: 90
         },
         {
           title: '字段数',
           key: 'totalFields',
-          width: 120
+          width: 80
         },
         {
           title: '记录数',
           key: 'totalRows',
-          width: 120
+          width: 80
         },
         {
           title: '分区字段',
@@ -83,22 +82,22 @@ export default {
         {
           title: '分桶字段',
           key: 'bucketField',
-          width: 180
+          width: 120
         },
         {
           title: '引擎',
           key: 'engine',
-          width: 120
+          width: 110
         },
         {
           title: '创建者',
           key: 'owner',
-          width: 120
+          width: 80
         },
         {
           title: '创建时间',
           key: 'create_time',
-          width: 160
+          width: 150
         }
         /*
         {
@@ -162,7 +161,7 @@ export default {
   },
   mounted () {
     this.getDBList().then(data => {
-      this.tbParams.pdbId = this.dbList[0].pdbId
+      this.tbParams.pdbId = this.dbList[1].pdbId
     })
   }
 }

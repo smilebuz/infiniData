@@ -65,17 +65,18 @@ export default {
       columns: [
         {
           type: 'index',
+          title: '序号',
           width: 80
         },
         {
           title: '日志等级',
           key: 'logLevel',
-          width: 120
+          width: 100
         },
         {
           title: 'IP',
           key: 'ipAddress',
-          width: 120
+          width: 110
         },
         {
           title: '创建时间',
@@ -85,7 +86,7 @@ export default {
         {
           title: '创建用户',
           key: 'userName',
-          width: 120
+          width: 90
         },
         {
           title: '日志信息',

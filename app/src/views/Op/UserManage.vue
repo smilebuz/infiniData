@@ -139,16 +139,18 @@ export default {
       columns: [
         {
           type: 'selection',
+          align: 'center',
           width: 60
         },
         {
           type: 'index',
+          title: '序号',
           width: 80
         },
         {
           title: '姓名',
           key: 'name',
-          width: 160
+          width: 80
         },
         {
           title: '电话',
@@ -165,6 +167,7 @@ export default {
         {
           title: '状态',
           key: 'status',
+          width: 80,
           render: (h, params) => {
             return h('div', {}, this.statusList[params.row.status])
           }
