@@ -87,7 +87,8 @@ export default {
         connId: '',
         tables: '',
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
+        type: 'inc'
       },
       filterForm: {
         connId: '',
@@ -325,37 +326,53 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
-      for (let table of this.createParams.tbInfos) {
-        let targetTable = this.tableParams.find((el) => {
-          return el.tbName === table.tbName
-        })
-        for (let prop in targetTable) {
-          if (targetTable.hasOwnProperty(prop)) {
-            table[prop] = targetTable[prop]
-          }
+      let lackIncField = false
+      for (let table of this.tableParams) {
+        if (table.incField === '') {
+          lackIncField = true
         }
       }
-      this.createParams.selectAll = this.selectAllFlag
-      switch (this.createParams.scheduleMode) {
-        case 1:
-          this.createParams.scheduleCorn = ''
-          break
-        case 2:
-          this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
-          break
-        case 3:
-          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
-          break
-        case 0:
-          // 失效
-          this.createParams.scheduleCorn = ''
-          break
-        default:
-          break
+      if (lackIncField) {
+        // 缺少增量字段
+        this.$Message.warning({
+          content: '缺少增量字段',
+          top: 50,
+          duration: 1.5
+        })
+      } else {
+        // 正常
+        for (let table of this.createParams.tbInfos) {
+          let targetTable = this.tableParams.find((el) => {
+            return el.tbName === table.tbName
+          })
+          for (let prop in targetTable) {
+            if (targetTable.hasOwnProperty(prop)) {
+              table[prop] = targetTable[prop]
+            }
+          }
+        }
+        this.createParams.selectAll = this.selectAllFlag
+        switch (this.createParams.scheduleMode) {
+          case 1:
+            this.createParams.scheduleCorn = ''
+            break
+          case 2:
+            this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+            break
+          case 3:
+            this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+            break
+          case 0:
+            // 失效
+            this.createParams.scheduleCorn = ''
+            break
+          default:
+            break
+        }
+        this.createTask(this.createParams).then(data => {
+          this.$router.push('IncImport')
+        })
       }
-      this.createTask(this.createParams).then(data => {
-        this.$router.push('IncImport')
-      })
     }
   },
   watch: {

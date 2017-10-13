@@ -2,7 +2,8 @@
   <div class="manage">
     <div class="side">
       <div class="dbSelect">
-        <Select style="width: 140px;" size="small" 
+        <span>库</span>
+        <Select class="dbSelect__select" style="width: 140px;" size="small" 
           v-model="tbParams.pdbId" 
           @on-change="selectDb">
           <Option 
@@ -12,7 +13,8 @@
             {{ db.pdbName }}
           </Option>
         </Select>
-        <!--Button type="text" shape="circle" icon="refresh"></Button-->
+        <Button type="text" shape="circle" icon="refresh"
+          @click="refreshDbList"></Button>
       </div>
       <Tree class="tree"
         :data="tables"
@@ -52,6 +54,7 @@ export default {
       tables: [
         {
           title: '',
+          expand: true,
           children: []
         }
       ],
@@ -175,6 +178,11 @@ export default {
     selectDb (pdbId) {
       this.tbParams.pdbId = pdbId
     },
+    refreshDbList () {
+      this.getDBList().then(data => {
+        this.tbParams.pdbId = this.dbList[0].pdbId
+      })
+    },
     changePageNum (pageNum) {
       this.pageInfo.pageNum = pageNum
     },
@@ -218,6 +226,9 @@ export default {
     display: flex;
     padding: 5px;
     align-items: center;
+  }
+  .dbSelect__select {
+    padding-left: 5px;
   }
   .tree {
     padding-left: 5px;

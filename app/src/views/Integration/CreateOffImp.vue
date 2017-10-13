@@ -97,7 +97,8 @@ export default {
         connId: '',
         tables: '',
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
+        type: 'full'
       },
       filterForm: {
         connId: '',

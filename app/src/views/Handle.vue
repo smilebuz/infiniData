@@ -2,12 +2,16 @@
   <div class="handle">
     <div class="side">
       <div class="dbSelect">
-        <Select style="width: 140px;" size="small" v-model="selectedpdbId" @on-change="selectDb">
+        <span>库</span>
+        <Select class="dbSelect__select" style="width: 140px;" size="small"
+          v-model="selectedpdbId"
+          @on-change="selectDb">
           <Option v-for="(db, index) in dbList" :key="db.pdbId" :value="db.pdbId">
             {{ db.pdbName }}
           </Option>
         </Select>
-        <!--Button type="text" shape="circle" icon="refresh"></Button-->
+        <Button type="text" shape="circle" icon="refresh"
+          @click="refreshDbList"></Button>
       </div>
       <Tree class="tree"
         :data="tables"
@@ -165,6 +169,7 @@ export default {
       tables: [
         {
           title: '',
+          expand: true,
           children: [] // 树子节点
         }
       ],
@@ -275,6 +280,11 @@ export default {
       getTBInfo: 'getTBInfo',
       runSql: 'runSql'
     }),
+    refreshDbList () {
+      this.getDBList().then(data => {
+        this.selectedpdbId = this.dbList[0].pdbId
+      })
+    },
     radioChecked (checked) {
       if (checked) {
         return {
@@ -318,7 +328,7 @@ export default {
 
             let params = {
               // sql: targetTab.editor.getValue(),
-              sql: targetTab.editor.getSession().getTextRange(),
+              sql: targetTab.editor.getSession().getTextRange() ? targetTab.editor.getSession().getTextRange() : targetTab.editor.getValue(),
               db_name: dbName
             }
             this.runSql(params).then(data => {
@@ -589,6 +599,9 @@ export default {
     display: flex;
     padding: 5px;
     align-items: center;
+  }
+  .dbSelect__select {
+    padding-left: 5px;
   }
   .tree {
     padding-left: 5px;
