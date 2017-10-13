@@ -96,17 +96,27 @@
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
             <div class="radiopicker">
               <Radio :label="2">定时</Radio>
-              <DatePicker type="datetime" size="small" style="width: 200px;" transfer
-                v-model="scheduleCornTiming"
-                :options="scheduleOptions"
-                :disabled="disableDatePicker"
-              ></DatePicker>
+              <div class="radiopicker__datecontainer">
+                <DatePicker class="radiopicker__datecontainer-picker" type="date" size="small" style="width: 120px;" transfer
+                  v-model="scheduleCornTiming.date"
+                  :options="scheduleOptions"
+                  :disabled="disableDatePicker"
+                ></DatePicker>
+                <TimePicker class="radiopicker__datecontainer-picker" transfer type="time" size="small" style="width: 120px;"
+                  v-model="scheduleCornTiming.time"
+                  :disabled="disableDatePicker"
+                  :steps="[0, 5]"
+                  format="HH:mm"
+                ></TimePicker>
+              </div>
             </div>
-            <div class="radiopicker">
+            <div class="radiopicker radiopicker-vertical">
               <Radio :label="3">周期</Radio>
               <TimePicker size="small" style="width: 120px;" transfer
                 v-model="scheduleCornPeriod"
                 :disabled="disableTimePicker"
+                :steps="[0, 5]"
+                format="HH:mm"
               ></TimePicker>
             </div>
             <Radio :label="0" class="radiogroup__radio">失效</Radio>
@@ -123,7 +133,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
+import { dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
@@ -207,7 +217,10 @@ export default {
         totalCount: 0
       },
       selectAllFlag: false,
-      scheduleCornTiming: '',
+      scheduleCornTiming: {
+        date: '',
+        time: ''
+      },
       scheduleCornPeriod: '',
       pageInfo: {
         pageNum: 1,
@@ -344,7 +357,7 @@ export default {
           this.createParams.scheduleCorn = ''
           break
         case 2:
-          this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
           break
         case 3:
           this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
@@ -356,6 +369,7 @@ export default {
         default:
           break
       }
+      debugger
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffExport')
       })

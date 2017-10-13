@@ -63,6 +63,18 @@
   }
   .radiopicker {
     display: flex;
+    .radiopicker__datecontainer {
+      display: flex;
+      flex-direction: column;
+      .radiopicker__datecontainer-picker {
+        padding-bottom: 5px;
+      }
+    }
+    .radiopicker__datepicker {
+      padding-right: 5px;
+    }
+  }
+  .radiopicker-vertical {
     align-items: center;
   }
   .radioselect {

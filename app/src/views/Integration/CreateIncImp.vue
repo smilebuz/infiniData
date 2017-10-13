@@ -51,17 +51,27 @@
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
             <div class="radiopicker">
               <Radio :label="2">定时</Radio>
-              <DatePicker transfer type="datetime" size="small" style="width: 200px;"
-                v-model="scheduleCornTiming"
-                :options="scheduleOptions"
-                :disabled="disableSettingDatePicker"
-              ></DatePicker>
+              <div class="radiopicker__datecontainer">
+                <DatePicker class="radiopicker__datecontainer-picker" transfer type="date" size="small" style="width: 120px;"
+                  v-model="scheduleCornTiming.date"
+                  :options="scheduleOptions"
+                  :disabled="disableSettingDatePicker"
+                ></DatePicker>
+                <TimePicker class="radiopicker__datecontainer-picker" transfer type="time" size="small" style="width: 120px;"
+                  v-model="scheduleCornTiming.time"
+                  :disabled="disableSettingDatePicker"
+                  :steps="[0, 5]"
+                  format="HH:mm"
+                ></TimePicker>
+              </div>
             </div>
-            <div class="radiopicker">
+            <div class="radiopicker radiopicker-vertical">
               <Radio :label="3">周期</Radio>
-              <TimePicker transfer size="small" style="width: 120px;"
+              <TimePicker transfer type="time" size="small" style="width: 120px;"
                 v-model="scheduleCornPeriod"
                 :disabled="disableSettingTimePicker"
+                :steps="[0, 5]"
+                format="HH:mm"
               ></TimePicker>
             </div>
             <Radio :label="0" class="radiogroup__radio">无效</Radio>
@@ -78,7 +88,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { dateFormatter, dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
+import { dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
@@ -160,7 +170,10 @@ export default {
         selectAll: false
       },
       selectAllFlag: false,
-      scheduleCornTiming: '',
+      scheduleCornTiming: {
+        date: '',
+        time: ''
+      },
       scheduleCornPeriod: '',
       selectValue: ''
     }
@@ -357,7 +370,7 @@ export default {
             this.createParams.scheduleCorn = ''
             break
           case 2:
-            this.createParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
             break
           case 3:
             this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)

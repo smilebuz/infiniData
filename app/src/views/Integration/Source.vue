@@ -301,7 +301,7 @@ export default {
         case 'delete':
           this.$Modal.confirm({
             title: '是否确认删除',
-            content: '<p>确认删除任务?</p>',
+            content: '<p>确认删除数据源?</p>',
             onOk: () => {
               this.deleteSource({connIds: this.selectedSourceIds}).then(data => {
                 this.getSourceList(this.searchParams).then(data = {})

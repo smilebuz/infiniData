@@ -68,11 +68,19 @@
               <Radio :label="2">
                 <span>定时</span>
               </Radio>
-              <DatePicker type="datetime" size="small" style="width: 200px;" transfer
-                v-model="createParams.scheduleCorn"
-                :options="scheduleOptions"
-                :disabled="disableDatePicker"
-              ></DatePicker>
+              <div class="radiopicker__datecontainer">
+                <DatePicker class="radiopicker__datecontainer-picker" type="date" size="small" style="width: 120px;" transfer
+                  v-model="scheduleCorn.date"
+                  :options="scheduleOptions"
+                  :disabled="disableDatePicker"
+                ></DatePicker>
+                <TimePicker type="time" size="small" style="width: 120px;" transfer
+                  v-model="scheduleCorn.time"
+                  :disabled="disableDatePicker"
+                  format="HH:mm"
+                  :steps="[1, 5]">
+                </TimePicker>
+              </div>
             </div>
             <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
@@ -88,7 +96,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { dateFormatter } from '../../utils/dateFormatter'
+import { dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
@@ -175,6 +183,10 @@ export default {
         selectAll: false,
         totalCount: 0
       },
+      scheduleCorn: {
+        data: '',
+        time: ''
+      },
       selectAllFlag: false
     }
   },
@@ -259,12 +271,13 @@ export default {
       this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 2:
-          this.createParams.scheduleCorn = dateFormatter(this.createParams.scheduleCorn)
+          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
           break
         default:
           this.createParams.scheduleCorn = ''
           break
       }
+      debugger
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffImport')
       })

@@ -44,19 +44,27 @@
             v-model="editParams.scheduleMode"
             @on-change="changeEditScheduleMode">
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
-            <div class="radiopicker">
+            <div class="radiopicker radiopicker-vertical">
               <Radio :label="2">定时</Radio>
-              <DatePicker transfer type="datetime" size="small" style="width: 200px;"
-                v-model="scheduleCornTiming"
+              <DatePicker class="radiopicker__datepicker" transfer type="date" size="small" style="width: 120px;"
+                v-model="scheduleCornTiming.date"
                 :options="scheduleOptions"
                 :disabled="disableEditDatePicker"
               ></DatePicker>
+              <TimePicker transfer type="time" size="small" style="width: 120px;"
+                v-model="scheduleCornTiming.time"
+                :steps="[0, 5]"
+                format="HH:mm"
+                :disabled="disableEditDatePicker"
+              ></TimePicker>
             </div>
-            <div class="radiopicker">
+            <div class="radiopicker radiopicker-vertical">
               <Radio :label="3">周期</Radio>
-              <TimePicker size="small" style="width: 120px;" transfer
+              <TimePicker size="small" type="time" style="width: 120px;" transfer
                 v-model="scheduleCornPeriod"
                 :disabled="disableEditTimePicker"
+                :steps="[0, 5]"
+                format="HH:mm"
               ></TimePicker>
             </div>
             <Radio :label="0" class="radiogroup__radio">失效</Radio>
@@ -80,7 +88,7 @@
 </template>
 
 <script>
-import { dateFormatter, timeFormatter } from '../../utils/dateFormatter'
+import { dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -341,7 +349,10 @@ export default {
         scheduleCorn: ''
       },
       scheduleCornPeriod: '',
-      scheduleCornTiming: '',
+      scheduleCornTiming: {
+        date: '',
+        time: ''
+      },
       scheduleModeList: {
         '0': '无效',
         '1': '手动',
@@ -472,7 +483,8 @@ export default {
         this.disableEditDatePicker = !(task.scheduleMode === 2)
         this.disableEditTimePicker = !(task.scheduleMode === 3)
         if (task.scheduleMode === 2) {
-          this.scheduleCornTiming = task.scheduleCorn
+          this.scheduleCornTiming.date = task.scheduleCorn.split(' ')[0]
+          this.scheduleCornTiming.time = task.scheduleCorn.split(' ')[1]
         }
         if (task.scheduleMode === 3) {
           this.scheduleCornPeriod = task.scheduleCorn
@@ -485,7 +497,7 @@ export default {
           this.editParams.scheduleCorn = ''
           break
         case 2:
-          this.editParams.scheduleCorn = dateFormatter(this.scheduleCornTiming)
+          this.editParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
           break
         case 3:
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)

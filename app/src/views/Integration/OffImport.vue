@@ -56,13 +56,19 @@
             v-model="editParams.scheduleMode"
             @on-change="changeEditScheduleMode">
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
-            <div class="radiopicker">
+            <div class="radiopicker radiopicker-vertical">
               <Radio :label="2">定时</Radio>
-              <DatePicker type="datetime" style="width: 200px;" transfer
-                v-model="editParams.scheduleCorn"
+              <DatePicker class="radiopicker__datepicker" type="date" style="width: 120px;" size="small" transfer
+                v-model="scheduleCorn.date"
                 :options="scheduleOptions"
                 :disabled="disableEditDatePicker"
               ></DatePicker>
+              <TimePicker type="time" style="width:120px;" size="small" transfer
+                v-model="scheduleCorn.time"
+                :steps="[0, 5]"
+                format="HH:mm"
+                :disabled="disableEditDatePicker">
+              </TimePicker>
             </div>
             <Radio :label="0" class="radiogroup__radio">失效</Radio>
           </RadioGroup>
@@ -87,7 +93,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { dateFormatter } from '../../utils/dateFormatter'
+import { dateFormatter2, timeFormatter } from '../../utils/dateFormatter'
 
 export default {
   data () {
@@ -367,6 +373,10 @@ export default {
         scheduleMode: '',
         scheduleCorn: ''
       },
+      scheduleCorn: {
+        data: '',
+        time: ''
+      },
       disableEditDatePicker: true,
       scheduleOptions: {
         disabledDate (date) {
@@ -498,7 +508,9 @@ export default {
       } else {
         this.disableEditDatePicker = true
         if (task.scheduleMode === 2) {
-          this.editParams.scheduleCorn = task.scheduleCorn
+          // this.editParams.scheduleCorn = task.scheduleCorn
+          this.scheduleCorn.date = task.scheduleCorn.split(' ')[0]
+          this.scheduleCorn.time = task.scheduleCorn.split(' ')[1]
           this.disableEditDatePicker = false
         }
       }
@@ -506,7 +518,7 @@ export default {
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 2:
-          this.editParams.scheduleCorn = dateFormatter(this.editParams.scheduleCorn)
+          this.editParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
           break
         default:
           this.editParams.scheduleCorn = ''
