@@ -12,7 +12,7 @@
             {{ db.pdbName }}
           </Option>
         </Select>
-        <Button type="text" shape="circle" icon="refresh"></Button>
+        <!--Button type="text" shape="circle" icon="refresh"></Button-->
       </div>
       <Tree class="tree"
         :data="tables"
@@ -216,13 +216,12 @@ export default {
   }
   .dbSelect {
     display: flex;
-    margin-top: 5px;
-    margin-left: 5px;
+    padding: 5px;
     align-items: center;
   }
   .tree {
-    margin-left: 5px;
-    margin-bottom: 50px;
+    padding-left: 5px;
+    padding-bottom: 50px;
   }
   .tbcontainer {
     overflow: hidden;

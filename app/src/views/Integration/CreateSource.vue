@@ -119,8 +119,8 @@ export default {
         password: this.createParams.password
       }
       this.testSourceConn(connParams).then(data => {
-        this.$Message.info({
-          content: '连接成功',
+        this.$Message.success({
+          content: '连接测试成功',
           top: 50,
           duration: 1.5
         })

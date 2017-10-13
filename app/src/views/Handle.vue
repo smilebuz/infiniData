@@ -11,7 +11,6 @@
       </div>
       <Tree class="tree"
         :data="tables"
-        v-if="tables[0].children.length"
         @on-select-change="selectTable"></Tree>
       <div class="radios">
         <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
@@ -83,9 +82,9 @@
           <h3>执行结果</h3>
         </div>
         <div class="logpad" v-show="!hasWsEstablishing">
-          <Input type="textarea" placeholder="日志信息" readonly
+          <Input type="textarea" placeholder="执行结果" readonly
             v-model="sqlResult"
-            :rows="20">
+            :autosize="{minRows: 20}">
           </Input>
         </div>
         <!--Tabs type="card" class="sqlpad__mainPad-infoPad">
@@ -186,12 +185,14 @@ export default {
           bgColor: '#80c58c',
           imgUrl: require('../assets/images/icon/run.png')
         },
+        /*
         {
           name: '停止',
           action: 'stop',
           bgColor: '#e87178',
           imgUrl: require('../assets/images/icon/stop.png')
         },
+        */
         {
           name: '新建',
           action: 'new',
@@ -224,6 +225,7 @@ export default {
       dataTabs: [],
       hasSqlRunning: false,
       hasWsEstablishing: false,
+      hasError: false,
       schemaInfo: {
         fuzzy: {
           tbl_user: [
@@ -363,13 +365,27 @@ export default {
               ws.onclose = (e) => {
                 this.hasSqlRunning = false
                 this.operations[0].bgColor = '#80c58c'
-                this.$Message.info({
-                  content: '运行结束',
-                  top: 50,
-                  duration: 1.5
-                })
+                if (this.hasError) {
+                  // 错误
+                  this.$Message.error({
+                    content: '发生错误',
+                    top: 50,
+                    duration: 1.5
+                  })
+                } else {
+                  // 成功
+                  this.$Message.success({
+                    content: '运行成功',
+                    top: 50,
+                    duration: 1.5
+                  })
+                }
+                this.hasError = false
               }
-              ws.onerror = (e) => {}
+              ws.onerror = (e) => {
+                this.hasWsEstablishing = false
+                this.hasError = true
+              }
             })
           }
           break
@@ -516,10 +532,12 @@ export default {
       deep: true
     }
   },
-  mounted () {
+  created () {
     this.getDBList().then(data => {
       this.selectedpdbId = this.dbList[0].pdbId
     })
+  },
+  mounted () {
     let sessionTabs = JSON.parse(sessionStorage.getItem('sqlTabs'))
     if (sessionTabs) {
       for (let tab of sessionTabs) {
@@ -569,13 +587,12 @@ export default {
   }
   .dbSelect {
     display: flex;
-    margin-top: 5px;
-    margin-left: 5px;
+    padding: 5px;
     align-items: center;
   }
   .tree {
-    margin-left: 5px;
-    margin-bottom: 50px;
+    padding-left: 5px;
+    padding-bottom: 50px;
   }
   .radios {
     display: flex;
