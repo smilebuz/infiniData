@@ -1,52 +1,75 @@
 <template>
   <div class="analysis">
-    <h3 class="analysis__title">表XXX的数据画像</h3>
+    <h3 class="analysis__title">表{{ tbName }}的数据画像</h3>
     <div class="tbcontainer">
       <Table border stripe class="table" size="default"
         :columns="columns"
         :data="analysisList"
-        @on-selection-change="selectTask"
+        @on-selection-change=""
       ></Table>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
+      searchParams: {
+        pdbName: '',
+        tbName: ''
+      },
+      tbName: '',
       columns: [
         {
           type: 'index',
           width: 80
         },
         {
-          title: '字段名',
-          key: 'field'
+          title: '名称',
+          key: 'name',
+          width: 80
         },
         {
           title: '类型',
-          key: ''
+          key: 'type',
+          width: 80
         },
         {
-          title: '空占比值',
-          key: ''
+          title: '最小值',
+          key: 'min',
+          width: 80
         },
         {
-          title: '长度',
-          key: ''
+          title: '最大值',
+          key: 'max',
+          width: 80
         },
         {
-          title: '大小',
-          key: ''
+          title: '操作',
+          key: '',
+          width: 120,
+          align: 'center',
+          render: (h, params) => {
+            return h('Button', {
+              props: {
+                size: 'small',
+                type: 'primary'
+              },
+              'class': {
+                table__button: true
+              },
+              on: {
+                click: () => {
+                  alert(params.row.topten)
+                }
+              }
+            }, '查看top10')
+          }
         }
-      ],
-      searchParams: {
-        pdbId: '',
-        tbId: ''
-      }
+      ]
     }
   },
   computed: {
@@ -55,15 +78,18 @@ export default {
       // pageInfo: 'analysisPageInfo'
     })
   },
+  /*
   methods: {
     ...mapActions({
       getAnalysisList: 'getAnalysisList'
     })
   },
+  */
   mounted () {
-    this.searchParams.pdbId = this.$route.params.pdbId
-    this.searchParams.tbId = this.$route.params.tbId
-    this.getAnalysisList(this.searchParams).then(data => {})
+    this.searchParams.pdbName = this.$route.params.pdbName
+    this.searchParams.tbName = this.$route.params.tbName
+    this.tbName = this.$route.params.tbName
+    // this.getAnalysisList(this.searchParams).then(data => {})
   }
 }
 </script>

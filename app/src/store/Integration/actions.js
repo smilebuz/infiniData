@@ -130,8 +130,8 @@ const actions = {
   pollingIncImp ({ commit, getters }) {
     let pollinglist = getters.incImpPollingList
     let taskIds = [...pollinglist]
-    // debugger
     polling('getIncStatus', {taskIds: taskIds}, (data) => {
+      console.log(taskIds)
       commit(type.SET_INCIMP_TASK_STATUS, {
         data: data.data
       })
@@ -206,6 +206,7 @@ const actions = {
     let taskIds = [...pollinglist]
     // debugger
     polling('getExpStatus', {taskIds: taskIds}, (data) => {
+      console.log(taskIds)
       commit(type.SET_OFFEXP_TASK_STATUS, {
         data: data.data
       })

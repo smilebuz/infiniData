@@ -369,7 +369,6 @@ export default {
         default:
           break
       }
-      debugger
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffExport')
       })

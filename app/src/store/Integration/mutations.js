@@ -16,6 +16,7 @@ export default {
   // 主页轮询
   [type.SET_OFFIMP_LIST] (state, data) {
     state.offimport.taskList = data.data
+    state.offimport.pollingList = []
     state.offimport.taskList.forEach((task) => {
       if (task.status === 2 || task.status === 3 || task.scheduleMode === 2) {
         state.offimport.pollingList.push(task.taskId) // pollingList存的是taskId
@@ -109,6 +110,7 @@ export default {
   // 定时导入
   // 主页轮询
   [type.SET_INCIMP_LIST] (state, data) {
+    state.incimport.pollingList = []
     state.incimport.taskList = data.data
     state.incimport.taskList.forEach((task) => {
       if (task.status === 2 || task.status === 3 || task.scheduleMode === 2 || task.scheduleMode === 3) {
@@ -178,9 +180,10 @@ export default {
   // 离线导出
   // 主页轮询
   [type.SET_OFFEXP_LIST] (state, data) {
+    state.offexport.pollingList = []
     state.offexport.taskList = data.data
     state.offexport.taskList.forEach((task) => {
-      if (task.status === 2 || task.status === 3 || task.scheduleMode === 2 || task.scheduleMode === 3) {
+      if (task.status === 2 || task.scheduleMode === 2 || task.scheduleMode === 3) {
         state.offexport.pollingList.push(task.taskId) // pollingList存的是taskId
       }
     })

@@ -1,4 +1,4 @@
-import actions from './acitons.js'
+import actions from './actions.js'
 import getters from './getters.js'
 import mutations from './mutations.js'
 
