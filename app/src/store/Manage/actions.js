@@ -3,7 +3,6 @@ import type from '../mutation-type.js'
 
 const actions = {
   setAnalysisList ({ commit }, params) {
-    debugger
     commit(type.SET_ANALYSIS_LIST, params)
     // return Promise.resolve(params)
   }
