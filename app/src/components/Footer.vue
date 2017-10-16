@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <span>版权所有 &copy; 2016-2017 {{ companyName }}</span>
-    <!--img src="../assets/images/1.png" alt="公司图标"-->
+    <img src="../assets/images/icon/footlogo.png" alt="公司图标">
   </div>
 </template>
 
@@ -31,8 +31,10 @@ export default {
 <style lang="scss">
   .footer {
     display: flex;
+    justify-content: space-between;
     height: 30px;
     padding-left: 15px;
+    padding-right: 15px;
     line-height: 30px;
     background: #fff;
     color: #cdcdcd;

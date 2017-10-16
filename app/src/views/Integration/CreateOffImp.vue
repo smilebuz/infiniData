@@ -49,11 +49,13 @@
       </div>
       <div class="setting">
         <Card>
-          <p slot="title">单个线程抽取记录数</p>
+          <p slot="title">抽取负载</p>
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <Input v-model="createParams.blocks" number></Input>
+          <Input v-model="createParams.blocks" number>
+            <span slot="append">记录/线程</span>
+          </Input>
         </Card>
         <Card>
           <p slot="title">调度设置</p>

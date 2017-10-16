@@ -14,14 +14,15 @@
           @click="refreshDbList"></Button>
       </div>
       <Tree class="tree"
+        v-if="tables[0].children.length"
         :data="tables"
         @on-select-change="selectTable"></Tree>
-      <div class="radios">
+      <div class="radios" v-if="tables[0].children.length">
         <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
           {{ value.label }}
         </div>
       </div>
-      <div class="tbInfo" v-show="radios.fields.checked">
+      <div class="tbInfo" v-show="radios.fields.checked" v-if="tables[0].children.length">
         <div class="tbInfo__title">
           <div class="tbInfoText">名称</div>
           <div class="tbInfoText">类型</div>
@@ -35,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="tbInfo" v-show="radios.partitions.checked">
+      <div class="tbInfo" v-show="radios.partitions.checked" v-if="tables[0].children.length">
         <div class="tbInfo__title">
           <div class="tbInfoText">名称</div>
           <div class="tbInfoText">类型</div>
@@ -608,6 +609,7 @@ export default {
   }
   .dbSelect__select {
     padding-left: 5px;
+    text-align: center;
   }
   .tree {
     padding-left: 5px;
@@ -623,6 +625,10 @@ export default {
     text-align: center;
     cursor: pointer;
     background: #dcdcdc;
+  }
+  .tbInfo {
+    max-height: 300px;
+    overflow: scroll;
   }
   .tbInfo__title {
     background: #f8f8f8;
@@ -650,9 +656,12 @@ export default {
     word-break: break-all;
   }
   .sqlpad {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     max-width: calc(100% - 170px);
     background: #f0f0f0;
+    // background: #f9f9f9;
   }
   .handlegroup {
     display: flex;
@@ -671,6 +680,7 @@ export default {
     color: #fff;
   }
   .sqlpad__mainPad {
+    flex: 1;
     padding: 1em;
   }
   .sqlpad__mainPad-editorPad {
@@ -709,6 +719,6 @@ export default {
   }
   .footer-light {
     color: #000;
-    background: #f0f0f0;
+    background: #f9f9f9;
   }
 </style>

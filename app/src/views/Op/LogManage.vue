@@ -12,8 +12,8 @@
         <FormItem prop="logLevel" label="日志等级" class="form__item">
           <Select placeholder="请选择" style="width: 120px;"
             v-model="filterForm.logLevel">
-            <Option v-for="(level, index) in logLevelList" :value="level" :key="level">
-              {{ level }}
+            <Option v-for="(value, key) in logLevelList" :value="value" :key="key">
+              {{ key }}
             </Option>
           </Select>
         </FormItem>
@@ -94,7 +94,11 @@ export default {
           width: 150
         }
       ],
-      logLevelList: ['DEBUG', 'ERROR']
+      logLevelList: {
+        'All': '',
+        'DEBUG': 'DEBUG',
+        'ERROR': 'ERROR'
+      }
     }
   },
   computed: {

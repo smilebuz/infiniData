@@ -47,8 +47,10 @@
         @on-ok="submitEditParams"
         @on-cancel="cancelEdit">
         <div class="modal__content">
-          <span class="edit__label">分片设置</span>
-          <Input v-model="editParams.blocks" size="small" class="modal__input" number></Input>
+          <span class="edit__label">抽取负载</span>
+          <Input v-model="editParams.blocks" size="small" class="modal__input" number>
+            <span slot="append">记录/线程</span>
+          </Input>
         </div>
         <div class="modal__content">
           <span class="edit__label">调度设置</span>

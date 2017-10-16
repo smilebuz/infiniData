@@ -219,6 +219,7 @@ export default {
         status: ''
       },
       statusList: {
+        '': '全部',
         0: '无效',
         1: '有效'
       }

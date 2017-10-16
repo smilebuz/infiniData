@@ -17,6 +17,7 @@
           @click="refreshDbList"></Button>
       </div>
       <Tree class="tree"
+        v-if="tables[0].children.length"
         :data="tables"
       ></Tree>
     </div>
@@ -187,10 +188,7 @@ export default {
                     on: {
                       click: () => {
                         this.analysisParams.tableName = params.row.tbName
-                        console.log(this.analysisParams)
-                        debugger
                         this.analysis(this.analysisParams).then(data => {
-                          debugger
                           this.stopPolling()
                           this.timer = setInterval(() => {
                             this.polling(this.tbParams)
@@ -341,6 +339,7 @@ export default {
   }
   .dbSelect__select {
     padding-left: 5px;
+    text-align: center;
   }
   .tree {
     padding-left: 5px;

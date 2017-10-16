@@ -4,15 +4,15 @@
       <img src="../assets/images/icon/loginlogo.png" alt="logo" class="login__logo">
       <Card class="card">
         <p slot="title">用户登录</p>
-        <Input placeholder="用户名/邮箱" class="login__item"
+        <Input placeholder="用户名/邮箱" size="large" class="login__item"
           v-model="loginParams.userName"
           @on-enter="submitLoginParams"
         ></Input>
-        <Input placeholder="密码" type="password" class="login__item"
+        <Input placeholder="密码" type="password" size="large" class="login__item"
           v-model="loginParams.password"
           @on-enter="submitLoginParams"
         ></Input>
-        <Button class="login__item" type="info" long
+        <Button class="login__item-button" type="info" long
           @click="submitLoginParams"
         >登录</Button>
         <!--Checkbox v-model="loginParams.rememberPW" class="login__item-checkbox">记住密码</Checkbox-->
@@ -93,8 +93,12 @@ export default {
   .login__item-checkbox {
     float: right;
   }
+  .login__item-button {
+    background: #66b8ef;
+    margin-bottom: 0;
+  }
   .copyright {
-    margin-top: 50px;
+    padding-top: 30px;
     color: #fff;
   }
 </style>
