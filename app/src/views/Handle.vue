@@ -66,11 +66,11 @@
           <TabPane v-for="(tab, index) in sqlTabs" :key="tab.name" :label="tab.name" :name="tab.id">
             <div :id="tab.id" class="sqlEditor"></div>
           </TabPane>
-          <Modal title="保存sql"
+          <Modal width="300" title="sql名称"
             v-model="saveModal.showModal"
             @on-ok="saveSql"
             @on-cancel="cancelSave">
-            <Input size="small" 
+            <Input
               v-model="saveModal.saveName"
               @on-enter="saveSql"
             ></Input>
@@ -88,7 +88,7 @@
         <div class="logpad" v-show="!hasWsEstablishing">
           <Input type="textarea" placeholder="执行结果" readonly
             v-model="sqlResult"
-            :autosize="{minRows: 20}">
+            :autosize="{minRows: 15}">
           </Input>
         </div>
         <!--Tabs type="card" class="sqlpad__mainPad-infoPad">
@@ -682,7 +682,7 @@ export default {
   }
   .sqlEditor {
     width: 100%;
-    height: 150px;
+    height: 200px;
     padding: 1em;
     font-size: 14px;
   }
