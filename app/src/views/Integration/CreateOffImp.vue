@@ -277,7 +277,6 @@ export default {
           this.createParams.scheduleCorn = ''
           break
       }
-      debugger
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffImport')
       })

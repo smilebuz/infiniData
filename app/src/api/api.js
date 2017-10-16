@@ -65,7 +65,7 @@ const Apilist = {
 
   // manage
   'manageQuery': '/api/hive/platformdb/tbs', // post
-  'manageAnalysis': '/api/manage/tb/analysis', // get
+  'manageAnalysis': '/api/manage/tb/analysis', // post
 
   // selecttest
   'selectTest': '/apiManage/select/test', // get
@@ -79,7 +79,10 @@ const Apilist = {
   'resourceQuery': '/api/optionManage/config/query', // post
   'deleteResource': '/api/optionManage/config/delete', // post
   'createResource': '/api/optionManage/config/create', // post
-  'editResource': '/api/optionManage/config/edit' // post
+  'editResource': '/api/optionManage/config/edit', // post
+
+  // copyright
+  'copyright': '/api/get/company/name' // get
 }
 
 export const Api = ((apilist) => {

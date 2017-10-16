@@ -19,14 +19,14 @@
       </Card>
     </div>
     <div class="copyright">
-      <p>版权所有 &copy; 中坤天行信息科技有限公司</p>
+      <p>版权所有 &copy; 2016-2017 {{ companyName }}</p>
       <!--p>Copyright &copy; Spacewalk Company Limited.. All Rights Reserved</p-->
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -38,9 +38,15 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      companyName: 'companyName'
+    })
+  },
   methods: {
     ...mapActions({
-      login: 'login'
+      login: 'login',
+      getCompanyName: 'getCompanyName'
     }),
     submitLoginParams () {
       this.login(this.loginParams).then(data => {
@@ -53,6 +59,9 @@ export default {
         })
       })
     }
+  },
+  created () {
+    this.getCompanyName().then(data => {})
   }
 }
 </script>

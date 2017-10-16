@@ -20,28 +20,32 @@
         :data="tables"
       ></Tree>
     </div>
-    <div class="tbcontainer">
-      <Table class="table" size="small" border stripe
-        :columns="columns"
-        :data="tableList"></Table>
-      <div class="pagination">
-        <div>
-          当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
+    <div class="content">
+      <div class="tbcontainer">
+        <Table class="table" size="small" border stripe
+          :columns="columns"
+          :data="tableList"></Table>
+        <div class="pagination">
+          <div>
+            当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
+          </div>
+          <Page show-sizer show-elevator
+            :total="pageInfo.totalCount"
+            :current="pageInfo.pageNum"
+            :page-size="pageInfo.pageSize"
+            @on-change="changePageNum"
+            @on-page-size-change="changePageSize"
+          ></Page>
         </div>
-        <Page show-sizer show-elevator
-          :total="pageInfo.totalCount"
-          :current="pageInfo.pageNum"
-          :page-size="pageInfo.pageSize"
-          @on-change="changePageNum"
-          @on-page-size-change="changePageSize"
-        ></Page>
       </div>
+      <myFooter class="footer-light"></myFooter>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import myFooter from '@/components/Footer'
 
 export default {
   data () {
@@ -50,6 +54,10 @@ export default {
         pdbId: '',
         pageNum: 1,
         pageSize: 10
+      },
+      analysisParams: {
+        dbName: '',
+        tableName: ''
       },
       tables: [
         {
@@ -130,6 +138,7 @@ export default {
           render: (h, params) => {
             switch (params.row.analysis_status) {
               case 0:
+              case -1:
                 return h('Button', {
                   props: {
                     size: 'small',
@@ -140,6 +149,10 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.analysisParams.tableName = params.row.tbName
+                      this.analysis(this.analysisParams).then(data => {
+                        params.row.analysis_status = 1
+                      })
                     }
                   }
                 }, '分析')
@@ -173,6 +186,16 @@ export default {
                     },
                     on: {
                       click: () => {
+                        this.analysisParams.tableName = params.row.tbName
+                        console.log(this.analysisParams)
+                        debugger
+                        this.analysis(this.analysisParams).then(data => {
+                          debugger
+                          this.stopPolling()
+                          this.timer = setInterval(() => {
+                            this.polling(this.tbParams)
+                          }, 5000)
+                        })
                       }
                     }
                   }, '分析')
@@ -192,7 +215,8 @@ export default {
       statusList: {
         0: '未分析',
         1: '正在分析',
-        2: '分析完成'
+        2: '分析完成',
+        '-1': '分析失败'
       },
       timer: ''
     }
@@ -222,11 +246,12 @@ export default {
     ...mapActions({
       getDBList: 'getDBList',
       getTBList: 'getTBList',
+      analysis: 'analysis',
       setAnalysisList: 'setAnalysisList'
     }),
     selectDb (pdbId) {
       this.tbParams.pdbId = pdbId
-      this.tbParams.pdbName = this.dbList.find((el, index, arr) => {
+      this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
         return el.pdbId === pdbId
       }).pdbName
     },
@@ -234,7 +259,7 @@ export default {
       this.stopPolling()
       this.getDBList().then(data => {
         this.tbParams.pdbId = this.dbList[0].pdbId
-        this.tbParams.pdbName = this.dbList[0].pdbName
+        this.analysisParams.dbName = this.dbList[0].pdbName
       })
     },
     changePageNum (pageNum) {
@@ -250,6 +275,7 @@ export default {
     polling () {
       console.log('轮询', this.timer)
       this.getTBList(this.tbParams).then(data => {
+        console.log('状态', data.data[0].analysis_status)
         this.tables[0].title = this.dbList.find(db => {
           return db.pdbId === this.tbParams.pdbId
         }).pdbName
@@ -266,6 +292,8 @@ export default {
     tbParams: {
       handler: function (newParams) {
         this.stopPolling()
+        this.polling()
+        /*
         this.getTBList(newParams).then(data => {
           this.tables[0].title = this.dbList.find(db => {
             return db.pdbId === this.tbParams.pdbId
@@ -277,6 +305,7 @@ export default {
           this.pageInfo.totalCount = this.tbList.length
           this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
         })
+        */
         this.timer = setInterval(() => {
           this.polling(this.tbParams)
         }, 5000)
@@ -292,6 +321,9 @@ export default {
   },
   beforeDestroy () {
     this.stopPolling()
+  },
+  components: {
+    myFooter
   }
 }
 </script>
@@ -314,8 +346,18 @@ export default {
     padding-left: 5px;
     padding-bottom: 50px;
   }
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
   .tbcontainer {
     overflow: hidden;
+  }
+  .footer-light {
+    color: #000;
+    background: #f9f9f9;
   }
 </style>
 

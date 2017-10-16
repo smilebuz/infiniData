@@ -6,6 +6,7 @@ import Handle from './Handle'
 import Manage from './Manage'
 import User from './User'
 import Op from './Op'
+import Copyright from './Copyright'
 
 import SelectTest from './SelectTest'
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     Manage,
     User,
     Op,
+    Copyright,
 
     SelectTest
   }

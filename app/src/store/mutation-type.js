@@ -57,5 +57,8 @@ export default {
   SET_RESOURCE_LIST: 'SET_RESOURCE_LIST',
 
   // 全选测试
-  SELECT_TEST: 'SELECT_TEST'
+  SELECT_TEST: 'SELECT_TEST',
+
+  // 公司名称
+  SET_COMPANY_NAME: 'SET_COMPANY_NAME'
 }

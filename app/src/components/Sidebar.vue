@@ -15,10 +15,13 @@
       <img :src="item.imgUrlBG" :alt="item.name" v-show="!showMenu" class="sidebar__icon-bg">
       <span v-show="showMenu">{{ item.name }}</span>
     </div>
+    <!--p class="copyright">版权所有 &copy; 2016-2017 <br> {{ companyName }}</p-->
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
@@ -63,6 +66,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      companyName: 'companyName'
+    }),
     style () {
       return this.showMenu ? {'flex-basis': '170px', 'min-width': '170px'} : {'flex-basis': 'auto'}
     }
@@ -85,6 +91,11 @@ export default {
   .sidebar {
     background: #343b44;
     color: #fff;
+    .copyright {
+      margin: 0 auto;
+      position: fixed;
+      bottom: 0;
+    }
   }
   .sidebar__trigger {
     cursor: pointer;

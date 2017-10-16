@@ -138,6 +138,7 @@
           </TabPane>
         </Tabs-->
       </div>
+      <myFooter class="footer-light"></myFooter>
     </div>
   </div>
 </template>
@@ -145,6 +146,8 @@
 <script>
 // import updateCompletions from '../utils/updateCompletions.js'
 import { mapGetters, mapActions } from 'vuex'
+
+import myFooter from '@/components/Footer'
 
 let ace = require('brace')
 require('brace/mode/sql')
@@ -585,6 +588,9 @@ export default {
     } else {
       next()
     }
+  },
+  components: {
+    myFooter
   }
 }
 </script>
@@ -700,5 +706,9 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1em;
+  }
+  .footer-light {
+    color: #000;
+    background: #f0f0f0;
   }
 </style>

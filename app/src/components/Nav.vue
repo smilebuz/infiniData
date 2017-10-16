@@ -84,7 +84,14 @@ export default {
         this.$router.push('Login')
       })
       */
-      this.$router.push('/Login')
+      this.$Modal.confirm({
+        title: '确认退出',
+        content: '<p>确认退出登录?</p>',
+        onOk: () => {
+          this.$router.push('/Login')
+        },
+        onCancel: () => {}
+      })
     }
   }
 }
@@ -137,9 +144,16 @@ export default {
     margin-left: 10px;
   }
   .user__logout {
-    margin-left: 30px;
+    margin-left: 20px;
+    padding: 0 10px;
     font-size: 14px;
+    height: 50px;
+    line-height: 50px;
     cursor: pointer;
-    color: #8e9093;
+    // color: #8e9093;
+    color: #fff;
+    &:hover {
+      background: #393d41;
+    }
   }
 </style>
