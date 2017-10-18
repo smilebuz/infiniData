@@ -118,7 +118,7 @@ export default {
         {
           title: '库名',
           key: 'dbName',
-          width: 90,
+          width: 80,
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
@@ -127,12 +127,12 @@ export default {
         },
         {
           title: '表名',
-          width: 90,
+          width: 80,
           key: 'tbName'
         },
         {
           title: '主键字段',
-          width: 100,
+          width: 90,
           key: 'priKey'
         },
         {
@@ -339,8 +339,37 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
+      for (let table of this.createParams.tbInfos) {
+        let targetTable = this.tableParams.find((el) => {
+          return el.tbName === table.tbName
+        })
+        for (let prop in targetTable) {
+          if (targetTable.hasOwnProperty(prop)) {
+            table[prop] = targetTable[prop]
+          }
+        }
+      }
+      this.createParams.selectAll = this.selectAllFlag
+      switch (this.createParams.scheduleMode) {
+        case 1:
+          this.createParams.scheduleCorn = ''
+          break
+        case 2:
+          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          break
+        case 3:
+          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          break
+        case 0:
+          // 失效
+          this.createParams.scheduleCorn = ''
+          break
+        default:
+          break
+      }
+      // 判断是否缺少增量字段
       let lackIncField = false
-      for (let table of this.tableParams) {
+      for (let table of this.createParams.tbInfos) {
         if (table.incField === '') {
           lackIncField = true
         }
@@ -354,34 +383,6 @@ export default {
         })
       } else {
         // 正常
-        for (let table of this.createParams.tbInfos) {
-          let targetTable = this.tableParams.find((el) => {
-            return el.tbName === table.tbName
-          })
-          for (let prop in targetTable) {
-            if (targetTable.hasOwnProperty(prop)) {
-              table[prop] = targetTable[prop]
-            }
-          }
-        }
-        this.createParams.selectAll = this.selectAllFlag
-        switch (this.createParams.scheduleMode) {
-          case 1:
-            this.createParams.scheduleCorn = ''
-            break
-          case 2:
-            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
-            break
-          case 3:
-            this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
-            break
-          case 0:
-            // 失效
-            this.createParams.scheduleCorn = ''
-            break
-          default:
-            break
-        }
         this.createTask(this.createParams).then(data => {
           this.$router.push('IncImport')
         })
@@ -393,7 +394,7 @@ export default {
       handler: function (newParams) {
         this.getTableList(newParams).then(data => {
           this.createParams.connId = this.searchParams.connId
-          this.selectAllinDB(this.selectAllFlag)
+          // this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
             let targetTable = this.createParams.tbInfos.find(el => {
               return el.tbName === table.tbName

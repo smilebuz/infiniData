@@ -251,7 +251,4 @@ export default {
     width: calc(100% - 20px);
     margin-left: 10px;
   }
-  .tabs {
-    overflow: auto!important;
-  }
 </style>
