@@ -379,12 +379,18 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .modal__content {
     display: flex;
   }
   .editParams {
     width: 70%;
     margin: 0 auto;
+  }
+  .ivu-modal-content {
+    overflow: hidden!important;
+  }
+  .ivu-modal-footer {
+    overflow: hidden!important;
   }
 </style>

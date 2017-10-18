@@ -199,6 +199,7 @@ export default {
       return h('Select', {
         props: {
           size: 'small',
+          transfer: true,
           value: targetTable.incField
         },
         on: {
