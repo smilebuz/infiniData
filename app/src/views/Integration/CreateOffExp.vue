@@ -30,7 +30,7 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe class="table" size="small"
+        <Table loadingTale="true" border stripe class="table" size="small"
           :columns="columns"
           :data="pdbTBList"
           @on-selection-change="selectTable"
@@ -161,6 +161,7 @@ export default {
           imgUrl: require('../../assets/images/icon/no.png')
         }
       ],
+      loadingTable: true,
       columns: [
         {
           type: 'selection',
@@ -216,7 +217,7 @@ export default {
         selectAll: false,
         totalCount: 0
       },
-      selectAllFlag: false,
+      selectAllFlag: 0,
       scheduleCornTiming: {
         date: '',
         time: ''
@@ -224,7 +225,7 @@ export default {
       scheduleCornPeriod: '',
       pageInfo: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 2,
         totalCount: -1,
         totalPage: -1
       }
@@ -304,13 +305,23 @@ export default {
     },
 
     selectAllinDB (selected) {
-      this.selectAllFlag = selected
       this.tbList.forEach(table => {
         table._checked = selected
         table._disabled = selected
       })
+      if (selected) {
+        this.selectAllFlag = 1
+      } else {
+        this.selectAllFlag = 2
+        this.createParams.tbInfos = []
+        this.loadingTable = true
+        this.getPDBTBList(this.searchParams).then(data => {
+          this.loadingTable = false
+        })
+      }
     },
     selectTable (selection) {
+      this.selectAllFlag = 0
       selection.forEach(table => {
         let targetTable = this.createParams.tbInfos.find(el => {
           return el.tbName === table.tbName
@@ -326,7 +337,12 @@ export default {
           return el.tbName === table.tbName
         })
         if (!targetTable) {
-          unSelection.push(table)
+          let targetTable2 = this.createParams.tbInfos.find(el => {
+            return el.tbName === table.tbName
+          })
+          if (!targetTable2) {
+            unSelection.push(table)
+          }
         }
       }
 
@@ -350,7 +366,7 @@ export default {
       this.pageInfo.pageSize = pageSize
     },
     submitCreateParams () {
-      this.createParams.selectAll = this.selectAllFlag
+      this.createParams.selectAll = this.selectAllFlag === 1
       // this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 1:
@@ -377,7 +393,10 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
+        this.loadingTable = true
         this.getPDBTBList(newParams).then(data => {
+          this.loadingTable = false
+          this.createParams.tbInfos = []
           /*
           this.createParams.connId = this.searchParams.connId
           this.createParams.dbName = this.dataSources.find(el => {
@@ -410,16 +429,20 @@ export default {
     },
     pageInfo: {
       handler: function (newInfo) {
-        this.selectAllinDB(this.selectAllFlag)
+        if (this.selectAllFlag !== 0) {
+          this.selectAllinDB(this.selectAllFlag === 1)
+        }
+        /*
         this.pdbTBList.forEach(table => {
-          this.pdbTBList.forEach(table => {
-            let targetTable = this.createParams.tbInfos.find(el => {
-              return el.tbName === table.tbName
-            })
-            if (targetTable) {
-              table._checked = true
-            }
+        })
+        */
+        this.pdbTBList.forEach(table => {
+          let targetTable = this.createParams.tbInfos.find(el => {
+            return el.tbName === table.tbName
           })
+          if (targetTable) {
+            table._checked = true
+          }
         })
       },
       deep: true

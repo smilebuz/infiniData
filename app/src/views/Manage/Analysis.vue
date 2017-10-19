@@ -73,6 +73,11 @@ export default {
           width: 80
         },
         {
+          title: '字段空值',
+          key: 'null_val',
+          width: 90
+        },
+        {
           title: '操作',
           key: '',
           width: 120,

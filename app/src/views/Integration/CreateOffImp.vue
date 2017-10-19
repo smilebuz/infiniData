@@ -30,7 +30,7 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table border stripe class="table" size="small"
+        <Table :loading="loadingTable" border stripe class="table" size="small"
           :columns="columns"
           :data="tableList"
           @on-selection-change="selectTable"
@@ -130,6 +130,7 @@ export default {
           imgUrl: require('../../assets/images/icon/no.png')
         }
       ],
+      loadingTable: true,
       columns: [
         {
           type: 'selection',
@@ -189,7 +190,8 @@ export default {
         data: '',
         time: ''
       },
-      selectAllFlag: false
+      // selectAllFlag: false
+      selectAllFlag: 0
     }
   },
   computed: {
@@ -222,14 +224,25 @@ export default {
       }
     },
     selectAllinDB (selected) {
-      // this.createParams.tbInfos = []
-      this.selectAllFlag = selected
+      // this.selectAllFlag = selected
       this.tableList.forEach(table => {
         table._checked = selected
         table._disabled = selected
       })
+      if (selected) {
+        this.selectAllFlag = 1
+      } else {
+        this.selectAllFlag = 2
+        this.createParams.tbInfos = []
+        this.loadingTable = true
+        this.getTableList(this.searchParams).then(data => {
+          this.loadingTable = false
+          this.createParams.connId = this.searchParams.connId
+        })
+      }
     },
     selectTable (selection) {
+      this.selectAllFlag = 0
       selection.forEach(table => {
         let targetTable = this.createParams.tbInfos.find(el => {
           return el.tbName === table.tbName
@@ -269,7 +282,7 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
-      this.createParams.selectAll = this.selectAllFlag
+      this.createParams.selectAll = this.selectAllFlag === 1
       this.createParams.totalCount = this.pageInfo.totalCount
       switch (this.createParams.scheduleMode) {
         case 2:
@@ -287,9 +300,13 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
+        this.loadingTable = true
         this.getTableList(newParams).then(data => {
+          this.loadingTable = false
           this.createParams.connId = this.searchParams.connId
-          this.selectAllinDB(this.selectAllFlag)
+          if (this.selectAllFlag !== 0) {
+            this.selectAllinDB(this.selectAllFlag === 1)
+          }
           this.tableList.forEach(table => {
             let targetTable = this.createParams.tbInfos.find(el => {
               return el.tbName === table.tbName
