@@ -169,10 +169,10 @@ const actions = {
   getIncImpDetail ({ commit, getters }, params) {
     Api.incDetail.post(params).then(data => {
       commit(type.SET_INCIMP_DETAIL_LIST, data)
-      actions.pollingIncImpDetail({ commit, getters })
+      actions.pollingIncImpDetail({ commit, getters }, data.taskId)
     })
   },
-  pollingIncImpDetail ({ commit, getters }) {
+  pollingIncImpDetail ({ commit, getters }, taskId) {
     actions.stopIncImpDetailPolling({ commit })
     let pollingList = getters.incImpDetailPollingList
     let workerIds = []
@@ -180,6 +180,7 @@ const actions = {
       workerIds.push(worker.workerId) // 子任务id
     })
     let params = {
+      taskId: taskId,
       workerIds: workerIds
     }
     polling('getIncDetailProgress', params, (data) => {
@@ -242,12 +243,12 @@ const actions = {
     })
   },
   getOffExpDetailList ({ commit, getters }, params) {
-    Api.exportDetail.post(params).then(data => {
+    Api.exportDetail.post(params.params).then(data => {
       commit(type.SET_OFFEXP_DETAIL_LIST, data)
-      actions.pollingOffExpDetail({ commit, getters })
+      actions.pollingOffExpDetail({ commit, getters }, data.taskId, params.exportType)
     })
   },
-  pollingOffExpDetail ({ commit, getters }) {
+  pollingOffExpDetail ({ commit, getters }, taskId, exportType) {
     actions.stopOffExpDetailPolling({ commit })
     let pollingList = getters.offExpDetailPollingList
     let workerIds = []
@@ -255,11 +256,13 @@ const actions = {
       workerIds.push(worker.workerId) // 子任务id
     })
     let params = {
-      workerIds: workerIds
+      workerIds: workerIds,
+      taskId: taskId
     }
     polling('getOffExpDetailProgress', params, (data) => {
       commit(type.SET_OFFEXP_DETAIL_STATUS, {
-        data: data
+        data: data,
+        exportType: exportType
       })
       console.log('任务timer:', getters.offExpDetail.timer)
     }, getters.offExpDetail)

@@ -1,7 +1,8 @@
 <template lang="html">
   <div class="incimpDetail">
     <div class="progressAll">
-      <p>{{ detailInfo.dbName }}库的{{ detailInfo.tbName }}表的定时任务{{ detailInfo.taskId }}执行历史记录</p>
+      <span>执行详情</span>
+      <Progress :percent="detailProgress" class="progress"></Progress>
     </div>
     <div class="tbcontainer">
       <Table class="table" border stripe
@@ -47,9 +48,9 @@ export default {
           width: 70
         },
         {
-          title: '调度时间',
-          key: 'scheduleCorn',
-          width: 110
+          title: '表名',
+          key: 'tbName',
+          width: 80
         },
         {
           title: '增量字段',
@@ -101,7 +102,7 @@ export default {
   computed: {
     ...mapGetters({
       detailList: 'incImpDetailList',
-      detailInfo: 'incImpDetailInfo',
+      detailProgress: 'incImpDetailProgress',
       pageInfo: 'incImpDetailPageInfo'
     })
   },
@@ -136,11 +137,12 @@ export default {
 
 <style lang="scss">
   .progressAll {
+    display: flex;
+    justify-content: flex-start;
     padding: 10px;
-    text-align: left;
-    font-size: 14px;
   }
   .progress {
+    padding-left: 10px;
     flex-basis: 80%;
   }
 </style>

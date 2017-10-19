@@ -55,6 +55,9 @@ export default {
   incImpDetail (state) {
     return state.incimport.detail
   },
+  incImpDetailProgress (state) {
+    return state.incimport.detail.progress
+  },
   incImpDetailList (state) {
     return state.incimport.detail.detailList
   },
@@ -83,6 +86,12 @@ export default {
   },
   offExpDetail (state) {
     return state.offexport.detail
+  },
+  offExpDetailStatus (state) {
+    return state.offexport.detail.status
+  },
+  offExpDetailProgress (state) {
+    return state.offexport.detail.progress
   },
   offExpDetailList (state) {
     return state.offexport.detail.detailList

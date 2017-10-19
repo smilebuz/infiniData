@@ -188,7 +188,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.$router.push('/Integration/OffExpDetail/' + params.row.taskId)
+                    this.$router.push('/Integration/OffExpDetail/' + params.row.type + '/' + params.row.taskId)
                   }
                 }
               }, params.row.taskId)

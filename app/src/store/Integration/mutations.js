@@ -158,6 +158,7 @@ export default {
     }
   },
   [type.SET_INCIMP_DETAIL_STATUS] (state, data) {
+    state.incimport.detail.progress = data.data.progress // 父任务进程
     if (data.data.data.length) {
       for (let worker of data.data.data) {
         let targetWorker = state.incimport.detail.pollingList.find((el) => {
@@ -229,6 +230,28 @@ export default {
     }
   },
   [type.SET_OFFEXP_DETAIL_STATUS] (state, data) {
+    state.offexport.detail.status = data.data.status
+    if (data.exportType === '1') {
+      // CSV
+      let progress = -1
+      switch (data.data.status) {
+        case 1:
+          progress = 0
+          break
+        case 2:
+          progress = 50
+          break
+        case 3:
+          progress = 100
+          break
+        default:
+          break
+      }
+      state.offexport.detail.progress = progress // CSV计算后父任务进程
+    } else {
+      // 数据库
+      state.offexport.detail.progress = data.data.progress // 父任务进程
+    }
     if (data.data.data.length) {
       for (let worker of data.data.data) {
         let targetWorker = state.offexport.detail.pollingList.find((el) => {

@@ -47,20 +47,23 @@
             <FormItem label="连接名称">
               <Input v-model="editParams.connName"></Input>
             </FormItem>
-            <FormItem label="主机IP">
-              <Input v-model="editParams.host"></Input>
-            </FormItem>
             <FormItem label="数据库名称">
               <Input v-model="editParams.dbName"></Input>
             </FormItem>
             <FormItem label="数据库类型">
               <Input v-model="editParams.dbType" disabled></Input>
             </FormItem>
+            <FormItem label="主机IP">
+              <Input v-model="editParams.host"></Input>
+            </FormItem>
             <FormItem label="端口号">
               <Input v-model="editParams.port"></Input>
             </FormItem>
             <FormItem label="用户名">
               <Input v-model="editParams.userName"></Input>
+            </FormItem>
+            <FormItem label="实例名称">
+              <Input v-model="editParams.instanceName"></Input>
             </FormItem>
             <FormItem label="密码">
               <Input v-model="editParams.password"></Input>
@@ -168,12 +171,7 @@ export default {
         {
           title: 'IP',
           key: 'IP',
-          width: 110
-        },
-        {
-          title: '数据库名',
-          key: 'dbName',
-          width: 90
+          width: 130
         },
         {
           title: '端口',
@@ -181,18 +179,13 @@ export default {
           width: 80
         },
         {
-          title: '用户名',
-          key: 'userName',
+          title: '实例名称',
+          key: 'instanceName',
           width: 90
         },
         {
-          title: '密码',
-          key: 'password',
-          width: 90
-        },
-        {
-          title: '连接类型',
-          key: 'connType',
+          title: '数据库名',
+          key: 'dbName',
           width: 90
         },
         {
@@ -250,7 +243,8 @@ export default {
         dbName: '',
         dbType: '',
         userName: '',
-        password: ''
+        password: '',
+        instanceName: ''
       },
       editModal: {
         show: false,

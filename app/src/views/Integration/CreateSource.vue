@@ -7,7 +7,10 @@
       </Steps>
     </div>
     <div class="maincontainer typecontainer" v-if="currentStep === 1">
-      <div class="sourcetype" v-for="(source, index) in sources" :key="source.type" @click="selectSourceType(source.type)">
+      <div class="sourcetype"
+        v-for="(source, index) in sources"
+        :key="source.type"
+        @click="selectSourceType(source.type)">
         <img :src="source.sourceImg" :alt="source.type" class="type__image">
       </div>
     </div>
@@ -19,11 +22,15 @@
         <FormItem label="主机IP">
           <Input v-model="createParams.host"></Input>
         </FormItem>
+        <FormItem label="端口号">
+          <Input v-model="createParams.port"></Input>
+        </FormItem>
         <FormItem label="数据库名称">
           <Input v-model="createParams.dbName"></Input>
         </FormItem>
-        <FormItem label="端口号">
-          <Input v-model="createParams.port"></Input>
+        <FormItem label="实例名称"
+          v-show="createParams.dbType === 'informix'">
+          <Input v-model="createParams.instanceName"></Input>
         </FormItem>
         <FormItem label="用户名">
           <Input v-model="createParams.userName"></Input>
@@ -90,7 +97,8 @@ export default {
         dbName: '',
         userName: '',
         password: '',
-        user: ''
+        user: '',
+        instanceName: ''
       }
     }
   },

@@ -1,7 +1,8 @@
 <template lang="html">
   <div class="offexpDetail">
     <div class="progressAll">
-      <p>导出{{ detailInfo.dbName }}库的{{ detailInfo.tbName }}表的任务{{ detailInfo.taskId }}执行历史记录</p>
+      <span>执行详情</span>
+      <Progress :percent="detailProgress" class="progress"></Progress>
     </div>
     <div class="tbcontainer">
       <Table class="table" stripe border
@@ -27,6 +28,7 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      exportType: -1,
       searchParams: {
         taskId: '',
         orderBy: '',
@@ -47,9 +49,9 @@ export default {
           width: 70
         },
         {
-          title: '调度时间',
-          key: 'scheduleCorn',
-          width: 110
+          title: '表名',
+          key: 'tbName',
+          width: 80
         },
         {
           title: '总记录数',
@@ -100,7 +102,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      detailInfo: 'offExpDetailInfo',
+      detailProgress: 'offExpDetailProgress',
+      detailStatus: 'offExpDetailStatus',
       detailList: 'offExpDetailList',
       pageInfo: 'offExpDetailPageInfo'
     })
@@ -120,12 +123,16 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getDetailList(newParams)
+        this.getDetailList({
+          params: newParams,
+          exportType: this.exportType
+        })
       },
       deep: true
     }
   },
   mounted () {
+    this.exportType = this.$route.params.exportType
     this.searchParams.taskId = this.$route.params.taskId
   },
   beforeDestroy () {
@@ -136,11 +143,12 @@ export default {
 
 <style lang="scss">
   .progressAll {
+    display: flex;
+    justify-content: flex-start;
     padding: 10px;
-    text-align: left;
-    font-size: 14px;
   }
   .progress {
+    padding-left: 10px;
     flex-basis: 80%;
   }
 </style>

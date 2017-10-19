@@ -55,6 +55,7 @@ export default {
       detail: {
         detailList: [],
         pollingList: [],
+        progress: 0,
         detailInfo: {
           dbName: '',
           tbName: '',
@@ -80,6 +81,8 @@ export default {
       detail: {
         detailList: [],
         pollingList: [],
+        progress: 0,
+        status: 0,
         detailInfo: {
           dbName: '',
           tbName: '',

@@ -320,8 +320,6 @@ export default {
               duration: 1.5
             })
           } else {
-            this.hasSqlRunning = true
-            this.operations[0].bgColor = '#ccc'
             let targetTab = this.sqlTabs.find((tab) => {
               return tab.id === this.currentTabId
             })
@@ -335,72 +333,20 @@ export default {
               sql: targetTab.editor.getSession().getTextRange() ? targetTab.editor.getSession().getTextRange() : targetTab.editor.getValue(),
               db_name: dbName
             }
-            this.runSql(params).then(data => {
-              /*
-              this.hasSqlRunning = false
-              this.log = this.sqlInfo.log
-              this.columns = this.sqlInfo.columns
-              this.columns.forEach(column => {
-                column.width = 200
-              })
-              this.columns.unshift({
-                type: 'index',
-                title: '#',
-                width: 70
-              })
-              */
-              this.infoList = []
-              this.sqlResult = ''
-              this.hasWsEstablishing = true
-              this.host = this.sqlInfo.host
-              this.port = this.sqlInfo.port // 端口号
-              // websocket
-              // let wsCounter = 0
-              let wsUrl = 'ws://' + this.host + ':' + this.port + '/log'
-              // let wsUrl = 'ws://192.168.1.52:' + this.port + '/log'
-              let ws = new WebSocket(wsUrl)
-              // let wsUrl = '/wsAddress:' + this.port + '/log'
-              // let ws = buildSocket(this.port)
-              ws.onopen = (e) => {}
-              ws.onmessage = (e) => {
-                this.hasWsEstablishing = false
-                this.sqlResult = this.sqlResult + e.data + '\n'
-                /*
-                if (!wsCounter) {
-                  // table head
-                  this.columns = JSON.parse(e.data)
-                } else {
-                  // table body
-                  this.infoList.push(JSON.parse(e.data))
-                }
-                wsCounter++
-                */
+
+            if (params.sql.includes('select')) {
+              if (params.sql.includes('limit')) {
+                this.submitRunSqlParams(params)
+              } else {
+                this.$Message.warning({
+                  content: '请为select语句添加limit',
+                  top: 50,
+                  duration: 1.5
+                })
               }
-              ws.onclose = (e) => {
-                this.hasSqlRunning = false
-                this.operations[0].bgColor = '#80c58c'
-                if (this.hasError) {
-                  // 错误
-                  this.$Message.error({
-                    content: '发生错误',
-                    top: 50,
-                    duration: 1.5
-                  })
-                } else {
-                  // 成功
-                  this.$Message.success({
-                    content: '运行成功',
-                    top: 50,
-                    duration: 1.5
-                  })
-                }
-                this.hasError = false
-              }
-              ws.onerror = (e) => {
-                this.hasWsEstablishing = false
-                this.hasError = true
-              }
-            })
+            } else {
+              this.submitRunSqlParams(params)
+            }
           }
           break
         case 'stop':
@@ -425,6 +371,49 @@ export default {
         default:
           break
       }
+    },
+    submitRunSqlParams (params) {
+      this.runSql(params).then(data => {
+        this.operations[0].bgColor = '#ccc'
+        this.hasSqlRunning = true
+        this.infoList = []
+        this.sqlResult = ''
+        this.hasWsEstablishing = true
+        this.host = this.sqlInfo.host
+        this.port = this.sqlInfo.port // 端口号
+        // websocket
+        let wsUrl = 'ws://' + this.host + ':' + this.port + '/log'
+        let ws = new WebSocket(wsUrl)
+        ws.onopen = (e) => {}
+        ws.onmessage = (e) => {
+          this.hasWsEstablishing = false
+          this.sqlResult = this.sqlResult + e.data + '\n'
+        }
+        ws.onclose = (e) => {
+          this.hasSqlRunning = false
+          this.operations[0].bgColor = '#80c58c'
+          if (this.hasError) {
+            // 错误
+            this.$Message.error({
+              content: '发生错误',
+              top: 50,
+              duration: 1.5
+            })
+          } else {
+            // 成功
+            this.$Message.success({
+              content: '运行成功',
+              top: 50,
+              duration: 1.5
+            })
+          }
+          this.hasError = false
+        }
+        ws.onerror = (e) => {
+          this.hasWsEstablishing = false
+          this.hasError = true
+        }
+      })
     },
     saveSql () {
       // 在sessionStorage中保存 成功后在回调函数中关闭弹窗

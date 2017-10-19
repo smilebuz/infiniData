@@ -38,9 +38,9 @@ export default {
           width: 70
         },
         {
-          title: '调度时间',
-          key: 'scheduleCorn',
-          width: 110
+          title: '表名',
+          key: 'tbName',
+          width: 80
         },
         {
           title: '抽取节点',

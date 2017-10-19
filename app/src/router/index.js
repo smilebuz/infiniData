@@ -91,7 +91,7 @@ let router = new Router({
           component: OffExport
         },
         {
-          path: 'OffExpDetail/:taskId',
+          path: 'OffExpDetail/:exportType/:taskId',
           meta: { requiresAuth: true },
           component: OffExpDetail
         },

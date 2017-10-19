@@ -158,14 +158,13 @@ export default {
           width: 90
         },
         {
-          title: '总记录数',
-          key: 'totalRows',
-          sortable: true,
+          title: '主键字段',
+          key: 'priKey',
           width: 90
         },
         {
-          title: '主键字段',
-          key: 'priKey',
+          title: '创建时间',
+          key: 'createTime',
           width: 90
         }
       ],

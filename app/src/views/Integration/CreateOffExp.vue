@@ -189,10 +189,9 @@ export default {
           width: 90
         },
         {
-          title: '总记录数',
-          key: 'totalRows',
-          width: 90,
-          sortable: true
+          title: '创建时间',
+          key: 'create_time',
+          width: 90
         }
       ],
       scheduleOptions: {
