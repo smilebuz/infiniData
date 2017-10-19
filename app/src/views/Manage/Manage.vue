@@ -17,9 +17,8 @@
           @click="refreshDbList"></Button>
       </div>
       <Tree class="tree"
-        v-if="tables[0].children[0].children.length"
+        v-if="tables[0].children.length"
         :data="tables"
-        @on-select-change="selectPDB"
       ></Tree>
     </div>
     <div class="content">
@@ -63,7 +62,7 @@ export default {
       },
       tables: [
         {
-          title: '平台库',
+          title: '',
           expand: true,
           children: []
         }
@@ -254,15 +253,6 @@ export default {
         return el.pdbId === pdbId
       }).pdbName
     },
-    selectPDB (selection) {
-      if (selection[0].type) {
-        // 点击的是平台库
-        this.tbParams.pdbId = selection[0].pdbId
-        this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
-          return el.pdbId === selection[0].pdbId
-        }).pdbName
-      }
-    },
     refreshDbList () {
       this.stopPolling()
       this.getDBList().then(data => {
@@ -284,31 +274,12 @@ export default {
       console.log('轮询', this.timer)
       this.getTBList(this.tbParams).then(data => {
         console.log('状态', data.data[0].analysis_status)
-        /*
         this.tables[0].title = this.dbList.find(db => {
           return db.pdbId === this.tbParams.pdbId
         }).pdbName
-        */
-        let index = -1
-        for (let i = 0; i < this.tables[0].children.length; i++) {
-          if (this.tables[0].children[i].pdbId === this.tbParams.pdbId) {
-            index = i
-            break
-          }
-        }
-        let targetDB = this.tables[0].children[index]
-        /*
-        this.tables[0].children[0].children.splice(0, this.tables[0].children[0].children.length)
+        this.tables[0].children.splice(0, this.tables[0].children.length)
         for (let table of this.tbList) {
-          this.tables[0].children[0].children.push({title: table.tbName, tbId: table.tbId})
-        }
-        */
-        targetDB.children = []
-        for (let table of this.tbList) {
-          targetDB.children.push({
-            title: table.tbName,
-            tbId: table.tbId
-          })
+          this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
         }
         this.pageInfo.totalCount = this.tbList.length
         this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
@@ -342,15 +313,6 @@ export default {
   },
   created () {
     this.getDBList().then(data => {
-      for (let pdb of this.dbList) {
-        this.tables[0].children.push({
-          title: pdb.pdbName,
-          expande: false,
-          type: 'db',
-          pdbId: pdb.pdbId,
-          children: []
-        })
-      }
       this.tbParams.pdbId = this.dbList[0].pdbId
       this.tbParams.pdbName = this.dbList[0].pdbName
     })
@@ -397,4 +359,3 @@ export default {
     background: #f9f9f9;
   }
 </style>
-

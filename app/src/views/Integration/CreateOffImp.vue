@@ -161,11 +161,6 @@ export default {
           title: '主键字段',
           key: 'priKey',
           width: 90
-        },
-        {
-          title: '创建时间',
-          key: 'createTime',
-          width: 90
         }
       ],
       scheduleOptions: {
@@ -268,6 +263,7 @@ export default {
       })
     },
     changeSearchParams () {
+      this.createParams.tbInfos = []
       for (let prop in this.filterForm) {
         if (this.filterForm.hasOwnProperty(prop)) {
           this.searchParams[prop] = this.filterForm[prop]

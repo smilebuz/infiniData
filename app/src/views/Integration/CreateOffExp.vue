@@ -30,7 +30,7 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table loadingTale="true" border stripe class="table" size="small"
+        <Table :loading="loadingTable" border stripe class="table" size="small"
           :columns="columns"
           :data="pdbTBList"
           @on-selection-change="selectTable"

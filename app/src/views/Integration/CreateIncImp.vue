@@ -21,7 +21,7 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table class="table" size="small" border stripe
+        <Table :loading="loadingTable" class="table" size="small" border stripe
           :columns="columns"
           :data="tableList"
           @on-selection-change="selectTable"
@@ -96,7 +96,7 @@ export default {
       searchParams: {
         connId: '',
         tables: '',
-        pageSize: 10,
+        pageSize: 2,
         pageNum: 1,
         type: 'inc'
       },
@@ -104,6 +104,7 @@ export default {
         connId: '',
         tables: ''
       },
+      loadingTable: true,
       columns: [
         {
           type: 'selection',
@@ -327,6 +328,7 @@ export default {
       })
     },
     changeSearchParams () {
+      this.createParams.tbInfos = []
       for (let prop in this.filterForm) {
         if (this.filterForm.hasOwnProperty(prop)) {
           this.searchParams[prop] = this.filterForm[prop]
@@ -393,7 +395,9 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
+        this.loadingTable = true
         this.getTableList(newParams).then(data => {
+          this.loadingTable = false
           this.createParams.connId = this.searchParams.connId
           // this.selectAllinDB(this.selectAllFlag)
           this.tableList.forEach(table => {
