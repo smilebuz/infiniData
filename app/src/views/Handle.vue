@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="handle">
     <div class="side">
-      <div class="dbSelect">
+      <!--div class="dbSelect">
         <span>库</span>
         <Select class="dbSelect__select" style="width: 140px;" size="small"
           v-model="selectedpdbId"
@@ -16,7 +16,11 @@
       <Tree class="tree"
         v-if="tables[0].children.length"
         :data="tables"
-        @on-select-change="selectTable"></Tree>
+        @on-select-change="selectTable"></Tree-->
+      <Tree class="tree"
+        v-if="tables[0].children.length"
+        :data="tables"
+        @on-select-change="selectTree"></Tree>
       <div class="radios" v-if="tables[0].children.length">
         <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
           {{ value.label }}
@@ -162,19 +166,27 @@ export default {
       selectedpdbId: '',
       tbParams: {
         pdbId: '',
-        pageSize: '',
-        tbName: '' // 为什么有这个字段
+        pageNum: 1,
+        pageSize: 10
       },
       tbInfoParams: {
         pdbId: '',
         tbId: ''
       },
-      // tables: [],
+      /*
       tables: [
         {
           title: '',
           expand: true,
           children: [] // 树子节点
+        }
+      ],
+      */
+      tables: [
+        {
+          title: '平台库',
+          expand: true,
+          children: []
         }
       ],
       radios: {
@@ -325,7 +337,8 @@ export default {
             })
 
             let dbName = this.dbList.find(el => {
-              return el.pdbId === this.selectedpdbId
+              // return el.pdbId === this.selectedpdbId
+              return el.pdbId === this.tbParams.pdbId
             }).pdbName
 
             let params = {
@@ -502,6 +515,14 @@ export default {
         this.tbInfoParams.tbId = selection[0].tbId
       }
     },
+    selectTree (selection) {
+      if (selection[0].pdbId) {
+        this.tbParams.pdbId = selection[0].pdbId
+      }
+      if (selection[0].tbId) {
+        this.tbInfoParams.tbId = selection[0].tbId
+      }
+    },
     exportData () {
       this.$refs.dataTable.exportCsv({
         filename: '原始数据'
@@ -509,19 +530,39 @@ export default {
     }
   },
   watch: {
+    // tbParams: {
+    //   handler: function (newParams) {
+    //     this.getTBList(newParams).then(data => {
+    //       this.tables[0].children.splice(0, this.tables[0].children.length)
+    //       this.tables[0].title = this.dbList.find(db => {
+    //         return db.pdbId === this.tbParams.pdbId
+    //       }).pdbName
+    //       // 填充this.tables.children 改变this.tbInfoParams
+    //       if (this.tbList.length) {
+    //         for (let table of this.tbList) {
+    //           this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+    //         }
+    //         this.tbInfoParams.pdbId = this.selectedpdbId
+    //         this.tbInfoParams.tbId = this.tbList[0].tbId
+    //       }
+    //     })
+    //   },
+    //   deep: true
+    // },
     tbParams: {
       handler: function (newParams) {
         this.getTBList(newParams).then(data => {
-          this.tables[0].children.splice(0, this.tables[0].children.length)
-          this.tables[0].title = this.dbList.find(db => {
-            return db.pdbId === this.tbParams.pdbId
-          }).pdbName
+          let targetIndex = this.dbList.findIndex(db => {
+            return db.pdbId === newParams.pdbId
+          })
+          let targetPdb = this.tables[0].children[targetIndex]
+          targetPdb.children.splice(0, targetPdb.children.length)
           // 填充this.tables.children 改变this.tbInfoParams
           if (this.tbList.length) {
             for (let table of this.tbList) {
-              this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+              targetPdb.children.push({title: table.tbName, tbId: table.tbId})
             }
-            this.tbInfoParams.pdbId = this.selectedpdbId
+            this.tbInfoParams.pdbId = targetPdb.pdbId
             this.tbInfoParams.tbId = this.tbList[0].tbId
           }
         })
@@ -537,7 +578,18 @@ export default {
   },
   created () {
     this.getDBList().then(data => {
-      this.selectedpdbId = this.dbList[0].pdbId
+      // 原
+      // this.selectedpdbId = this.dbList[0].pdbId
+      // 新
+      for (let db of this.dbList) {
+        this.tables[0].children.push({
+          title: db.pdbName,
+          pdbId: db.pdbId,
+          expand: false,
+          children: []
+        })
+      }
+      this.tbParams.pdbId = this.dbList[0].pdbId
     })
   },
   mounted () {

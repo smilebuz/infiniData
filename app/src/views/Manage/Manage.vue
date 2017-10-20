@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
     <div class="side">
-      <div class="dbSelect">
+      <!--div class="dbSelect">
         <span>库</span>
         <Select class="dbSelect__select" style="width: 140px;" size="small" 
           v-model="tbParams.pdbId" 
@@ -15,10 +15,11 @@
         </Select>
         <Button type="text" shape="circle" icon="refresh"
           @click="refreshDbList"></Button>
-      </div>
+      </div-->
       <Tree class="tree"
         v-if="tables[0].children.length"
         :data="tables"
+        @on-select-change="selectDb"
       ></Tree>
     </div>
     <div class="content">
@@ -60,9 +61,18 @@ export default {
         dbName: '',
         tableName: ''
       },
+      /*
       tables: [
         {
           title: '',
+          expand: true,
+          children: []
+        }
+      ],
+      */
+      tables: [
+        {
+          title: '平台库',
           expand: true,
           children: []
         }
@@ -247,11 +257,22 @@ export default {
       analysis: 'analysis',
       setAnalysisList: 'setAnalysisList'
     }),
+    /*
     selectDb (pdbId) {
       this.tbParams.pdbId = pdbId
       this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
         return el.pdbId === pdbId
       }).pdbName
+    },
+    */
+    // 新selectDb
+    selectDb (selection) {
+      if (selection[0].pdbId) {
+        this.tbParams.pdbId = selection[0].pdbId
+        this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
+          return el.pdbId === selection[0].pdbId
+        }).pdbName
+      }
     },
     refreshDbList () {
       this.stopPolling()
@@ -270,6 +291,7 @@ export default {
       console.log('停止轮询', this.timer)
       clearInterval(this.timer)
     },
+    /* 原来的sidemenu
     polling () {
       console.log('轮询', this.timer)
       this.getTBList(this.tbParams).then(data => {
@@ -279,6 +301,23 @@ export default {
         this.tables[0].children.splice(0, this.tables[0].children.length)
         for (let table of this.tbList) {
           this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
+        }
+        this.pageInfo.totalCount = this.tbList.length
+        this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
+      })
+    },
+    */
+    polling () {
+      console.log('轮询', this.timer)
+      this.getTBList(this.tbParams).then(data => {
+        // 目标位置元素
+        let targetIndex = this.dbList.findIndex(db => {
+          return db.pdbId === this.tbParams.pdbId
+        })
+        let targetPdb = this.tables[0].children[targetIndex]
+        targetPdb.children.splice(0, targetPdb.children.length)
+        for (let table of this.tbList) {
+          targetPdb.children.push({title: table.tbName, tbId: table.tbId})
         }
         this.pageInfo.totalCount = this.tbList.length
         this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
@@ -312,6 +351,16 @@ export default {
   },
   created () {
     this.getDBList().then(data => {
+      // 新加
+      for (let db of this.dbList) {
+        this.tables[0].children.push({
+          title: db.pdbName,
+          pdbId: db.pdbId,
+          expand: false,
+          children: []
+        })
+      }
+      // 保留
       this.tbParams.pdbId = this.dbList[0].pdbId
       this.tbParams.pdbName = this.dbList[0].pdbName
     })
