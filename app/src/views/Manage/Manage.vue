@@ -273,7 +273,6 @@ export default {
     polling () {
       console.log('轮询', this.timer)
       this.getTBList(this.tbParams).then(data => {
-        console.log('状态', data.data[0].analysis_status)
         this.tables[0].title = this.dbList.find(db => {
           return db.pdbId === this.tbParams.pdbId
         }).pdbName
@@ -343,7 +342,8 @@ export default {
   }
   .tree {
     padding-left: 5px;
-    padding-bottom: 50px;
+    max-height: 200px;
+    overflow: scroll;
   }
   .content {
     display: flex;

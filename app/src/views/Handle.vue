@@ -602,10 +602,12 @@ export default {
   }
   .tree {
     padding-left: 5px;
-    padding-bottom: 50px;
+    max-height: 200px;
+    overflow: scroll;
   }
   .radios {
     display: flex;
+    padding-top: 20px;
   }
   .radio-div {
     flex: 1;
