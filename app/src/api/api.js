@@ -66,6 +66,7 @@ const Apilist = {
   // manage
   'manageQuery': '/api/hive/platformdb/tbs', // post
   'manageAnalysis': '/api/manage/tb/analysis', // post
+  'analysisResult': '/api/manage/tb/analysis/result', // post
 
   // selecttest
   'selectTest': '/apiManage/select/test', // get

@@ -50,6 +50,7 @@ export default {
 
   // 数据管理
   SET_ANALYSIS_LIST: 'SET_ANALYSIS_LIST',
+  SET_ANALYSIS_RESULT: 'SET_ANALYSIS_RESULT',
 
   // 运维中心
   SET_LOG_LIST: 'SET_LOG_LIST',

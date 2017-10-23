@@ -10,5 +10,11 @@ export default {
       }
     }
     */
+  },
+  [type.SET_ANALYSIS_RESULT] (state, data) {
+    state.analysisResult.filedInfo = data.data.fieldInfo
+    state.analysisResult.partitionList = data.data.partitionList
+    state.analysisResult.statistis = data.data.statistics
+    state.analysisResult.createSql = data.data.createSql
   }
 }

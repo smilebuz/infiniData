@@ -182,7 +182,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.setAnalysisList(JSON.parse(params.row.analysis_info))
+                        // this.setAnalysisList(JSON.parse(params.row.analysis_info))
                         this.$router.push('/Analysis/' + this.tbParams.pdbName + '/' + params.row.tbName)
                       }
                     }
@@ -254,8 +254,8 @@ export default {
     ...mapActions({
       getDBList: 'getDBList',
       getTBList: 'getTBList',
-      analysis: 'analysis',
-      setAnalysisList: 'setAnalysisList'
+      analysis: 'analysis'
+      // setAnalysisList: 'setAnalysisList'
     }),
     /*
     selectDb (pdbId) {

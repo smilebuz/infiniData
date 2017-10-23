@@ -4,5 +4,8 @@ export default {
   },
   analysisPageInfo (state) {
     return state.analysis.pageInfo
+  },
+  analysisResult (state) {
+    return state.analysisResult
   }
 }
