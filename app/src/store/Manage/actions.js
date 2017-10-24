@@ -12,7 +12,9 @@ const actions = {
     })
   },
   getAnalysisList ({ commit }, params) {
+    debugger
     return Api.analysisResult.post(params).then(data => {
+      debugger
       commit(type.SET_ANALYSIS_RESULT, data)
       return Promise.resolve(data)
     })

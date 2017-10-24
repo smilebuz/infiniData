@@ -43,7 +43,7 @@ module.exports = {
         }
       },
       '/api': {
-        target: 'http://192.168.1.52:8888',
+        target: 'http://192.168.1.56:8888',
         changeOrigin: true,
         pathRewrite: {
           '^/api/': ''

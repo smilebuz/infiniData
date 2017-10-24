@@ -8,6 +8,11 @@
       <Table class="table" border stripe
         :columns="columns"
         :data="detailList"></Table>
+      <Modal
+        v-model="infoModal.show"
+        :title="infoModal.title">
+        <p>{{ infoModal.content }}</p>
+      </Modal>
       <div class="pagination">
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
@@ -94,9 +99,36 @@ export default {
         {
           title: '备注',
           key: 'info',
-          width: 150
+          align: 'center',
+          width: 100,
+          render: (h, params) => {
+            if (params.row.info) {
+              return h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                'class': {
+                  table__button: true
+                },
+                on: {
+                  click: () => {
+                    this.infoModal.show = true
+                    this.infoModal.content = params.row.info
+                  }
+                }
+              }, '查看')
+            } else {
+              return h('div', {}, '')
+            }
+          }
         }
-      ]
+      ],
+      infoModal: {
+        show: false,
+        title: '备注',
+        content: ''
+      }
     }
   },
   computed: {

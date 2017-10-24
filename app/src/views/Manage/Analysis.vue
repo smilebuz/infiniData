@@ -100,7 +100,7 @@
             <h3 class="tableTitle">数值</h3>
             <Table border stripe class="table" size="default"
               :columns="numberColumns"
-              :data="analysisResult.numberList"
+              :data="analysisResult.fieldInfo.numberList"
             ></Table>
             <!--Modal
               v-model="modal.show"
@@ -126,14 +126,14 @@
             <h3 class="tableTitle">字符串</h3>
             <Table border stripe class="table" size="default"
               :columns="stringColumns"
-              :data="analysisResult.stringList"
+              :data="analysisResult.fieldInfo.stringList"
             ></Table>
           </div>
           <div class="tbcontainer">
             <h3 class="tableTitle">布尔值</h3>
             <Table border stripe class="table" size="default"
               :columns="booleanColumns"
-              :data="analysisResult.booleanList"
+              :data="analysisResult.fieldInfo.booleanList"
             ></Table>
           </div>
         </TabPane>
@@ -176,8 +176,9 @@ export default {
   data () {
     return {
       searchParams: {
-        pdbName: '',
-        tbName: ''
+        dbName: '',
+        tableName: '',
+        tableId: ''
       },
       tbName: '',
       numberColumns: [
@@ -203,7 +204,7 @@ export default {
         },
         {
           title: '唯一值',
-          key: 'unique',
+          key: 'distinct',
           width: 90
         },
         {
@@ -259,7 +260,7 @@ export default {
         },
         {
           title: '唯一值',
-          key: 'unique',
+          key: 'distinct',
           width: 90
         },
         {
@@ -399,8 +400,9 @@ export default {
     }
   },
   mounted () {
-    this.searchParams.pdbName = this.$route.params.pdbName
-    this.searchParams.tbName = this.$route.params.tbName
+    this.searchParams.dbName = this.$route.params.pdbName
+    this.searchParams.tableName = this.$route.params.tbName
+    this.searchParams.tableId = this.$route.params.tbId
     this.tbName = this.$route.params.tbName
     this.getAnalysisList(this.searchParams).then(data => {})
     // this.pageInfo.totalCount = this.analysisList.length

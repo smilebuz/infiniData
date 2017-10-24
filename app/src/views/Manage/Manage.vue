@@ -183,7 +183,7 @@ export default {
                     on: {
                       click: () => {
                         // this.setAnalysisList(JSON.parse(params.row.analysis_info))
-                        this.$router.push('/Analysis/' + this.tbParams.pdbName + '/' + params.row.tbName)
+                        this.$router.push('/Analysis/' + this.analysisParams.dbName + '/' + params.row.tbName + '/' + params.row.tbId)
                       }
                     }
                   }, '查看结果'),
@@ -197,12 +197,16 @@ export default {
                     },
                     on: {
                       click: () => {
+                        // this.analysisParams.tableName = params.row.tbName
+                        // this.analysis(this.analysisParams).then(data => {
+                        //   this.stopPolling()
+                        //   this.timer = setInterval(() => {
+                        //     this.polling(this.tbParams)
+                        //   }, 5000)
+                        // })
                         this.analysisParams.tableName = params.row.tbName
                         this.analysis(this.analysisParams).then(data => {
-                          this.stopPolling()
-                          this.timer = setInterval(() => {
-                            this.polling(this.tbParams)
-                          }, 5000)
+                          params.row.analysis_status = 1
                         })
                       }
                     }
