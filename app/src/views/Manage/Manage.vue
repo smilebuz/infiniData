@@ -183,7 +183,7 @@ export default {
                     on: {
                       click: () => {
                         // this.setAnalysisList(JSON.parse(params.row.analysis_info))
-                        this.$router.push('/Analysis/' + this.analysisParams.dbName + '/' + params.row.tbName + '/' + params.row.tbId)
+                        this.$router.push('/Analysis/' + this.analysisParams.dbName + '/' + params.row.tbName + '/' + this.tbParams.pdbId + '/' + params.row.tbId)
                       }
                     }
                   }, '查看结果'),
@@ -365,8 +365,13 @@ export default {
         })
       }
       // 保留
-      this.tbParams.pdbId = this.dbList[0].pdbId
-      this.tbParams.pdbName = this.dbList[0].pdbName
+      if (this.$route.params.pdbId) {
+        // analysis
+        this.tbParams.pdbId = parseInt(this.$route.params.pdbId)
+      } else {
+        // nav
+        this.tbParams.pdbId = this.dbList[0].pdbId
+      }
     })
   },
   beforeDestroy () {

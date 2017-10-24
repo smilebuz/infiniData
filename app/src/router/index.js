@@ -125,7 +125,13 @@ let router = new Router({
       component: Manage
     },
     {
-      path: '/Analysis/:pdbName/:tbName/:tbId',
+      path: '/Manage/:pdbId',
+      name: 'ManageWithId',
+      meta: { requiresAuth: true },
+      component: Manage
+    },
+    {
+      path: '/Analysis/:pdbName/:tbName/:pdbId/:tbId',
       name: 'Analysis',
       meta: { requiresAuth: true },
       component: Analysis

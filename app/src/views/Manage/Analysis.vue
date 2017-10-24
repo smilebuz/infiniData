@@ -4,96 +4,37 @@
     <div class="sideMenu">
       <Card dis-hover class="card card-basic">
         <p slot="title" class="card__title">表基本信息</p>
-        <div class="card__item">
-          <span class="card__item-name">表名:&nbsp;&nbsp;</span>
+        <div class="card__item"
+          v-for="(value, key) in tbBasicInfoList"
+          :key="key"
+          v-if="analysisResult.tbInfo[key]">
+          <span class="card__item-name">{{ value }}:&nbsp;&nbsp;</span>
           <span class="card__item-value"
-            :title="analysisResult.tbInfo.tbName">
-            {{ analysisResult.tbInfo.tbName }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">中文名:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.tbNameCN">
-            {{ analysisResult.tbInfo.tbNameCN }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">项目名称:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.projectName">
-            {{ analysisResult.tbInfo.projectName }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">负责人:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.principal">
-            {{ analysisResult.tbInfo.principal }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">描述:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.des">
-            {{ analysisResult.tbInfo.des }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">权限状态:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.permissionState">
-            {{ analysisResult.tbInfo.permissionState }}
+            :title="analysisResult.tbInfo[key]">
+            {{ analysisResult.tbInfo[key] }}
           </span>
         </div>
       </Card>
       <Card dis-hover class="card card-storage">
         <p slot="title" class="card__title">表存储信息</p>
-        <div class="card__item">
-          <span class="card__item-name">物理存储量:&nbsp;&nbsp;</span>
+        <div class="card__item"
+          v-for="(value, key) in tbStorageInfoList"
+          :key="key"
+          v-if="analysisResult.tbInfo[key]">
+          <span class="card__item-name">{{ value }}:&nbsp;&nbsp;</span>
           <span class="card__item-value"
-            :title="analysisResult.tbInfo.storage">
-            {{ analysisResult.tbInfo.storage }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">生命周期:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.lifeCycle">
-            {{ analysisResult.tbInfo.lifeCycle }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">是否区分表:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.partition">
-            {{ analysisResult.tbInfo.partition }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">表创建时间:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.createTime">
-            {{ analysisResult.tbInfo.createTime }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">DDL最后变更时间:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.DDLChangeTime">
-            {{ analysisResult.tbInfo.DDLChangeTime }}
-          </span>
-        </div>
-        <div class="card__item">
-          <span class="card__item-name">数据最后变更时间:&nbsp;&nbsp;</span>
-          <span class="card__item-value"
-            :title="analysisResult.tbInfo.DataChangeTime">
-            {{ analysisResult.tbInfo.DataChangeTime }}
+            :title="analysisResult.tbInfo[key]">
+            {{ analysisResult.tbInfo[key] }}
           </span>
         </div>
       </Card>
     </div>
     <div class="tabContainer">
+      <Button class="backButton"
+        size="small"
+        type="primary"
+        @click="backtoPrev">返回
+      </Button>
       <Tabs value="fieldInfo" class="tabs">
         <TabPane label="字段信息" name="fieldInfo" class="tabpane">
           <div class="tbcontainer">
@@ -145,14 +86,14 @@
             ></Table>
           </div>
         </TabPane>
-        <TabPane label="数据统计" name="statistics" class="tabpane">
+        <!--TabPane label="数据统计" name="statistics" class="tabpane">
           <div class="tbcontainer">
             <Table border stripe class="table" size="default"
               :columns="dataColumns"
               :data="analysisResult.statistics"
             ></Table>
           </div>
-        </TabPane>
+        </TabPane-->
         <TabPane label="建表语句" name="createSql" class="tabpane">
           <Input type="textarea" readonly class="sqlPanel"
             :autosize="{minRows: 15}"
@@ -358,6 +299,22 @@ export default {
           type: 'bar',
           data: []
         }]
+      },
+      tbBasicInfoList: {
+        tbName: '表名',
+        tbNameCN: '中文名',
+        projectName: '项目名称',
+        principal: '负责人',
+        des: '描述',
+        permissionState: '权限状态'
+      },
+      tbStorageInfoList: {
+        storage: '物理存储量',
+        lifeCycle: '生命周期',
+        partition: '是否分区表',
+        createTime: '创建时间',
+        DDLChangeTime: 'DDL最后变更时间',
+        DataChangeTime: '数据最后变更时间'
       }
     }
   },
@@ -397,6 +354,9 @@ export default {
     },
     changePageSize (pageSize) {
       this.pageInfo.pageSize = pageSize
+    },
+    backtoPrev () {
+      this.$router.push('/Manage/' + this.$route.params.pdbId)
     }
   },
   mounted () {
@@ -414,7 +374,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .analysis__title {
     padding: 10px;
     text-align: left;
@@ -468,6 +428,14 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     max-width: calc(100% - 300px);
+  }
+  .backButton {
+    position: absolute;
+    right: 10px;
+    top: 55px;
+    z-index: 999;
+    background: #66b8ef;
+    border-color: #66b8ef;
   }
   .tabs {
     height: 100%;
