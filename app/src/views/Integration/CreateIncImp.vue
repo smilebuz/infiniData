@@ -52,12 +52,12 @@
             <div class="radiopicker">
               <Radio :label="2">定时</Radio>
               <div class="radiopicker__datecontainer">
-                <DatePicker class="radiopicker__datecontainer-picker" transfer type="date" size="small" style="width: 120px;"
+                <DatePicker class="radiopicker__datecontainer-picker" placeholder="年-月-日" transfer type="date" size="small" style="width: 120px;"
                   v-model="scheduleCornTiming.date"
                   :options="scheduleOptions"
                   :disabled="disableSettingDatePicker"
                 ></DatePicker>
-                <TimePicker class="radiopicker__datecontainer-picker" transfer type="time" size="small" style="width: 120px;"
+                <TimePicker class="radiopicker__datecontainer-picker" placeholder="时:分" transfer type="time" size="small" style="width: 120px;"
                   v-model="scheduleCornTiming.time"
                   :disabled="disableSettingDatePicker"
                   :steps="[0, 5]"
@@ -66,8 +66,8 @@
               </div>
             </div>
             <div class="radiopicker radiopicker-vertical">
-              <Radio :label="3">周期</Radio>
-              <TimePicker transfer type="time" size="small" style="width: 120px;"
+              <Radio :label="3">每天</Radio>
+              <TimePicker transfer type="time" placeholder="时:分" size="small" style="width: 120px;"
                 v-model="scheduleCornPeriod"
                 :disabled="disableSettingTimePicker"
                 :steps="[0, 5]"
@@ -285,23 +285,31 @@ export default {
       let targetTable = this.tableParams.find((el) => {
         return el.tbName === params.row.tbName
       })
-      return h('InputNumber', {
-        props: {
-          size: 'small',
-          // transfer: true,
-          value: targetTable.condition
-        },
-        style: {
-          width: '160px'
-        },
-        on: {
-          input: (value) => {
-            if (value) {
-              targetTable.condition = value
+      return h('div', [
+        h('InputNumber', {
+          props: {
+            size: 'small',
+            transfer: true,
+            min: 1,
+            value: targetTable.condition
+          },
+          style: {
+            width: '90px'
+          },
+          on: {
+            input: (value) => {
+              if (value) {
+                targetTable.condition = value
+              }
             }
           }
-        }
-      }, '天')
+        }, ''),
+        h('span', {
+          style: {
+            paddingLeft: '5px'
+          }
+        }, '天')
+      ])
     },
     changeScheduleMode (value) {
       switch (value) {

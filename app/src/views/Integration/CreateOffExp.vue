@@ -101,12 +101,12 @@
             <div class="radiopicker">
               <Radio :label="2">定时</Radio>
               <div class="radiopicker__datecontainer">
-                <DatePicker class="radiopicker__datecontainer-picker" type="date" size="small" style="width: 120px;" transfer
+                <DatePicker class="radiopicker__datecontainer-picker" placeholder="年-月-日" type="date" size="small" style="width: 120px;" transfer
                   v-model="scheduleCornTiming.date"
                   :options="scheduleOptions"
                   :disabled="disableDatePicker"
                 ></DatePicker>
-                <TimePicker class="radiopicker__datecontainer-picker" transfer type="time" size="small" style="width: 120px;"
+                <TimePicker class="radiopicker__datecontainer-picker" placeholder="时:分" transfer type="time" size="small" style="width: 120px;"
                   v-model="scheduleCornTiming.time"
                   :disabled="disableDatePicker"
                   :steps="[0, 5]"
@@ -115,8 +115,8 @@
               </div>
             </div>
             <div class="radiopicker radiopicker-vertical">
-              <Radio :label="3">周期</Radio>
-              <TimePicker size="small" style="width: 120px;" transfer
+              <Radio :label="3">每天</Radio>
+              <TimePicker size="small" style="width: 120px;" placeholder="时:分" transfer
                 v-model="scheduleCornPeriod"
                 :disabled="disableTimePicker"
                 :steps="[0, 5]"
@@ -466,7 +466,8 @@ export default {
 <style lang="scss" scoped>
   .main {
     padding: 15px 10px;
-    background: #f0f0f0;
+    // background: #f0f0f0;
+    background: #f9f9f9;
     display: flex;
   }
   .setting {

@@ -72,12 +72,12 @@
                 <span>定时</span>
               </Radio>
               <div class="radiopicker__datecontainer">
-                <DatePicker class="radiopicker__datecontainer-picker" type="date" size="small" style="width: 120px;" transfer
+                <DatePicker class="radiopicker__datecontainer-picker" placeholder="年-月-日" type="date" size="small" style="width: 120px;" transfer
                   v-model="scheduleCorn.date"
                   :options="scheduleOptions"
                   :disabled="disableDatePicker"
                 ></DatePicker>
-                <TimePicker type="time" size="small" style="width: 120px;" transfer
+                <TimePicker type="time" size="small" style="width: 120px;" placeholder="时:分" transfer
                   v-model="scheduleCorn.time"
                   :disabled="disableDatePicker"
                   format="HH:mm"
@@ -329,7 +329,8 @@ export default {
 <style lang="scss" scoped>
   .main {
     padding: 15px 10px;
-    background: #f0f0f0;
+    // background: #f0f0f0;
+    background: #f9f9f9;
     display: flex;
   }
   .setting {
