@@ -589,7 +589,7 @@ export default {
           children: []
         })
       }
-      this.tbParams.pdbId = this.dbList[0].pdbId
+      this.tbParams.pdbId = this.dbList[1].pdbId
     })
   },
   mounted () {
@@ -651,11 +651,6 @@ export default {
   .dbSelect__select {
     padding-left: 5px;
     text-align: center;
-  }
-  .tree {
-    padding-left: 5px;
-    max-height: 200px;
-    overflow: scroll;
   }
   .radios {
     display: flex;

@@ -398,11 +398,6 @@ export default {
     padding-left: 5px;
     text-align: center;
   }
-  .tree {
-    padding-left: 5px;
-    max-height: 200px;
-    overflow: scroll;
-  }
   .content {
     display: flex;
     flex-direction: column;

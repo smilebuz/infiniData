@@ -1,7 +1,9 @@
 <template lang="html">
   <div class="createOffImp">
     <div class="form-inline">
-      <Form ref="filterForm" :model="filterForm" :label-width="80" id="filterForm" inline>
+      <Form inline id="filterForm" ref="filterForm"
+        :model="filterForm"
+        :label-width="80">
         <FormItem prop="pdbId" label="平台数据源" class="form__item">
           <Select v-model="filterForm.pdbId" placeholder="请选择" style="width:120px;">
             <Option v-for="(pdb, index) in pdbList" :key="pdb.pdbId" :value="pdb.pdbId">
@@ -30,7 +32,8 @@
     </div>
     <div class="main">
       <div class="createPanel">
-        <Table :loading="loadingTable" border stripe class="table" size="small"
+        <Table border stripe class="table" size="small"
+          :loading="loadingTable"
           :columns="columns"
           :data="pdbTBList"
           @on-selection-change="selectTable"
@@ -58,6 +61,7 @@
             v-model="createParams.type"
             @on-change="changeType">
             <Radio :label="1">CSV</Radio>
+            <Radio :label="3">ES</Radio>
             <!--div class="setting__group">
               <span class="setting__group-label">编码</span>
               <Select class="setting__group-select" size="small"

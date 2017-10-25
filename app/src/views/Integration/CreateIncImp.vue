@@ -141,15 +141,19 @@ export default {
           key: '',
           width: 180,
           render: (h, params) => {
-            return this.buildIncFiledSelect(h, params)
+            return this.buildIncFieldSelect(h, params)
           }
         },
         {
           title: '增量条件',
           key: '',
-          width: 380,
+          // width: 380,
           render: (h, params) => {
-            return this.buildConditionSelect(h, params)
+            if (this.createParams.scheduleMode === 3) {
+              return this.buildConditionSelect2(h, params)
+            } else {
+              return this.buildConditionSelect(h, params)
+            }
           }
         }
       ],
@@ -193,7 +197,7 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createIncImpTask'
     }),
-    buildIncFiledSelect (h, params) {
+    buildIncFieldSelect (h, params) {
       let targetTable = this.tableParams.find((el) => {
         return el.tbName === params.row.tbName
       })
@@ -276,6 +280,28 @@ export default {
           }
         })
       ])
+    },
+    buildConditionSelect2 (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
+      return h('Input', {
+        props: {
+          size: 'small',
+          transfer: true,
+          value: targetTable.hhh
+        },
+        style: {
+          width: '160px'
+        },
+        on: {
+          input: (value) => {
+            if (value) {
+              targetTable.hhh = value
+            }
+          }
+        }
+      })
     },
     changeScheduleMode (value) {
       switch (value) {
