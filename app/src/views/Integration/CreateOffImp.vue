@@ -53,9 +53,10 @@
           <p slot="extra">
             <Icon type="gear-b"></Icon>
           </p>
-          <Input v-model="createParams.blocks" number>
-            <span slot="append">记录/线程</span>
-          </Input>
+          <div class="inputgroup">
+            <span>单线程抽取记录数</span>
+            <Input v-model="createParams.blocks" size="small" number></Input>
+          </div>
         </Card>
         <Card>
           <p slot="title">调度设置</p>
@@ -340,5 +341,13 @@ export default {
   }
   .button {
     margin-right: 20px;
+  }
+  .inputgroup {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    span {
+      width: 160px;
+    }
   }
 </style>

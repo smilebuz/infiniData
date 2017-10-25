@@ -516,11 +516,23 @@ export default {
       }
     },
     selectTree (selection) {
-      if (selection[0].pdbId) {
-        this.tbParams.pdbId = selection[0].pdbId
-      }
-      if (selection[0].tbId) {
-        this.tbInfoParams.tbId = selection[0].tbId
+      if (selection.length) {
+        // 展开
+        if (selection[0].pdbId) {
+          if (selection[0].expand) {
+            // 收起
+            this.tbParams.pdbId = -1
+          } else {
+            // 展开
+            this.tbParams.pdbId = selection[0].pdbId
+          }
+        }
+        if (selection[0].tbId) {
+          this.tbInfoParams.tbId = selection[0].tbId
+        }
+      } else {
+        // 收起
+        this.tbParams.pdbId = -1
       }
     },
     exportData () {
@@ -551,27 +563,43 @@ export default {
     // },
     tbParams: {
       handler: function (newParams) {
-        this.getTBList(newParams).then(data => {
-          let targetIndex = this.dbList.findIndex(db => {
-            return db.pdbId === newParams.pdbId
+        if (newParams.pdbId === -1) {
+          this.tables[0].children.forEach(db => {
+            db.expand = false
           })
-          let targetPdb = this.tables[0].children[targetIndex]
-          targetPdb.children.splice(0, targetPdb.children.length)
-          // 填充this.tables.children 改变this.tbInfoParams
-          if (this.tbList.length) {
-            for (let table of this.tbList) {
-              targetPdb.children.push({title: table.tbName, tbId: table.tbId})
+        } else {
+          this.getTBList(newParams).then(data => {
+            let targetIndex = this.dbList.findIndex(db => {
+              return db.pdbId === newParams.pdbId
+            })
+            let targetPdb = this.tables[0].children[targetIndex]
+            targetPdb.children.splice(0, targetPdb.children.length)
+            // 填充this.tables.children 改变this.tbInfoParams
+            if (this.tbList.length) {
+              for (let table of this.tbList) {
+                targetPdb.children.push({title: table.tbName, tbId: table.tbId})
+              }
+              this.tbInfoParams.pdbId = targetPdb.pdbId
+              // this.tbInfoParams.tbId = this.tbList[0].tbId
             }
-            this.tbInfoParams.pdbId = targetPdb.pdbId
-            this.tbInfoParams.tbId = this.tbList[0].tbId
-          }
-        })
+            // 只展开当前选中的
+            this.tables[0].children.forEach((db, index, arr) => {
+              if (index === targetIndex) {
+                db.expand = true
+              } else {
+                db.expand = false
+              }
+            })
+          })
+        }
       },
       deep: true
     },
     tbInfoParams: {
       handler: function (newParams) {
-        this.getTBInfo(newParams)
+        if (newParams.tbId) {
+          this.getTBInfo(newParams)
+        }
       },
       deep: true
     }
@@ -589,7 +617,7 @@ export default {
           children: []
         })
       }
-      this.tbParams.pdbId = this.dbList[1].pdbId
+      // this.tbParams.pdbId = this.dbList[0].pdbId
     })
   },
   mounted () {

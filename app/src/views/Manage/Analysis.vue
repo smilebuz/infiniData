@@ -139,12 +139,12 @@ export default {
           width: 80
         },
         {
-          title: '空值个数',
+          title: '空值计数',
           key: 'nullValNum',
           width: 90
         },
         {
-          title: '唯一值',
+          title: '唯一值计数',
           key: 'distinct',
           width: 90
         },
@@ -200,7 +200,12 @@ export default {
           width: 80
         },
         {
-          title: '唯一值',
+          title: '空值计数',
+          key: 'nullValNum',
+          width: 90
+        },
+        {
+          title: '唯一值计数',
           key: 'distinct',
           width: 90
         },
@@ -304,7 +309,7 @@ export default {
         tbName: '表名',
         tbNameCN: '中文名',
         projectName: '项目名称',
-        principal: '负责人',
+        principal: '创建者',
         des: '描述',
         permissionState: '权限状态'
       },
@@ -418,7 +423,7 @@ export default {
   .card__item {
     display: flex;
     justify-content: flex-start;
-    border-bottom: 1px solid #c9c9c9;
+    // border-bottom: 1px solid #c9c9c9;
     padding-top: 5px;
     padding-bottom: 5px;
     text-align: left;

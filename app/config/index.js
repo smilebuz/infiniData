@@ -36,7 +36,7 @@ module.exports = {
         }
       },
       '/apiSchema': {
-        target: 'http://192.168.1.69:8089',
+        target: 'http://192.168.1.56:8089',
         changeOrigin: true,
         pathRewrite: {
           '^/apiSchema': ''

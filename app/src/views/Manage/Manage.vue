@@ -220,7 +220,7 @@ export default {
       ],
       pageInfo: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 15,
         totalCount: -1,
         totalPage: -1
       },
@@ -368,9 +368,15 @@ export default {
       if (this.$route.params.pdbId) {
         // analysis
         this.tbParams.pdbId = parseInt(this.$route.params.pdbId)
+        this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
+          return el.pdbId === parseInt(this.$route.params.pdbId)
+        }).pdbName
       } else {
         // nav
         this.tbParams.pdbId = this.dbList[0].pdbId
+        this.analysisParams.dbName = this.dbList.find((el, index, arr) => {
+          return el.pdbId === this.dbList[0].pdbId
+        }).pdbName
       }
     })
   },

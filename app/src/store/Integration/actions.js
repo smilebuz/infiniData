@@ -142,6 +142,7 @@ const actions = {
     commit(type.CLEAR_INCIMP_TIMER)
   },
   createIncImpTask ({ commit }, params) {
+    debugger
     return Api.createInc.post(params).then(data => {
       return Promise.resolve(data)
     })
@@ -218,6 +219,7 @@ const actions = {
     commit(type.CLEAR_OFFEXP_TIMER)
   },
   createOffExpTask ({ commit }, params) {
+    debugger
     return Api.createExport.post(params).then(data => {
       return Promise.resolve(data)
     })

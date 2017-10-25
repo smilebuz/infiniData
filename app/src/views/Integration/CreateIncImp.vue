@@ -285,11 +285,11 @@ export default {
       let targetTable = this.tableParams.find((el) => {
         return el.tbName === params.row.tbName
       })
-      return h('Input', {
+      return h('InputNumber', {
         props: {
           size: 'small',
-          transfer: true,
-          value: targetTable.hhh
+          // transfer: true,
+          value: targetTable.condition
         },
         style: {
           width: '160px'
@@ -297,11 +297,11 @@ export default {
         on: {
           input: (value) => {
             if (value) {
-              targetTable.hhh = value
+              targetTable.condition = value
             }
           }
         }
-      })
+      }, '天')
     },
     changeScheduleMode (value) {
       switch (value) {
@@ -437,11 +437,12 @@ export default {
                   tbName: table.tbName,
                   incField: table.incField,
                   condition1: table.condition1,
-                  condition2: table.contidition2
+                  condition2: table.contidition2,
+                  condition: table.condition
                 }
               )
             } else {
-              this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: ''})
+              this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: '', condition: 1})
             }
           })
         })
