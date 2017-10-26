@@ -47,9 +47,8 @@
         @on-ok="submitEditParams"
         @on-cancel="cancelEdit">
         <div class="modal__content">
-          <span class="edit__label">抽取负载</span>
+          <span class="edit__label">单线程抽取记录数</span>
           <Input v-model="editParams.blocks" size="small" class="modal__input" number>
-            <span slot="append">记录/线程</span>
           </Input>
         </div>
         <div class="modal__content">
