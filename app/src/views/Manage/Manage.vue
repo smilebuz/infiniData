@@ -35,6 +35,7 @@
             :total="pageInfo.totalCount"
             :current="pageInfo.pageNum"
             :page-size="pageInfo.pageSize"
+            :page-size-opts="pageInfo.pageSizeOpts"
             @on-change="changePageNum"
             @on-page-size-change="changePageSize"
           ></Page>
@@ -221,6 +222,7 @@ export default {
       pageInfo: {
         pageNum: 1,
         pageSize: 15,
+        pageSizeOpts: [15, 25, 50],
         totalCount: -1,
         totalPage: -1
       },
