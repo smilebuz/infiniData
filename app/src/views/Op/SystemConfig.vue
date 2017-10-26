@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="systemResource">
+  <div class="systemConfig">
     <div class="form-inline">
       <Form ref="filterForm" inline
         :model="filterForm"
@@ -27,6 +27,7 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe class="table" size="small"
+        :loading="loadingTable"
         :columns="columns"
         :data="resourceList"
         @on-selection-change="selectResource"></Table>
@@ -173,6 +174,7 @@ export default {
           }
         }
       ],
+      loadingTable: true,
       selectedResourceIds: [],
 
       createModal: {
@@ -308,13 +310,18 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getResourceList(newParams).then(data => {})
+        this.loadingTable = true
+        this.getResourceList(newParams).then(data => {
+          this.loadingTable = false
+        })
       },
       deep: true
     }
   },
   mounted () {
-    this.getResourceList(this.searchParams).then(data => {})
+    this.getResourceList(this.searchParams).then(data => {
+      this.loadingTable = false
+    })
   }
 }
 </script>

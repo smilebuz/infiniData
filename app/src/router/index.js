@@ -25,7 +25,7 @@ import Analysis from '../views/Manage/Analysis'
 import Op from '../views/Op/Op'
 import LogManage from '../views/Op/LogManage'
 import UserManage from '../views/Op/UserManage'
-import SystemResource from '../views/Op/SystemResource'
+import SystemConfig from '../views/Op/SystemConfig'
 
 // import SelectTest from '../views/SelectTest'
 
@@ -155,10 +155,10 @@ let router = new Router({
           component: UserManage
         },
         {
-          path: 'SystemResource',
-          name: 'SystemResource',
+          path: 'SystemConfig',
+          name: 'SystemConfig',
           meta: { requiresAuth: true },
-          component: SystemResource
+          component: SystemConfig
         }
       ]
     }

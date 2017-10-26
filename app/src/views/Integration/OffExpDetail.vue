@@ -21,7 +21,8 @@
           :total="pageInfo.totalCount"
           :current="pageInfo.currentPage" 
           @on-change="changePageNum"
-          @on-page-size-change="changePageSize"></Page>
+          @on-page-size-change="changePageSize"
+        ></Page>
       </div>
     </div>
   </div>

@@ -35,6 +35,7 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe class="table" size="small"
+        :loading="loadingTable"
         :columns="columns"
         :data="userList"
         @on-selection-change="selectUser"></Table>
@@ -195,6 +196,7 @@ export default {
           }
         }
       ],
+      loadingTable: true,
       selectedUserIds: [],
       createModal: {
         title: '创建用户',
@@ -335,13 +337,18 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getUserList(newParams).then(data => {})
+        this.loadingTable = true
+        this.getUserList(newParams).then(data => {
+          this.loadingTable = false
+        })
       },
       deep: true
     }
   },
   mounted () {
-    this.getUserList(this.searchParams).then(data => {})
+    this.getUserList(this.searchParams).then(data => {
+      this.loadingTable = false
+    })
   }
 }
 </script>

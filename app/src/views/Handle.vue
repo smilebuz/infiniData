@@ -21,31 +21,45 @@
         v-if="tables[0].children.length"
         :data="tables"
         @on-select-change="selectTree"></Tree>
-      <div class="radios" v-if="tables[0].children.length">
-        <div class="radio-div" v-for="(value, key) in radios" :key="key" :style="radioChecked(value.checked)" @click="checkTBInfo(key)">
+      <div class="radios" v-if="(tables[0].children.length > 0) && (partitions.length > 0)">
+        <div class="radio-div"
+          v-for="(value, key) in radios"
+          :key="key"
+          :style="radioChecked(value.checked)"
+          @click="checkTBInfo(key)">
           {{ value.label }}
         </div>
       </div>
-      <div class="tbInfo" v-show="radios.fields.checked" v-if="tables[0].children.length">
+      <div class="tbInfo"
+        v-show="radios.fields.checked"
+        v-if="tables[0].children.length && (fields.length > 0)">
         <div class="tbInfo__title">
           <div class="tbInfoText">名称</div>
           <div class="tbInfoText">类型</div>
         </div>
-        <div v-for="(field, index) in fields" :key="field.fieldName" class="tbInfo__content">
-          <div class="tbInfoText">
-            {{ field.fieldName }}
-          </div>
-          <div class="tbInfoText">
-            {{ field.fieldType }}
+        <div class="tbInfo__body">
+          <div class="tbInfo__content"
+            v-for="(field, index) in fields"
+            :key="field.fieldName">
+            <div class="tbInfoText">
+              {{ field.fieldName }}
+            </div>
+            <div class="tbInfoText">
+              {{ field.fieldType }}
+            </div>
           </div>
         </div>
       </div>
-      <div class="tbInfo" v-show="radios.partitions.checked" v-if="tables[0].children.length">
+      <div class="tbInfo"
+        v-show="radios.partitions.checked"
+        v-if="tables[0].children.length && (partitions.length > 0)">
         <div class="tbInfo__title">
           <div class="tbInfoText">名称</div>
           <div class="tbInfoText">类型</div>
         </div>
-        <div v-for="(partition, index) in partitions" :key="partition.partitionName" class="tbInfo__content">
+        <div class="tbInfo__content"
+          v-for="(partition, index) in partitions"
+          :key="partition.partitionName">
           <div class="tbInfoText">
             {{ partition.partitionName }}
           </div>
@@ -692,12 +706,12 @@ export default {
     cursor: pointer;
     background: #dcdcdc;
   }
-  .tbInfo {
-    max-height: 300px;
-    overflow: scroll;
-  }
   .tbInfo__title {
     background: #f8f8f8;
+  }
+  .tbInfo__body {
+    max-height: 218px;
+    overflow: scroll;
   }
   .tbInfo__title,
   .tbInfo__content {

@@ -40,6 +40,7 @@
           <div class="tbcontainer">
             <h3 class="tableTitle">数值</h3>
             <Table border stripe class="table" size="default"
+              :loading="loadingResult"
               :columns="numberColumns"
               :data="analysisResult.fieldInfo.numberList"
             ></Table>
@@ -66,6 +67,7 @@
           <div class="tbcontainer">
             <h3 class="tableTitle">字符串</h3>
             <Table border stripe class="table" size="default"
+              :loading="loadingResult"
               :columns="stringColumns"
               :data="analysisResult.fieldInfo.stringList"
             ></Table>
@@ -73,6 +75,7 @@
           <div class="tbcontainer">
             <h3 class="tableTitle">布尔值</h3>
             <Table border stripe class="table" size="default"
+              :loading="loadingResult"
               :columns="booleanColumns"
               :data="analysisResult.fieldInfo.booleanList"
             ></Table>
@@ -320,7 +323,8 @@ export default {
         createTime: '创建时间',
         DDLChangeTime: 'DDL最后变更时间',
         DataChangeTime: '数据最后变更时间'
-      }
+      },
+      loadingResult: true
     }
   },
   computed: {
@@ -369,7 +373,9 @@ export default {
     this.searchParams.tableName = this.$route.params.tbName
     this.searchParams.tableId = this.$route.params.tbId
     this.tbName = this.$route.params.tbName
-    this.getAnalysisList(this.searchParams).then(data => {})
+    this.getAnalysisList(this.searchParams).then(data => {
+      this.loadingResult = false
+    })
     // this.pageInfo.totalCount = this.analysisList.length
     // this.pageInfo.totalPage = Math.ceil(this.pageInfo.totalCount / this.pageInfo.pageSize)
   },

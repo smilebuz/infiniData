@@ -17,8 +17,12 @@
         <div>
           当前第{{ pageInfo.pageNum }}页 共{{ pageInfo.totalPage }}页/{{ pageInfo.totalCount }}条记录
         </div>
-        <Page :total="pageInfo.totalCount" :current="pageInfo.currentPage" show-sizer show-elevator
-        @on-change="changePageNum" @on-page-size-change="changePageSize"></Page>
+        <Page show-sizer show-elevator
+          :total="pageInfo.totalCount"
+          :current="pageInfo.currentPage"
+          @on-change="changePageNum"
+          @on-page-size-change="changePageSize"
+        ></Page>
       </div>
     </div>
   </div>

@@ -26,6 +26,7 @@
     </div>
     <div class="tbcontainer">
       <Table border stripe class="table" size="small"
+        :loading="loadingTable"
         :columns="columns"
         :data="logList"></Table>
       <div class="pagination">
@@ -94,6 +95,7 @@ export default {
           width: 150
         }
       ],
+      loadingTable: true,
       logLevelList: {
         'All': '',
         'DEBUG': 'DEBUG',
@@ -128,13 +130,18 @@ export default {
   watch: {
     searchParams: {
       handler: function (newParams) {
-        this.getLogList(newParams).then(data => {})
+        this.loadingTable = true
+        this.getLogList(newParams).then(data => {
+          this.loadingTable = false
+        })
       },
       deep: true
     }
   },
   mounted () {
-    this.getLogList(this.searchParams).then(data => {})
+    this.getLogList(this.searchParams).then(data => {
+      this.loadingTable = false
+    })
   }
 }
 </script>
