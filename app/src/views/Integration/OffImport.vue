@@ -520,7 +520,7 @@ export default {
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 2:
-          this.editParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
+          this.editParams.scheduleCorn = dateFormatter2(new Date(this.scheduleCorn.date)) + ' ' + timeFormatter(this.scheduleCorn.time)
           break
         default:
           this.editParams.scheduleCorn = ''

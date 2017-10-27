@@ -161,7 +161,7 @@ export default {
         {
           title: '姓名',
           key: 'name',
-          width: 80
+          width: 140
         },
         {
           title: '电话',

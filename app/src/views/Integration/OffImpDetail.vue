@@ -84,7 +84,14 @@ export default {
           title: '结束时间',
           key: 'endTime',
           sortable: true,
-          width: 110
+          width: 110,
+          render: (h, params) => {
+            if (params.row.endTime !== 'None') {
+              return h('div', {}, params.row.endTime)
+            } else {
+              return h('div', {}, '')
+            }
+          }
         },
         {
           title: '耗时',
@@ -96,7 +103,11 @@ export default {
           key: 'extractSpeed',
           width: 110,
           render: (h, params) => {
-            return h('div', {}, parseInt(params.row.extractSpeed) + '条/s')
+            if (params.row.extractSpeed) {
+              return h('div', {}, parseInt(params.row.extractSpeed) + '条/s')
+            } else {
+              return h('div', {}, '')
+            }
           }
         },
         {

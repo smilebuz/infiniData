@@ -681,7 +681,7 @@ export default {
 
 <style lang="scss" scoped>
   .side {
-    max-width: 170px;
+    width: 170px;
     min-width: 170px;
     text-align: left;
   }
@@ -711,7 +711,7 @@ export default {
   }
   .tbInfo__body {
     max-height: 218px;
-    overflow: scroll;
+    overflow: auto;
   }
   .tbInfo__title,
   .tbInfo__content {

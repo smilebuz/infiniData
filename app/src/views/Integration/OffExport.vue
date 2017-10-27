@@ -610,7 +610,7 @@ export default {
           this.editParams.scheduleCorn = ''
           break
         case 2:
-          this.editParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          this.editParams.scheduleCorn = dateFormatter2(new Date(this.scheduleCornTiming.date)) + ' ' + timeFormatter(this.scheduleCornTiming.time)
           break
         case 3:
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)

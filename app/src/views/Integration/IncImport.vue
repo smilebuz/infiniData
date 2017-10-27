@@ -36,8 +36,15 @@
       </div>
     </div>
     <div class="tbcontainer">
-      <Table border stripe :columns="columns" :data="taskList" class="table" size="default" @on-selection-change="selectTask"></Table>
-      <Modal v-model="editModal.show" :title="editModal.title" @on-ok="submitEditParams" @on-cancel="cancelEdit">
+      <Table class="table" size="default" border stripe
+        :columns="columns"
+        :data="taskList"
+        @on-selection-change="selectTask"></Table>
+      <Modal
+        v-model="editModal.show"
+        :title="editModal.title"
+        @on-ok="submitEditParams"
+        @on-cancel="cancelEdit">
         <div class="modal__content">
           <span class="edit__label">调度设置</span>
           <RadioGroup vertical class="radiogroup"
@@ -497,7 +504,9 @@ export default {
           this.editParams.scheduleCorn = ''
           break
         case 2:
-          this.editParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          let date = dateFormatter2(new Date(this.scheduleCornTiming.date))
+          let time = timeFormatter(this.scheduleCornTiming.time)
+          this.editParams.scheduleCorn = date + ' ' + time
           break
         case 3:
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
