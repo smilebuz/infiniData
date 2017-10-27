@@ -108,10 +108,10 @@ export default {
       if (!value) {
         return callback(new Error('最大连接数不能为空'))
       } else {
-        if (!Number.isInteger(value)) {
+        if (isNaN(parseInt(value))) {
           callback(new Error('请输入数字值'))
         } else {
-          if (value < 1) {
+          if (parseInt(value) < 1) {
             callback(new Error('最大连接数最小为1'))
           } else {
             callback()
