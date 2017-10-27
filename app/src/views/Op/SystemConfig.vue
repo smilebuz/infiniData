@@ -49,7 +49,9 @@
               <Input v-model="createParams.default_value"></Input>
             </FormItem>
             <FormItem label="描述">
-              <Input v-model="createParams.info"></Input>
+              <Input type="textarea"
+                :rows="2"
+                v-model="createParams.info"></Input>
             </FormItem>
           </Form>
         </div>
@@ -76,7 +78,10 @@
               <Input v-model="editParams.default_value"></Input>
             </FormItem>
             <FormItem label="描述">
-              <Input v-model="editParams.info"></Input>
+              <Input type="textarea"
+                :rows="2"
+                v-model="editParams.info">
+              </Input>
             </FormItem>
           </Form>
         </div>
@@ -150,12 +155,12 @@ export default {
         {
           title: '设定值',
           key: 'value',
-          width: 90
+          width: 150
         },
         {
           title: '缺省值',
           key: 'default_value',
-          width: 90
+          width: 150
         },
         {
           title: '描述',
