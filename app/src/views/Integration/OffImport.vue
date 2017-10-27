@@ -49,6 +49,7 @@
         <div class="modal__content">
           <span class="edit__label">单线程抽取记录数</span>
           <Input v-model="editParams.blocks" size="small" class="modal__input" number>
+            <span slot="append">万</span>
           </Input>
         </div>
         <div class="modal__content">
@@ -501,7 +502,7 @@ export default {
     openEditModal (task) {
       this.editModal.show = true
       this.editParams.taskId = task.taskId
-      this.editParams.blocks = task.blocks
+      this.editParams.blocks = task.blocks / 10000
       this.editParams.scheduleMode = task.scheduleMode
       if (task.scheduleMode === 0) {
         // 失效
@@ -525,6 +526,7 @@ export default {
           this.editParams.scheduleCorn = ''
           break
       }
+      this.editParams.blocks *= 10000
       this.editTask(this.editParams).then(data => {
         this.getTaskList(this.searchParams).then(data => {})
       })

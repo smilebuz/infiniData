@@ -79,6 +79,7 @@
               <span class="setting__group-label">数据源</span>
               <Select class="setting__group-select" size="small"
                 :disabled="disableSourceSelect"
+                v-model="createParams.connId"
                 @on-change="changeExportDB">
                 <Option v-for="(source, index) in dataSources"
                   :key="source.connId"
@@ -123,7 +124,7 @@
                 format="HH:mm"
               ></TimePicker>
             </div>
-            <Radio :label="0" class="radiogroup__radio">失效</Radio>
+            <!--Radio :label="0" class="radiogroup__radio">失效</Radio-->
           </RadioGroup>
         </Card>
       </div>
@@ -277,14 +278,16 @@ export default {
       }
     },
     changeType (value) {
-      if (value === 1) {
+      if (value !== 2) {
         this.disableEncodingSelect = false
         this.disableSeperatorSelect = false
         this.disableSourceSelect = true
+        this.createParams.connId = ''
       } else {
         this.disableEncodingSelect = true
         this.disableSeperatorSelect = true
         this.disableSourceSelect = false
+        this.createParams.connId = this.dataSources[0].connId
       }
     },
     changeExportDB (value) {
@@ -376,10 +379,30 @@ export default {
           this.createParams.scheduleCorn = ''
           break
         case 2:
-          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          if (!this.scheduleCornTiming.date || !this.scheduleCornTiming.time) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          }
           break
         case 3:
-          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          if (!this.scheduleCornPeriod) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          }
           break
         case 0:
           // 失效
@@ -387,6 +410,15 @@ export default {
           break
         default:
           break
+      }
+      if (!this.createParams.selectAll && !this.createParams.tbInfos.length) {
+        // 未选择表
+        this.$Message.warning({
+          content: '尚未选择表',
+          top: 50,
+          duration: 1.5
+        })
+        return
       }
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffExport')

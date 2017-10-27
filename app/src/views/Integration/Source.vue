@@ -43,46 +43,49 @@
       <Table border stripe :columns="columns" :data="sourceList" class="table" size="default" @on-selection-change="selectSource"></Table>
       <Modal v-model="editModal.show" :title="editModal.title">
         <div class="modal__content">
-          <Form :model="editParams" :label-width="80" class="editParams">
-            <FormItem label="连接名称">
+          <Form class="editParams" ref="editSourceForm"
+            :model="editParams"
+            :label-width="110"
+            :rules="rulesValidate">
+            <FormItem label="连接名称" prop="connName">
               <Input v-model="editParams.connName"></Input>
             </FormItem>
-            <FormItem label="数据库名称">
+            <FormItem label="数据库名称" prop="dbName">
               <Input v-model="editParams.dbName"></Input>
             </FormItem>
             <FormItem label="数据库类型">
               <Input v-model="editParams.dbType" disabled></Input>
             </FormItem>
-            <FormItem label="主机IP">
+            <FormItem label="实例名称" prop="instanceName">
+              <Input v-model="editParams.instanceName"></Input>
+            </FormItem>
+            <FormItem label="主机IP" prop="host">
               <Input v-model="editParams.host"></Input>
             </FormItem>
-            <FormItem label="端口号">
+            <FormItem label="端口号" prop="port">
               <Input v-model="editParams.port"></Input>
             </FormItem>
             <FormItem label="用户名">
               <Input v-model="editParams.userName"></Input>
             </FormItem>
-            <FormItem label="实例名称">
-              <Input v-model="editParams.instanceName"></Input>
-            </FormItem>
             <FormItem label="密码">
               <Input v-model="editParams.password"></Input>
             </FormItem>
-            <FormItem label="最大并发连接数">
+            <FormItem label="最大并发连接数" prop="maxConn">
               <Input v-model="editParams.maxConn"></Input>
             </FormItem>
             <FormItem label="编码设置">
               <Select v-model="editParams.encoding">
-                <Option value="utf-8">UTF-8</Option>
+                <Option value="utf8">UTF-8</Option>
                 <Option value="gbk">GBK</Option>
               </Select>
             </FormItem>
           </Form>
         </div>
         <div slot="footer" class="buttongroup">
-          <Button type="primary" @click="testConn">测试连接</Button>
-          <Button type="info" @click="saveEdit">保存</Button>
-          <Button @click="cancelEdit">取消</Button>
+          <Button type="primary" @click="testConn('editSourceForm')">测试连接</Button>
+          <Button type="info" @click="saveEdit('editSourceForm')">保存</Button>
+          <Button @click="cancelEdit('editSourceForm')">取消</Button>
         </div>
       </Modal>
       <div class="pagination">
@@ -101,6 +104,21 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
+    const validateMaxConn = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('最大连接数不能为空'))
+      } else {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'))
+        } else {
+          if (value < 1) {
+            callback(new Error('最大连接数最小为1'))
+          } else {
+            callback()
+          }
+        }
+      }
+    }
     return {
       searchParams: {
         connName: '',
@@ -250,7 +268,29 @@ export default {
         show: false,
         title: '数据源编辑'
       },
-      selectedSourceIds: []
+      selectedSourceIds: [],
+      rulesValidate: {
+        connName: [
+          { required: true, message: '连接名不能为空', trigger: 'blur' }
+        ],
+        host: [
+          { required: true, message: '主机IP不能为空', trigger: 'blur' }
+        ],
+        port: [
+          { required: true, message: '端口号不能为空', trigger: 'blur' }
+        ],
+        dbName: [
+          { required: true, message: '数据库名称不能为空', trigger: 'blur' }
+        ],
+        /*
+        instanceName: [
+          { required: true, message: '实例名称不能为空', trigger: 'blur' }
+        ],
+        */
+        maxConn: [
+          { validator: validateMaxConn, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -317,38 +357,51 @@ export default {
         }
       }
     },
-    saveEdit () {
-      // 编辑请求
-      this.editSource(this.editParams).then(data => {
-        this.editModal.show = false
-        this.getSourceList(this.searchParams)
+    saveEdit (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 编辑请求
+          this.editSource(this.editParams).then(data => {
+            this.editModal.show = false
+            this.getSourceList(this.searchParams)
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    cancelEdit () {
+    cancelEdit (formName) {
       this.editModal.show = false
+      this.$refs[formName].resetFields()
     },
-    testConn () {
-      // 测试请求
-      let connParams = {
-        type: this.editParams.dbType,
-        host: this.editParams.host,
-        port: this.editParams.port,
-        database_name: this.editParams.dbName,
-        user_name: this.editParams.userName,
-        password: this.editParams.password
-      }
-      this.testSourceConn(connParams).then(data => {
-        this.$Message.success({
-          content: '连接测试成功',
-          duration: 1.5,
-          top: 50
-        })
-      }).catch(error => {
-        this.$Message.warning({
-          content: error.message,
-          top: 50,
-          duration: 1.5
-        })
+    testConn (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 测试请求
+          let connParams = {
+            type: this.editParams.dbType,
+            host: this.editParams.host,
+            port: this.editParams.port,
+            database_name: this.editParams.dbName,
+            user_name: this.editParams.userName,
+            password: this.editParams.password
+          }
+          this.testSourceConn(connParams).then(data => {
+            this.$Message.success({
+              content: '连接测试成功',
+              duration: 1.5,
+              top: 50
+            })
+          }).catch(error => {
+            this.$Message.warning({
+              content: error.message,
+              top: 50,
+              duration: 1.5
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
     changePageNum (pageNum) {

@@ -15,30 +15,33 @@
       </div>
     </div>
     <div class="maincontainer configcontainer" v-else>
-      <Form :model="createParams" :label-width="100" class="createParams">
-        <FormItem label="连接名称">
+      <Form class="createParams" ref="sourceForm"
+        :model="createParams"
+        :label-width="110"
+        :rules="rulesValidate">
+        <FormItem label="连接名称" prop="connName">
           <Input v-model="createParams.connName"></Input>
         </FormItem>
-        <FormItem label="主机IP">
+        <FormItem label="主机IP" prop="host">
           <Input v-model="createParams.host"></Input>
         </FormItem>
-        <FormItem label="端口号">
+        <FormItem label="端口号" prop="port">
           <Input v-model="createParams.port"></Input>
         </FormItem>
-        <FormItem label="数据库名称">
+        <FormItem label="数据库名称" prop="dbName">
           <Input v-model="createParams.dbName"></Input>
         </FormItem>
-        <FormItem label="实例名称"
+        <FormItem label="实例名称" prop="instanceName"
           v-show="createParams.dbType === 'informix'">
           <Input v-model="createParams.instanceName"></Input>
         </FormItem>
-        <FormItem label="用户名">
+        <FormItem label="用户名" prop="userName">
           <Input v-model="createParams.userName"></Input>
         </FormItem>
-        <FormItem label="密码">
+        <FormItem label="密码" prop="pwd">
           <Input v-model="createParams.password"></Input>
         </FormItem>
-        <FormItem label="最大并发连接数">
+        <FormItem label="最大并发连接数" prop="maxConn">
           <Input v-model="createParams.maxConn"></Input>
         </FormItem>
         <FormItem label="编码设置">
@@ -48,8 +51,8 @@
           </Select>
         </FormItem>
         <FormItem class="buttongroup">
-          <Button type="primary" @click="testConn">测试连接</Button>
-          <Button type="info" @click="saveConfig">保存</Button>
+          <Button type="primary" @click="testConn('sourceForm')">测试连接</Button>
+          <Button type="info" @click="saveConfig('sourceForm')">保存</Button>
           <Button @click="cancelConfig">取消</Button>
         </FormItem>
       </Form>
@@ -63,6 +66,21 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
+    const validateMaxConn = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('最大连接数不能为空'))
+      } else {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'))
+        } else {
+          if (value < 1) {
+            callback(new Error('最大连接数最小为1'))
+          } else {
+            callback()
+          }
+        }
+      }
+    }
     return {
       currentStep: 1,
       sources: [
@@ -87,12 +105,34 @@ export default {
           sourceImg: require('../../assets/images/icon/mysql.png')
         }
       ],
+      rulesValidate: {
+        connName: [
+          { required: true, message: '连接名不能为空', trigger: 'blur' }
+        ],
+        host: [
+          { required: true, message: '主机IP不能为空', trigger: 'blur' }
+        ],
+        port: [
+          { required: true, message: '端口号不能为空', trigger: 'blur' }
+        ],
+        dbName: [
+          { required: true, message: '数据库名称不能为空', trigger: 'blur' }
+        ],
+        /*
+        instanceName: [
+          { required: true, message: '实例名称不能为空', trigger: 'blur' }
+        ],
+        */
+        maxConn: [
+          { validator: validateMaxConn, trigger: 'blur' }
+        ]
+      },
       createParams: {
         connName: '',
-        encoding: '',
+        encoding: 'utf8',
         host: '',
         port: '',
-        maxConn: '',
+        maxConn: 1,
         dbType: '',
         dbName: '',
         userName: '',
@@ -116,40 +156,52 @@ export default {
       this.createParams.dbType = sourcetype
       this.currentStep = 2
     },
-    testConn () {
-      // 测试请求
-      let connParams = {
-        type: this.createParams.dbType,
-        host: this.createParams.host,
-        port: this.createParams.port,
-        database_name: this.createParams.dbName,
-        user_name: this.createParams.userName,
-        password: this.createParams.password
-      }
-      this.testSourceConn(connParams).then(data => {
-        this.$Message.success({
-          content: '连接测试成功',
-          top: 50,
-          duration: 1.5
-        })
-      }).catch(error => {
-        this.$Message.warning({
-          content: error.message,
-          top: 50,
-          duration: 1.5
-        })
+    testConn (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 测试请求
+          let connParams = {
+            type: this.createParams.dbType,
+            host: this.createParams.host,
+            port: this.createParams.port,
+            database_name: this.createParams.dbName,
+            user_name: this.createParams.userName,
+            password: this.createParams.password
+          }
+          this.testSourceConn(connParams).then(data => {
+            this.$Message.success({
+              content: '连接测试成功',
+              top: 50,
+              duration: 1.5
+            })
+          }).catch(error => {
+            this.$Message.warning({
+              content: error.message,
+              top: 50,
+              duration: 1.5
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    saveConfig () {
-      // 保存请求
-      this.createSource(this.createParams).then(data => {
-        this.$router.push('Source')
-      }).catch(error => {
-        this.$Message.warning({
-          content: error.message,
-          top: 50,
-          duration: 1.5
-        })
+    saveConfig (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 保存请求
+          this.createSource(this.createParams).then(data => {
+            this.$router.push('Source')
+          }).catch(error => {
+            this.$Message.warning({
+              content: error.message,
+              top: 50,
+              duration: 1.5
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
     cancelConfig () {

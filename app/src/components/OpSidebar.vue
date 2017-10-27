@@ -40,7 +40,7 @@ export default {
         },
         {
           name: '系统配置',
-          path: '/Op/SystemResource',
+          path: '/Op/SystemConfig',
           isSelected: false,
           imgUrl: require('../assets/images/icon/resource.png'),
           imgUrlBG: require('../assets/images/icon/resourcebg.png')

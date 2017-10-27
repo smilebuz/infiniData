@@ -33,18 +33,19 @@
         @on-selection-change="selectResource"></Table>
       <Modal
         v-model="createModal.show"
-        :title="createModal.title"
-        @on-ok="submitCreateParams"
-        @on-cancel="cancelCreate">
+        :title="createModal.title">
         <div class="modal__content">
-          <Form :model="createParams" :label-width="80" class="model__form">
-            <FormItem label="配置名">
+          <Form class="model__form" ref="createConfigForm"
+            :model="createParams"
+            :rules="rulesValidate"
+            :label-width="80">
+            <FormItem label="配置名" prop="key">
               <Input v-model="createParams.key"></Input>
             </FormItem>
-            <FormItem label="取值">
+            <FormItem label="取值" prop="value">
               <Input v-model="createParams.value"></Input>
             </FormItem>
-            <FormItem label="缺省值">
+            <FormItem label="缺省值" prop="default_value">
               <Input v-model="createParams.default_value"></Input>
             </FormItem>
             <FormItem label="描述">
@@ -52,27 +53,36 @@
             </FormItem>
           </Form>
         </div>
+        <div slot="footer" class="buttongroup">
+          <Button type="primary" @click="submitCreateParams('createConfigForm')">确定</Button>
+          <Button @click="cancelCreate('createConfigForm')">取消</Button>
+        </div>
       </Modal>
       <Modal
         v-model="editModal.show"
-        :title="editModal.title"
-        @on-ok="submitEditParams"
-        @on-cancel="cancelEdit">
+        :title="editModal.title">
         <div class="modal__content">
-          <Form :model="editParams" :label-width="80" class="model__form">
-            <FormItem label="配置名">
+          <Form class="model__form" ref="editConfigForm"
+            :model="editParams"
+            :rules="rulesValidate"
+            :label-width="80">
+            <FormItem label="配置名" prop="key">
               <Input v-model="editParams.key"></Input>
             </FormItem>
-            <FormItem label="取值">
+            <FormItem label="取值" prop="value">
               <Input v-model="editParams.value"></Input>
             </FormItem>
-            <FormItem label="缺省值">
+            <FormItem label="缺省值" prop="default_value">
               <Input v-model="editParams.default_value"></Input>
             </FormItem>
             <FormItem label="描述">
               <Input v-model="editParams.info"></Input>
             </FormItem>
           </Form>
+        </div>
+        <div slot="footer" class="buttongroup">
+          <Button type="primary" @click="submitEditParams('editConfigForm')">确定</Button>
+          <Button @click="cancelEdit('editConfigForm')">取消</Button>
         </div>
       </Modal>
       <div class="pagination">
@@ -198,6 +208,18 @@ export default {
         value: '',
         default_value: '',
         info: ''
+      },
+
+      rulesValidate: {
+        key: [
+          { required: true, message: '配置名称不能为空', trigger: 'blur' }
+        ],
+        value: [
+          { required: true, message: '取值不能为空', trigger: 'blur' }
+        ],
+        default_value: [
+          { required: true, message: '默认值不能为空', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -263,25 +285,27 @@ export default {
       this.searchParams.pageSize = pageSize
     },
 
-    submitCreateParams () {
-      this.createResource(this.createParams).then(data => {
-        this.createModal.show = false
-        this.getResourceList(this.searchParams).then(data => {
-          for (var prop in this.createParams) {
-            if (this.createParams.hasOwnProperty(prop)) {
-              this.createParams[prop] = ''
-            }
-          }
-        })
+    submitCreateParams (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.createResource(this.createParams).then(data => {
+            this.createModal.show = false
+            this.getResourceList(this.searchParams).then(data => {
+              for (var prop in this.createParams) {
+                if (this.createParams.hasOwnProperty(prop)) {
+                  this.createParams[prop] = ''
+                }
+              }
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    cancelCreate () {
+    cancelCreate (formName) {
       this.createModal.show = false
-      for (var prop in this.createParams) {
-        if (this.createParams.hasOwnProperty(prop)) {
-          this.createParams[prop] = ''
-        }
-      }
+      this.$refs[formName].resetFields()
     },
 
     openEditModal (resource) {
@@ -292,19 +316,21 @@ export default {
       this.editParams.default_value = resource.default_value
       this.editParams.info = resource.info
     },
-    submitEditParams () {
-      this.editResource(this.editParams).then(data => {
-        this.editModal.show = false
-        this.getResourceList(this.searchParams)
+    submitEditParams (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.editResource(this.editParams).then(data => {
+            this.editModal.show = false
+            this.getResourceList(this.searchParams)
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    cancelEdit () {
+    cancelEdit (formName) {
       this.editModal.show = false
-      for (var prop in this.editParams) {
-        if (this.editParams.hasOwnProperty(prop)) {
-          this.editParams[prop] = ''
-        }
-      }
+      this.$refs[formName].resetFields()
     }
   },
   watch: {

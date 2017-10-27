@@ -54,8 +54,10 @@
             <Icon type="gear-b"></Icon>
           </p>
           <div class="inputgroup">
-            <span>单线程抽取记录数</span>
-            <Input v-model="createParams.blocks" size="small" number></Input>
+            <span class="inputgroup__label">单线程抽取记录数</span>
+            <Input v-model="createParams.blocks" class="inputgroup__input" size="small" number>
+              <span slot="append">万</span>
+            </Input>
           </div>
         </Card>
         <Card>
@@ -85,7 +87,7 @@
                 </TimePicker>
               </div>
             </div>
-            <Radio :label="0" class="radiogroup__radio">失效</Radio>
+            <!--Radio :label="0" class="radiogroup__radio">失效</Radio-->
           </RadioGroup>
         </Card>
       </div>
@@ -173,7 +175,7 @@ export default {
       createParams: {
         connId: '',
         tbInfos: [],
-        blocks: 10000000,
+        blocks: 1000,
         user: '',
         priority: 1,
         scheduleMode: 1,
@@ -280,13 +282,33 @@ export default {
     submitCreateParams () {
       this.createParams.selectAll = this.selectAllFlag === 1
       this.createParams.totalCount = this.pageInfo.totalCount
+      this.createParams.blocks *= 10000
       switch (this.createParams.scheduleMode) {
         case 2:
-          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
+          if (!this.scheduleCorn.date || !this.scheduleCorn.time) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
+          }
           break
         default:
           this.createParams.scheduleCorn = ''
           break
+      }
+      if (!this.createParams.selectAll && !this.createParams.tbInfos.length) {
+        // 未选择表
+        this.$Message.warning({
+          content: '尚未选择表',
+          top: 50,
+          duration: 1.5
+        })
+        return
       }
       this.createTask(this.createParams).then(data => {
         this.$router.push('OffImport')
@@ -347,8 +369,11 @@ export default {
     display: flex;
     align-items: center;
     font-size: 12px;
-    span {
-      width: 160px;
+    .inputgroup__label {
+      padding-right: 5px;
+    }
+    .inputgroup__input {
+      width: 40%;
     }
   }
 </style>

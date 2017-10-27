@@ -74,7 +74,7 @@
                 format="HH:mm"
               ></TimePicker>
             </div>
-            <Radio :label="0" class="radiogroup__radio">无效</Radio>
+            <!--Radio :label="0" class="radiogroup__radio">无效</Radio-->
           </RadioGroup>
         </Card>
       </div>
@@ -96,7 +96,7 @@ export default {
       searchParams: {
         connId: '',
         tables: '',
-        pageSize: 2,
+        pageSize: 10,
         pageNum: 1,
         type: 'inc'
       },
@@ -249,7 +249,8 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                targetTable.condition1 = dateFormatter2(value)
+                // targetTable.condition1 = dateFormatter2(value)
+                targetTable.condition1 = value
               }
             }
           }
@@ -274,7 +275,8 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                targetTable.condition2 = dateFormatter2(value)
+                // targetTable.condition2 = dateFormatter2(value)
+                targetTable.condition2 = value
               }
             }
           }
@@ -392,10 +394,30 @@ export default {
           this.createParams.scheduleCorn = ''
           break
         case 2:
-          this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          if (!this.scheduleCornTiming.date || !this.scheduleCornTiming.time) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          }
           break
         case 3:
-          this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          if (!this.scheduleCornPeriod) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
+          }
           break
         case 0:
           // 失效
@@ -403,6 +425,16 @@ export default {
           break
         default:
           break
+      }
+      // 未选择表
+      if (!this.createParams.tbInfos.length) {
+        // 未选择表
+        this.$Message.warning({
+          content: '尚未选择表',
+          top: 50,
+          duration: 1.5
+        })
+        return
       }
       // 判断是否缺少增量字段
       let lackIncField = false
@@ -418,12 +450,11 @@ export default {
           top: 50,
           duration: 1.5
         })
-      } else {
-        // 正常
-        this.createTask(this.createParams).then(data => {
-          this.$router.push('IncImport')
-        })
+        return
       }
+      this.createTask(this.createParams).then(data => {
+        this.$router.push('IncImport')
+      })
     }
   },
   watch: {

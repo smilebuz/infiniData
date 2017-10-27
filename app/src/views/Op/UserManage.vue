@@ -41,43 +41,49 @@
         @on-selection-change="selectUser"></Table>
       <Modal
         v-model="createModal.show"
-        :title="createModal.title"
-        @on-ok="submitCreateParams"
-        @on-cancel="cancelCreate">
+        :title="createModal.title">
         <div class="modal__content">
-          <Form :model="createParams" :label-width="80" class="model__form">
-            <FormItem label="姓名">
+          <Form class="model__form" ref="createUserForm"
+            :model="createParams"
+            :label-width="80"
+            :rules="rulesValidate">
+            <FormItem label="姓名" prop="name">
               <Input v-model="createParams.name"></Input>
             </FormItem>
-            <FormItem label="密码">
+            <FormItem label="密码" prop="pwd">
               <Input v-model="createParams.pwd"></Input>
             </FormItem>
-            <FormItem label="邮箱">
+            <FormItem label="邮箱" prop="email">
               <Input v-model="createParams.email"></Input>
             </FormItem>
-            <FormItem label="电话">
+            <FormItem label="电话" prop="phone">
               <Input v-model="createParams.phone"></Input>
             </FormItem>
           </Form>
         </div>
+        <div slot="footer" class="buttongroup">
+          <Button type="primary" @click="submitCreateParams('createUserForm')">确定</Button>
+          <Button @click="cancelCreate('createUserForm')">取消</Button>
+        </div>
       </Modal>
       <Modal
         v-model="editModal.show"
-        :title="editModal.title"
-        @on-ok="submitEditParams"
-        @on-cancel="cancelEdit">
+        :title="editModal.title">
         <div class="modal__content">
-          <Form :model="editParams" :label-width="80" class="model__form">
-            <FormItem label="姓名">
+          <Form class="model__form" ref="editUserForm"
+            :model="editParams"
+            :label-width="80"
+            :rules="rulesValidate">
+            <FormItem label="姓名" prop="name">
               <Input v-model="editParams.name"></Input>
             </FormItem>
-            <FormItem label="密码">
+            <FormItem label="密码" prop="pwd">
               <Input v-model="editParams.pwd"></Input>
             </FormItem>
-            <FormItem label="邮箱">
+            <FormItem label="邮箱" prop="email">
               <Input v-model="editParams.email"></Input>
             </FormItem>
-            <FormItem label="电话">
+            <FormItem label="电话" prop="phone">
               <Input v-model="editParams.phone"></Input>
             </FormItem>
             <FormItem label="状态">
@@ -87,6 +93,10 @@
               </Select>
             </FormItem>
           </Form>
+        </div>
+        <div slot="footer" class="buttongroup">
+          <Button type="primary" @click="submitEditParams('editUserForm')">确定</Button>
+          <Button @click="cancelEdit('editUserForm')">取消</Button>
         </div>
       </Modal>
       <div class="pagination">
@@ -224,6 +234,21 @@ export default {
         '': '全部',
         0: '无效',
         1: '有效'
+      },
+      rulesValidate: {
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
+        ],
+        pwd: [
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, message: '电话不能为空', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -289,25 +314,34 @@ export default {
       this.searchParams.pageSize = pageSize
     },
 
-    submitCreateParams () {
-      this.createUser(this.createParams).then(data => {
-        this.createModal.show = false
-        this.getUserList(this.searchParams).then(data => {
-          for (var prop in this.createParams) {
-            if (this.createParams.hasOwnProperty(prop)) {
-              this.createParams[prop] = ''
-            }
-          }
-        })
+    submitCreateParams (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.createUser(this.createParams).then(data => {
+            this.createModal.show = false
+            this.getUserList(this.searchParams).then(data => {
+              for (var prop in this.createParams) {
+                if (this.createParams.hasOwnProperty(prop)) {
+                  this.createParams[prop] = ''
+                }
+              }
+            })
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    cancelCreate () {
+    cancelCreate (formName) {
       this.createModal.show = false
+      this.$refs[formName].resetFields()
+      /*
       for (var prop in this.createParams) {
         if (this.createParams.hasOwnProperty(prop)) {
           this.createParams[prop] = ''
         }
       }
+      */
     },
 
     openEditModal (user) {
@@ -319,19 +353,28 @@ export default {
       this.editParams.status = user.status
       this.editModal.show = true
     },
-    submitEditParams () {
-      this.editUser(this.editParams).then(data => {
-        this.editModal.show = false
-        this.getUserList(this.searchParams)
+    submitEditParams (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.editUser(this.editParams).then(data => {
+            this.editModal.show = false
+            this.getUserList(this.searchParams)
+          })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
       })
     },
-    cancelEdit () {
+    cancelEdit (formName) {
       this.editModal.show = false
+      this.$refs[formName].resetFields()
+      /*
       for (var prop in this.editParams) {
         if (this.editParams.hasOwnProperty(prop)) {
           this.editParams[prop] = ''
         }
       }
+      */
     }
   },
   watch: {
@@ -354,4 +397,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 </style>
