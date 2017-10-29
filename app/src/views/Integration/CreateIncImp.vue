@@ -249,8 +249,9 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                // targetTable.condition1 = dateFormatter2(value)
-                targetTable.condition1 = value
+                if (typeof value === 'object') {
+                  targetTable.condition1 = dateFormatter2(value)
+                }
               }
             }
           }
@@ -275,8 +276,9 @@ export default {
           on: {
             input: (value) => {
               if (value) {
-                // targetTable.condition2 = dateFormatter2(value)
-                targetTable.condition2 = value
+                if (typeof value === 'object') {
+                  targetTable.condition2 = dateFormatter2(value)
+                }
               }
             }
           }
