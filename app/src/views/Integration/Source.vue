@@ -382,6 +382,7 @@ export default {
             type: this.editParams.dbType,
             host: this.editParams.host,
             port: this.editParams.port,
+            instance_name: this.editParams.instanceName,
             database_name: this.editParams.dbName,
             user_name: this.editParams.userName,
             password: this.editParams.password

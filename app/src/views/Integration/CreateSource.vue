@@ -164,6 +164,7 @@ export default {
             type: this.createParams.dbType,
             host: this.createParams.host,
             port: this.createParams.port,
+            instance_name: this.createParams.instanceName,
             database_name: this.createParams.dbName,
             user_name: this.createParams.userName,
             password: this.createParams.password

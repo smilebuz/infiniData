@@ -99,11 +99,13 @@ export default {
         },
         {
           title: '备注',
-          key: 'info',
+          // key: 'info',
+          key: 'status',
           align: 'center',
           width: 100,
           render: (h, params) => {
-            if (params.row.info) {
+            if (params.row.status === 99) {
+              // 失败
               return h('Button', {
                 props: {
                   type: 'primary',
