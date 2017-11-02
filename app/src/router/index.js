@@ -36,6 +36,13 @@ Vue.use(Router)
 
 let router = new Router({
   routes: [
+    /*
+    {
+      path: '/dateTest',
+      name: 'dateTest',
+      component: dateTest
+    },
+    */
     {
       path: '/',
       redirect: '/Integration/Dashboard'

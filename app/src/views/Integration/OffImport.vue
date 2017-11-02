@@ -228,8 +228,8 @@ export default {
           render: (h, params) => {
             switch (params.row.status) {
               case 1:
-              case 4:
-              case 5:
+              case 6:
+              case 7:
                 if (params.row.scheduleMode === 1) {
                   // 判断是不是手动
                   return h('div', [
@@ -322,7 +322,8 @@ export default {
                   }, '编辑')
                 ])
               */
-              case 99:
+              case 3:
+              case 5:
                 return h('div', [
                   h('Button', {
                     props: {
@@ -385,6 +386,7 @@ export default {
           return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
         }
       },
+      /*
       statusList: {
         0: '不运行',
         1: '待运行',
@@ -393,6 +395,16 @@ export default {
         4: '已完成',
         5: '已停止',
         99: '已失败'
+      },
+      */
+      statusList: {
+        1: '待运行',
+        2: '抽取中',
+        3: '抽取失败',
+        4: '入库中',
+        5: '入库失败',
+        6: '已完成',
+        7: '已暂停'
       },
       scheduleModeList: {
         '0': '失效',

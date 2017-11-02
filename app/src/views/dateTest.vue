@@ -47,13 +47,14 @@ export default {
       ],
       data: [
         {
-          name: '张三'
+          name: '张三',
+          date: ''
         },
         {
-          name: '李四'
+          name: '李四',
+          date: ''
         }
-      ],
-      dateSelected: ''
+      ]
     }
   },
   methods: {
