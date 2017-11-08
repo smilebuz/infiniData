@@ -170,9 +170,29 @@ export default {
         {
           title: '主键字段',
           key: 'priKey',
-          width: 90
+          width: 90,
+          render: (h, params) => {
+            return this.buildPriKeySelect(h, params)
+          }
+        },
+        {
+          title: '分桶字段',
+          key: '',
+          width: 90,
+          render: (h, params) => {
+            return this.buildBucketSelect(h, params)
+          }
+        },
+        {
+          title: '分桶数量',
+          key: '',
+          width: 90,
+          render: (h, params) => {
+            return this.buildBucketNumInput(h, params)
+          }
         }
       ],
+      tableParams: [],
       scheduleOptions: {
         disabledDate (date) {
           return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
@@ -238,6 +258,107 @@ export default {
           break
       }
     },
+
+    buildPriKeySelect (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
+      return h('Select', {
+        props: {
+          size: 'small',
+          transfer: true,
+          multiple: true,
+          value: targetTable.priKeys
+        },
+        on: {
+          input: (value) => {
+            debugger
+            targetTable.prikeys = value
+          }
+        }
+      }, this.buildPriKeyOption(h, params.row))
+    },
+    buildPriKeyOption (h, table) {
+      let options = []
+      let targetTablePriKeys = this.tableList.find((el) => {
+        return el.tbName === table.tbName
+      }).prikeys
+      targetTablePriKeys.forEach(prikey => {
+        let option = h('Option', {
+          props: {
+            value: prikey
+          }
+        }, prikey)
+        options.push(option)
+      })
+      return options
+    },
+    buildBucketSelect (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
+      return h('Select', {
+        props: {
+          size: 'small',
+          transfer: true,
+          multiple: true,
+          value: targetTable.bucketField
+        },
+        on: {
+          input: (value) => {
+            debugger
+            targetTable.bucketField = value
+          }
+        }
+      }, this.buildBucketOption(h, params.row))
+    },
+    buildBucketOption (h, table) {
+      let options = []
+      let targetTableBuckets = this.tableList.find((el) => {
+        return el.tbName === table.tbName
+      }).buckets
+      targetTableBuckets.forEach(bucket => {
+        let option = h('Option', {
+          props: {
+            value: bucket
+          }
+        }, bucket)
+        options.push(option)
+      })
+      return options
+    },
+    buildBucketNumInput (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
+      return h('div', [
+        h('InputNumber', {
+          props: {
+            size: 'small',
+            transfer: true,
+            min: 1,
+            value: targetTable.bucketNum
+          },
+          style: {
+            width: '90px'
+          },
+          on: {
+            input: (value) => {
+              if (value) {
+                debugger
+                targetTable.bucketNum = value
+              }
+            }
+          }
+        }, ''),
+        h('span', {
+          style: {
+            paddingLeft: '5px'
+          }
+        }, '个')
+      ])
+    },
+
     selectAllinDB (selected) {
       // this.selectAllFlag = selected
       this.tableList.forEach(table => {
@@ -298,6 +419,20 @@ export default {
       this.searchParams.pageSize = pageSize
     },
     submitCreateParams () {
+      for (let table of this.createParams.tbInfos) {
+        let targetTable = this.tableParams.find((el) => {
+          return el.tbName === table.tbName
+        })
+        for (let prop in targetTable) {
+          if (targetTable.hasOwnProperty(prop)) {
+            table[prop] = targetTable[prop]
+          }
+        }
+      }
+
+      console.log(this.createParams)
+      debugger
+
       this.createParams.selectAll = this.selectAllFlag === 1
       this.createParams.totalCount = this.pageInfo.totalCount
       this.createParams.blocks *= 10000
@@ -362,6 +497,14 @@ export default {
             })
             if (targetTable) {
               table._checked = true
+              this.tableParams.push({
+                tbName: table.tbName,
+                priKeys: table.priKeys,
+                bucketField: table.bucketField,
+                bucketNum: table.bucketNum
+              })
+            } else {
+              this.tableParams.push({tbName: table.tbName, priKeys: [], bucketField: '', bucketNum: 1})
             }
           })
         })
