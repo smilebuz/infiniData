@@ -99,7 +99,7 @@
                 format="HH:mm"
               ></TimePicker>
             </div>
-            <Radio :label="0" class="radiogroup__radio">失效</Radio>
+            <!--Radio :label="0" class="radiogroup__radio">失效</Radio-->
           </RadioGroup>
         </div>
       </Modal>

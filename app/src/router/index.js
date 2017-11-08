@@ -170,14 +170,6 @@ let router = new Router({
         }
       ]
     }
-    /*
-    {
-      path: '/SelectTest',
-      name: 'SelectTest',
-      meta: { requiresAuth: true },
-      component: SelectTest
-    }
-    */
   ]
 })
 

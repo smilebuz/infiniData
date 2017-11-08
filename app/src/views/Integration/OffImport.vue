@@ -61,18 +61,27 @@
             <div class="radiopicker radiopicker-vertical">
               <Radio :label="2">定时</Radio>
               <DatePicker class="radiopicker__datepicker" type="date" style="width: 120px;" size="small" transfer
-                v-model="scheduleCorn.date"
+                v-model="scheduleCornTiming.date"
                 :options="scheduleOptions"
                 :disabled="disableEditDatePicker"
               ></DatePicker>
               <TimePicker type="time" style="width:120px;" size="small" transfer
-                v-model="scheduleCorn.time"
+                v-model="scheduleCornTiming.time"
                 :steps="[0, 5]"
                 format="HH:mm"
                 :disabled="disableEditDatePicker">
               </TimePicker>
             </div>
-            <Radio :label="0" class="radiogroup__radio">失效</Radio>
+            <div class="radiopicker radiopicker-vertical">
+              <Radio :label="3">周期</Radio>
+              <TimePicker size="small" type="time" style="width: 120px;" transfer
+                v-model="scheduleCornPeriod"
+                :disabled="disableEditTimePicker"
+                :steps="[0, 5]"
+                format="HH:mm"
+              ></TimePicker>
+            </div>
+            <!--Radio :label="0" class="radiogroup__radio">失效</Radio-->
           </RadioGroup>
         </div>
       </Modal>
@@ -376,11 +385,13 @@ export default {
         scheduleMode: '',
         scheduleCorn: ''
       },
-      scheduleCorn: {
-        data: '',
+      scheduleCornTiming: {
+        date: '',
         time: ''
       },
+      scheduleCornPeriod: '',
       disableEditDatePicker: true,
+      disableEditTimePicker: true,
       scheduleOptions: {
         disabledDate (date) {
           return date.getTime() < Date.now() - 24 * 60 * 60 * 1000
@@ -438,11 +449,8 @@ export default {
       }
     },
     changeEditScheduleMode (value) {
-      if (value === 2) {
-        this.disableEditDatePicker = false
-      } else {
-        this.disableEditDatePicker = true
-      }
+      this.disableEditDatePicker = !(value === 2)
+      this.disableEditTimePicker = !(value === 3)
     },
     selectTask (selection) {
       this.selectedTaskIds.splice(0, this.selectedTaskIds.length)
@@ -519,20 +527,29 @@ export default {
       if (task.scheduleMode === 0) {
         // 失效
         this.disableEditDatePicker = true
+        this.disableEditTimePicker = true
       } else {
-        this.disableEditDatePicker = true
+        this.disableEditDatePicker = !(task.scheduleMode === 2)
+        this.disableEditTimePicker = !(task.scheduleMode === 3)
         if (task.scheduleMode === 2) {
           // this.editParams.scheduleCorn = task.scheduleCorn
           this.scheduleCorn.date = task.scheduleCorn.split(' ')[0]
           this.scheduleCorn.time = task.scheduleCorn.split(' ')[1]
-          this.disableEditDatePicker = false
+        }
+        if (task.scheduleMode === 3) {
+          this.scheduleCornPeriod = task.scheduleCorn
         }
       }
     },
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 2:
-          this.editParams.scheduleCorn = dateFormatter2(new Date(this.scheduleCorn.date)) + ' ' + timeFormatter(this.scheduleCorn.time)
+          let date = dateFormatter2(new Date(this.scheduleCornTiming.date))
+          let time = timeFormatter(this.scheduleCornTiming.time)
+          this.editParams.scheduleCorn = date + ' ' + time
+          break
+        case 3:
+          this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
           break
         default:
           this.editParams.scheduleCorn = ''

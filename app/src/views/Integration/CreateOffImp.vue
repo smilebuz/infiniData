@@ -70,22 +70,29 @@
             @on-change="changeScheduleMode">
             <Radio :label="1" class="radiogroup__radio">手动</Radio>
             <div class="radiopicker">
-              <Radio :label="2">
-                <span>定时</span>
-              </Radio>
+              <Radio :label="2">定时</Radio>
               <div class="radiopicker__datecontainer">
                 <DatePicker class="radiopicker__datecontainer-picker" placeholder="年-月-日" type="date" size="small" style="width: 120px;" transfer
-                  v-model="scheduleCorn.date"
+                  v-model="scheduleCornTiming.date"
                   :options="scheduleOptions"
                   :disabled="disableDatePicker"
                 ></DatePicker>
                 <TimePicker type="time" size="small" style="width: 120px;" placeholder="时:分" transfer
-                  v-model="scheduleCorn.time"
+                  v-model="scheduleCornTiming.time"
                   :disabled="disableDatePicker"
                   format="HH:mm"
                   :steps="[1, 5]">
                 </TimePicker>
               </div>
+            </div>
+            <div class="radiopicker radiopicker-vertical">
+              <Radio :label="3">每天</Radio>
+              <TimePicker transfer type="time" placeholder="时:分" size="small" style="width: 120px;"
+                v-model="scheduleCornPeriod"
+                :disabled="disableTimePicker"
+                :steps="[0, 5]"
+                format="HH:mm"
+              ></TimePicker>
             </div>
             <!--Radio :label="0" class="radiogroup__radio">失效</Radio-->
           </RadioGroup>
@@ -172,6 +179,7 @@ export default {
         }
       },
       disableDatePicker: true,
+      disableTimePicker: true,
       createParams: {
         connId: '',
         tbInfos: [],
@@ -183,10 +191,11 @@ export default {
         selectAll: false,
         totalCount: 0
       },
-      scheduleCorn: {
-        data: '',
+      scheduleCornTiming: {
+        date: '',
         time: ''
       },
+      scheduleCornPeriod: '',
       // selectAllFlag: false
       selectAllFlag: 0
     }
@@ -214,10 +223,19 @@ export default {
       }
     },
     changeScheduleMode (value) {
-      if (value === 2) {
-        this.disableDatePicker = false
-      } else {
-        this.disableDatePicker = true
+      switch (value) {
+        case 2:
+          this.disableDatePicker = false
+          this.disableTimePicker = true
+          break
+        case 3:
+          this.disableDatePicker = true
+          this.disableTimePicker = false
+          break
+        default:
+          this.disableDatePicker = true
+          this.disableTimePicker = true
+          break
       }
     },
     selectAllinDB (selected) {
@@ -285,7 +303,7 @@ export default {
       this.createParams.blocks *= 10000
       switch (this.createParams.scheduleMode) {
         case 2:
-          if (!this.scheduleCorn.date || !this.scheduleCorn.time) {
+          if (!this.scheduleCornTiming.date || !this.scheduleCornTiming.time) {
             // 未选择时间
             this.$Message.warning({
               content: '请选择调度的时间',
@@ -294,7 +312,20 @@ export default {
             })
             return
           } else {
-            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCorn.date) + ' ' + timeFormatter(this.scheduleCorn.time)
+            this.createParams.scheduleCorn = dateFormatter2(this.scheduleCornTiming.date) + ' ' + timeFormatter(this.scheduleCornTiming.time)
+          }
+          break
+        case 3:
+          if (!this.scheduleCornPeriod) {
+            // 未选择时间
+            this.$Message.warning({
+              content: '请选择调度的时间',
+              top: 50,
+              duration: 1.5
+            })
+            return
+          } else {
+            this.createParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
           }
           break
         default:
