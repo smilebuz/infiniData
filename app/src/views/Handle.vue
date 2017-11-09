@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="handle">
     <div class="side">
-      <!--div class="dbSelect">
+      <div class="dbSelect">
         <span>库</span>
         <Select class="dbSelect__select" style="width: 140px;" size="small"
           v-model="selectedpdbId"
@@ -16,11 +16,11 @@
       <Tree class="tree"
         v-if="tables[0].children.length"
         :data="tables"
-        @on-select-change="selectTable"></Tree-->
-      <Tree class="tree"
+        @on-select-change="selectTable"></Tree>
+      <!--Tree class="tree"
         v-if="tables[0].children.length"
         :data="tables"
-        @on-select-change="selectTree"></Tree>
+        @on-select-change="selectTree"></Tree-->
       <div class="radios" v-if="(tables[0].children.length > 0) && (partitions.length > 0)">
         <div class="radio-div"
           v-for="(value, key) in radios"
@@ -187,7 +187,6 @@ export default {
         pdbId: '',
         tbId: ''
       },
-      /*
       tables: [
         {
           title: '',
@@ -195,14 +194,13 @@ export default {
           children: [] // 树子节点
         }
       ],
-      */
-      tables: [
-        {
-          title: '平台库',
-          expand: true,
-          children: []
-        }
-      ],
+      // tables: [
+      //   {
+      //     title: '平台库',
+      //     expand: true,
+      //     children: []
+      //   }
+      // ],
       radios: {
         fields: {
           label: '字段',
@@ -346,14 +344,14 @@ export default {
               duration: 1.5
             })
           } else {
-            if (this.tbParams.pdbId < 0) {
-              this.$Message.warning({
-                content: '尚未选择数据库，请点击左侧列表选择相应数据库',
-                top: 50,
-                duration: 1.5
-              })
-              return false
-            }
+            // if (this.tbParams.pdbId < 0) {
+            //   this.$Message.warning({
+            //     content: '尚未选择数据库，请点击左侧列表选择相应数据库',
+            //     top: 50,
+            //     duration: 1.5
+            //   })
+            //   return false
+            // }
 
             let targetTab = this.sqlTabs.find((tab) => {
               return tab.id === this.currentTabId
@@ -538,26 +536,26 @@ export default {
         this.tbInfoParams.tbId = selection[0].tbId
       }
     },
-    selectTree (selection) {
-      if (selection.length) {
-        // 展开
-        if (selection[0].pdbId) {
-          if (selection[0].expand) {
-            // 收起
-            this.tbParams.pdbId = -1
-          } else {
-            // 展开
-            this.tbParams.pdbId = selection[0].pdbId
-          }
-        }
-        if (selection[0].tbId) {
-          this.tbInfoParams.tbId = selection[0].tbId
-        }
-      } else {
-        // 收起
-        this.tbParams.pdbId = -1
-      }
-    },
+    // selectTree (selection) {
+    //   if (selection.length) {
+    //     // 展开
+    //     if (selection[0].pdbId) {
+    //       if (selection[0].expand) {
+    //         // 收起
+    //         this.tbParams.pdbId = -1
+    //       } else {
+    //         // 展开
+    //         this.tbParams.pdbId = selection[0].pdbId
+    //       }
+    //     }
+    //     if (selection[0].tbId) {
+    //       this.tbInfoParams.tbId = selection[0].tbId
+    //     }
+    //   } else {
+    //     // 收起
+    //     this.tbParams.pdbId = -1
+    //   }
+    // },
     exportData () {
       this.$refs.dataTable.exportCsv({
         filename: '原始数据'
@@ -565,59 +563,59 @@ export default {
     }
   },
   watch: {
-    // tbParams: {
-    //   handler: function (newParams) {
-    //     this.getTBList(newParams).then(data => {
-    //       this.tables[0].children.splice(0, this.tables[0].children.length)
-    //       this.tables[0].title = this.dbList.find(db => {
-    //         return db.pdbId === this.tbParams.pdbId
-    //       }).pdbName
-    //       // 填充this.tables.children 改变this.tbInfoParams
-    //       if (this.tbList.length) {
-    //         for (let table of this.tbList) {
-    //           this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
-    //         }
-    //         this.tbInfoParams.pdbId = this.selectedpdbId
-    //         this.tbInfoParams.tbId = this.tbList[0].tbId
-    //       }
-    //     })
-    //   },
-    //   deep: true
-    // },
     tbParams: {
       handler: function (newParams) {
-        if (newParams.pdbId === -1) {
-          this.tables[0].children.forEach(db => {
-            db.expand = false
-          })
-        } else {
-          this.getTBList(newParams).then(data => {
-            let targetIndex = this.dbList.findIndex(db => {
-              return db.pdbId === newParams.pdbId
-            })
-            let targetPdb = this.tables[0].children[targetIndex]
-            targetPdb.children.splice(0, targetPdb.children.length)
-            // 填充this.tables.children 改变this.tbInfoParams
-            if (this.tbList.length) {
-              for (let table of this.tbList) {
-                targetPdb.children.push({title: table.tbName, tbId: table.tbId})
-              }
-              this.tbInfoParams.pdbId = targetPdb.pdbId
-              // this.tbInfoParams.tbId = this.tbList[0].tbId
+        this.getTBList(newParams).then(data => {
+          this.tables[0].children.splice(0, this.tables[0].children.length)
+          this.tables[0].title = this.dbList.find(db => {
+            return db.pdbId === this.tbParams.pdbId
+          }).pdbName
+          // 填充this.tables.children 改变this.tbInfoParams
+          if (this.tbList.length) {
+            for (let table of this.tbList) {
+              this.tables[0].children.push({title: table.tbName, tbId: table.tbId})
             }
-            // 只展开当前选中的
-            this.tables[0].children.forEach((db, index, arr) => {
-              if (index === targetIndex) {
-                db.expand = true
-              } else {
-                db.expand = false
-              }
-            })
-          })
-        }
+            this.tbInfoParams.pdbId = this.selectedpdbId
+            this.tbInfoParams.tbId = this.tbList[0].tbId
+          }
+        })
       },
       deep: true
     },
+    // tbParams: {
+    //   handler: function (newParams) {
+    //     if (newParams.pdbId === -1) {
+    //       this.tables[0].children.forEach(db => {
+    //         db.expand = false
+    //       })
+    //     } else {
+    //       this.getTBList(newParams).then(data => {
+    //         let targetIndex = this.dbList.findIndex(db => {
+    //           return db.pdbId === newParams.pdbId
+    //         })
+    //         let targetPdb = this.tables[0].children[targetIndex]
+    //         targetPdb.children.splice(0, targetPdb.children.length)
+    //         // 填充this.tables.children 改变this.tbInfoParams
+    //         if (this.tbList.length) {
+    //           for (let table of this.tbList) {
+    //             targetPdb.children.push({title: table.tbName, tbId: table.tbId})
+    //           }
+    //           this.tbInfoParams.pdbId = targetPdb.pdbId
+    //           // this.tbInfoParams.tbId = this.tbList[0].tbId
+    //         }
+    //         // 只展开当前选中的
+    //         this.tables[0].children.forEach((db, index, arr) => {
+    //           if (index === targetIndex) {
+    //             db.expand = true
+    //           } else {
+    //             db.expand = false
+    //           }
+    //         })
+    //       })
+    //     }
+    //   },
+    //   deep: true
+    // },
     tbInfoParams: {
       handler: function (newParams) {
         if (newParams.tbId) {
@@ -630,18 +628,17 @@ export default {
   created () {
     this.getDBList().then(data => {
       // 原
-      // this.selectedpdbId = this.dbList[0].pdbId
+      this.selectedpdbId = this.dbList[0].pdbId
       // 新
-      for (let db of this.dbList) {
-        this.tables[0].children.push({
-          title: db.pdbName,
-          pdbId: db.pdbId,
-          expand: false,
-          children: []
-        })
-      }
-      // this.tbParams.pdbId = this.dbList[0].pdbId
-      this.tbParams.pdbId = -1
+      // for (let db of this.dbList) {
+      //   this.tables[0].children.push({
+      //     title: db.pdbName,
+      //     pdbId: db.pdbId,
+      //     expand: false,
+      //     children: []
+      //   })
+      // }
+      // this.tbParams.pdbId = -1
     })
   },
   mounted () {
