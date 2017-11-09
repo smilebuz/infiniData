@@ -19,7 +19,7 @@
         </FormItem>
       </Form>
     </div>
-    <div class="opgroup">
+    <!--div class="opgroup">
       <div class="opgroup__item"
         v-for="operation in operations"
         :key="operation.value"
@@ -27,7 +27,7 @@
         @click="selectAllinDB(operation.selectAll)">
         {{ operation.text }}
       </div>
-    </div>
+    </div-->
     <div class="main">
       <div class="createPanel">
         <Table :loading="loadingTable" border stripe class="table" size="small"
@@ -145,12 +145,12 @@ export default {
         {
           type: 'selection',
           align: 'center',
-          width: 60
+          width: 40
         },
         {
           type: 'index',
           title: '序号',
-          width: 70
+          width: 40
         },
         {
           title: '库名',
@@ -170,15 +170,19 @@ export default {
         {
           title: '主键字段',
           key: 'priKey',
-          width: 90,
+          width: 120,
           render: (h, params) => {
-            return this.buildPriKeySelect(h, params)
+            if (params.row.priKey.length > 0) {
+              return this.buildPriKeySelect(h, params)
+            } else {
+              return h('div', {}, '无主键')
+            }
           }
         },
         {
           title: '分桶字段',
           key: '',
-          width: 90,
+          width: 120,
           render: (h, params) => {
             return this.buildBucketSelect(h, params)
           }
@@ -186,7 +190,7 @@ export default {
         {
           title: '分桶数量',
           key: '',
-          width: 90,
+          width: 80,
           render: (h, params) => {
             return this.buildBucketNumInput(h, params)
           }
@@ -268,22 +272,21 @@ export default {
           size: 'small',
           transfer: true,
           multiple: true,
-          value: targetTable.priKeys
+          value: targetTable.priKey
         },
         on: {
           input: (value) => {
-            debugger
-            targetTable.prikeys = value
+            targetTable.prikey = value
           }
         }
       }, this.buildPriKeyOption(h, params.row))
     },
     buildPriKeyOption (h, table) {
       let options = []
-      let targetTablePriKeys = this.tableList.find((el) => {
+      let targetTablePriKey = this.tableList.find((el) => {
         return el.tbName === table.tbName
-      }).prikeys
-      targetTablePriKeys.forEach(prikey => {
+      }).priKey
+      targetTablePriKey.forEach(prikey => {
         let option = h('Option', {
           props: {
             value: prikey
@@ -301,12 +304,10 @@ export default {
         props: {
           size: 'small',
           transfer: true,
-          multiple: true,
           value: targetTable.bucketField
         },
         on: {
           input: (value) => {
-            debugger
             targetTable.bucketField = value
           }
         }
@@ -314,15 +315,15 @@ export default {
     },
     buildBucketOption (h, table) {
       let options = []
-      let targetTableBuckets = this.tableList.find((el) => {
+      let targetTableFields = this.tableList.find((el) => {
         return el.tbName === table.tbName
-      }).buckets
-      targetTableBuckets.forEach(bucket => {
+      }).fields
+      targetTableFields.forEach(field => {
         let option = h('Option', {
           props: {
-            value: bucket
+            value: field
           }
-        }, bucket)
+        }, field)
         options.push(option)
       })
       return options
@@ -340,12 +341,11 @@ export default {
             value: targetTable.bucketNum
           },
           style: {
-            width: '90px'
+            width: '60px'
           },
           on: {
             input: (value) => {
               if (value) {
-                debugger
                 targetTable.bucketNum = value
               }
             }
@@ -430,12 +430,12 @@ export default {
         }
       }
 
-      console.log(this.createParams)
-      debugger
-
       this.createParams.selectAll = this.selectAllFlag === 1
       this.createParams.totalCount = this.pageInfo.totalCount
       this.createParams.blocks *= 10000
+      this.createParams.tbInfos.forEach(info => {
+        info.priKey = info.priKey.join(',')
+      })
       switch (this.createParams.scheduleMode) {
         case 2:
           if (!this.scheduleCornTiming.date || !this.scheduleCornTiming.time) {
@@ -499,12 +499,12 @@ export default {
               table._checked = true
               this.tableParams.push({
                 tbName: table.tbName,
-                priKeys: table.priKeys,
+                priKey: table.priKey,
                 bucketField: table.bucketField,
                 bucketNum: table.bucketNum
               })
             } else {
-              this.tableParams.push({tbName: table.tbName, priKeys: [], bucketField: '', bucketNum: 1})
+              this.tableParams.push({tbName: table.tbName, priKey: [], bucketField: '', bucketNum: 1})
             }
           })
         })

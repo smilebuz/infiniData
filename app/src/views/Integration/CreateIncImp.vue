@@ -134,7 +134,10 @@ export default {
         {
           title: '主键字段',
           width: 90,
-          key: 'priKey'
+          key: 'priKey',
+          render: (h, params) => {
+            return h('div', {}, params.row.priKey.join(','))
+          }
         },
         {
           title: '增量字段',
@@ -455,6 +458,37 @@ export default {
         return
       }
       this.createTask(this.createParams).then(data => {
+        if (data.response === 2) {
+          let noFullTables = data.noFull.join(',')
+          let noPriTables = data.noPri.join(',')
+          if (data.noFull.length > 0 && data.noPri.length > 0) {
+            // 未进行全量&缺少主键
+            this.$Message.warning({
+              content: '含有未进行全量导入以及缺少主键的表\t未进行全量导入的表:' + noFullTables + '\t缺少主键的表:' + noPriTables,
+              top: 50,
+              duration: 1.5
+            })
+            return false
+          }
+          if (data.noFull.length > 0) {
+            // 未进行全量
+            this.$Message.warning({
+              content: '含有未进行全量导入的表:' + noFullTables,
+              top: 50,
+              duration: 1.5
+            })
+            return false
+          }
+          if (data.noPri.length > 0) {
+            // 缺少主键
+            this.$Message.warning({
+              content: '含有缺少主键的表:' + noPriTables,
+              top: 50,
+              duration: 1.5
+            })
+            return false
+          }
+        }
         this.$router.push('IncImport')
       })
     }

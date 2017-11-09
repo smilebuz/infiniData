@@ -125,6 +125,8 @@ export const Api = ((apilist) => {
           .then(data => {
             if (data.data.response === 1) {
               return Promise.resolve(data.data)
+            } else if (data.data.response === 2) {
+              return Promise.resolve(data.data)
             } else {
               console.log('response is 0', data.data.msg)
               return Promise.resolve(data.data)
