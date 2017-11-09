@@ -167,18 +167,18 @@ export default {
           key: 'tbName',
           width: 90
         },
-        {
-          title: '主键字段',
-          key: 'priKey',
-          width: 120,
-          render: (h, params) => {
-            if (params.row.priKey.length > 0) {
-              return this.buildPriKeySelect(h, params)
-            } else {
-              return h('div', {}, '无主键')
-            }
-          }
-        },
+        // {
+        //   title: '主键字段',
+        //   key: 'priKey',
+        //   width: 120,
+        //   render: (h, params) => {
+        //     if (params.row.priKey.length > 0) {
+        //       return this.buildPriKeySelect(h, params)
+        //     } else {
+        //       return h('div', {}, '无主键')
+        //     }
+        //   }
+        // },
         {
           title: '分桶字段',
           key: '',
@@ -263,39 +263,39 @@ export default {
       }
     },
 
-    buildPriKeySelect (h, params) {
-      let targetTable = this.tableParams.find((el) => {
-        return el.tbName === params.row.tbName
-      })
-      return h('Select', {
-        props: {
-          size: 'small',
-          transfer: true,
-          multiple: true,
-          value: targetTable.priKey
-        },
-        on: {
-          input: (value) => {
-            targetTable.prikey = value
-          }
-        }
-      }, this.buildPriKeyOption(h, params.row))
-    },
-    buildPriKeyOption (h, table) {
-      let options = []
-      let targetTablePriKey = this.tableList.find((el) => {
-        return el.tbName === table.tbName
-      }).priKey
-      targetTablePriKey.forEach(prikey => {
-        let option = h('Option', {
-          props: {
-            value: prikey
-          }
-        }, prikey)
-        options.push(option)
-      })
-      return options
-    },
+    // buildPriKeySelect (h, params) {
+    //   let targetTable = this.tableParams.find((el) => {
+    //     return el.tbName === params.row.tbName
+    //   })
+    //   return h('Select', {
+    //     props: {
+    //       size: 'small',
+    //       transfer: true,
+    //       multiple: true,
+    //       value: targetTable.priKey
+    //     },
+    //     on: {
+    //       input: (value) => {
+    //         targetTable.prikey = value
+    //       }
+    //     }
+    //   }, this.buildPriKeyOption(h, params.row))
+    // },
+    // buildPriKeyOption (h, table) {
+    //   let options = []
+    //   let targetTablePriKey = this.tableList.find((el) => {
+    //     return el.tbName === table.tbName
+    //   }).priKey
+    //   targetTablePriKey.forEach(prikey => {
+    //     let option = h('Option', {
+    //       props: {
+    //         value: prikey
+    //       }
+    //     }, prikey)
+    //     options.push(option)
+    //   })
+    //   return options
+    // },
     buildBucketSelect (h, params) {
       let targetTable = this.tableParams.find((el) => {
         return el.tbName === params.row.tbName
@@ -488,9 +488,9 @@ export default {
         this.getTableList(newParams).then(data => {
           this.loadingTable = false
           this.createParams.connId = this.searchParams.connId
-          if (this.selectAllFlag !== 0) {
-            this.selectAllinDB(this.selectAllFlag === 1)
-          }
+          // if (this.selectAllFlag !== 0) {
+          //   this.selectAllinDB(this.selectAllFlag === 1)
+          // }
           this.tableList.forEach(table => {
             let targetTable = this.createParams.tbInfos.find(el => {
               return el.tbName === table.tbName
@@ -499,12 +499,11 @@ export default {
               table._checked = true
               this.tableParams.push({
                 tbName: table.tbName,
-                priKey: table.priKey,
                 bucketField: table.bucketField,
                 bucketNum: table.bucketNum
               })
             } else {
-              this.tableParams.push({tbName: table.tbName, priKey: [], bucketField: '', bucketNum: 1})
+              this.tableParams.push({tbName: table.tbName, bucketField: '', bucketNum: 1})
             }
           })
         })

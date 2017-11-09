@@ -133,10 +133,14 @@ export default {
         },
         {
           title: '主键字段',
-          width: 90,
           key: 'priKey',
+          width: 120,
           render: (h, params) => {
-            return h('div', {}, params.row.priKey.join(','))
+            if (params.row.priKey.length > 0) {
+              return this.buildPriKeySelect(h, params)
+            } else {
+              return h('div', {}, '无主键')
+            }
           }
         },
         {
@@ -200,6 +204,40 @@ export default {
       getTableList: 'getSourceTable',
       createTask: 'createIncImpTask'
     }),
+
+    buildPriKeySelect (h, params) {
+      let targetTable = this.tableParams.find((el) => {
+        return el.tbName === params.row.tbName
+      })
+      return h('Select', {
+        props: {
+          size: 'small',
+          transfer: true,
+          multiple: true,
+          value: targetTable.priKey
+        },
+        on: {
+          input: (value) => {
+            targetTable.prikey = value
+          }
+        }
+      }, this.buildPriKeyOption(h, params.row))
+    },
+    buildPriKeyOption (h, table) {
+      let options = []
+      let targetTablePriKey = this.tableList.find((el) => {
+        return el.tbName === table.tbName
+      }).priKey
+      targetTablePriKey.forEach(prikey => {
+        let option = h('Option', {
+          props: {
+            value: prikey
+          }
+        }, prikey)
+        options.push(option)
+      })
+      return options
+    },
     buildIncFieldSelect (h, params) {
       let targetTable = this.tableParams.find((el) => {
         return el.tbName === params.row.tbName
@@ -318,6 +356,7 @@ export default {
         }, '天')
       ])
     },
+
     changeScheduleMode (value) {
       switch (value) {
         case 2:
@@ -394,6 +433,9 @@ export default {
         }
       }
       this.createParams.selectAll = this.selectAllFlag
+      this.createParams.tbInfos.forEach(info => {
+        info.priKey = info.priKey.join(',')
+      })
       switch (this.createParams.scheduleMode) {
         case 1:
           this.createParams.scheduleCorn = ''
@@ -510,6 +552,7 @@ export default {
               this.tableParams.push(
                 {
                   tbName: table.tbName,
+                  priKey: table.priKey,
                   incField: table.incField,
                   condition1: table.condition1,
                   condition2: table.contidition2,
@@ -517,7 +560,7 @@ export default {
                 }
               )
             } else {
-              this.tableParams.push({tbName: table.tbName, incField: '', condition1: '', condition2: '', condition: 1})
+              this.tableParams.push({tbName: table.tbName, priKey: [], incField: '', condition1: '', condition2: '', condition: 1})
             }
           })
         })

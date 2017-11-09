@@ -35,21 +35,21 @@ export default {
           imgUrlBG: require('../assets/images/icon/menu01.png')
         },
         {
-          name: '离线导入',
+          name: '全量导入',
           path: '/Integration/OffImport',
           isSelected: false,
           imgUrl: require('../assets/images/icon/menu2.png'),
           imgUrlBG: require('../assets/images/icon/menu02.png')
         },
         {
-          name: '定时导入',
+          name: '增量导入',
           path: '/Integration/IncImport',
           isSelected: false,
           imgUrl: require('../assets/images/icon/menu3.png'),
           imgUrlBG: require('../assets/images/icon/menu03.png')
         },
         {
-          name: '离线导出',
+          name: '全量导出',
           path: '/Integration/OffExport',
           isSelected: false,
           imgUrl: require('../assets/images/icon/menu4.png'),
