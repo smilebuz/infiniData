@@ -346,6 +346,15 @@ export default {
               duration: 1.5
             })
           } else {
+            if (this.tbParams.pdbId < 0) {
+              this.$Message.warning({
+                content: '尚未选择数据库，请点击左侧列表选择相应数据库',
+                top: 50,
+                duration: 1.5
+              })
+              return false
+            }
+
             let targetTab = this.sqlTabs.find((tab) => {
               return tab.id === this.currentTabId
             })

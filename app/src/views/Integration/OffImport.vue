@@ -533,8 +533,8 @@ export default {
         this.disableEditTimePicker = !(task.scheduleMode === 3)
         if (task.scheduleMode === 2) {
           // this.editParams.scheduleCorn = task.scheduleCorn
-          this.scheduleCorn.date = task.scheduleCorn.split(' ')[0]
-          this.scheduleCorn.time = task.scheduleCorn.split(' ')[1]
+          this.scheduleCornTiming.date = task.scheduleCorn.split(' ')[0]
+          this.scheduleCornTiming.time = task.scheduleCorn.split(' ')[1]
         }
         if (task.scheduleMode === 3) {
           this.scheduleCornPeriod = task.scheduleCorn
@@ -544,11 +544,27 @@ export default {
     submitEditParams () {
       switch (this.editParams.scheduleMode) {
         case 2:
+          if (!this.scheduleCornTiming.date || !this.scheduleCornTiming) {
+            this.$Message.warning({
+              content: '请选择调度时间',
+              duration: 1.5,
+              top: 50
+            })
+            return false
+          }
           let date = dateFormatter2(new Date(this.scheduleCornTiming.date))
           let time = timeFormatter(this.scheduleCornTiming.time)
           this.editParams.scheduleCorn = date + ' ' + time
           break
         case 3:
+          if (!this.scheduleCornPeriod) {
+            this.$Message.warning({
+              content: '请选择调度时间',
+              duration: 1.5,
+              top: 50
+            })
+            return false
+          }
           this.editParams.scheduleCorn = timeFormatter(this.scheduleCornPeriod)
           break
         default:
