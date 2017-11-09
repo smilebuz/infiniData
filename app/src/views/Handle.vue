@@ -641,6 +641,7 @@ export default {
         })
       }
       // this.tbParams.pdbId = this.dbList[0].pdbId
+      this.tbParams.pdbId = -1
     })
   },
   mounted () {
