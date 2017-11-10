@@ -155,7 +155,7 @@ export default {
         {
           title: '库名',
           key: 'dbName',
-          width: 90,
+          width: 80,
           render: (h, params) => {
             return h('div', {}, this.dataSources.find((el) => {
               return el.connId === this.searchParams.connId
@@ -165,7 +165,7 @@ export default {
         {
           title: '表名',
           key: 'tbName',
-          width: 90
+          width: 80
         },
         // {
         //   title: '主键字段',
@@ -190,7 +190,7 @@ export default {
         {
           title: '分桶数量',
           key: '',
-          width: 80,
+          width: 100,
           render: (h, params) => {
             return this.buildBucketNumInput(h, params)
           }
@@ -433,9 +433,6 @@ export default {
       this.createParams.selectAll = this.selectAllFlag === 1
       this.createParams.totalCount = this.pageInfo.totalCount
       this.createParams.blocks *= 10000
-      this.createParams.tbInfos.forEach(info => {
-        info.priKey = info.priKey.join(',')
-      })
       switch (this.createParams.scheduleMode) {
         case 2:
           if (!this.scheduleCornTiming.date || !this.scheduleCornTiming.time) {

@@ -362,9 +362,20 @@ export default {
               return el.pdbId === this.tbParams.pdbId
             }).pdbName
 
+            let sqlInput = targetTab.editor.getSession().getTextRange() ? targetTab.editor.getSession().getTextRange() : targetTab.editor.getValue()
+
+            if (!sqlInput.length) {
+              this.$Message.warning({
+                content: '请输入sql语句',
+                top: 50,
+                duration: 1.5
+              })
+              return false
+            }
+
             let params = {
               // sql: targetTab.editor.getValue(),
-              sql: targetTab.editor.getSession().getTextRange() ? targetTab.editor.getSession().getTextRange() : targetTab.editor.getValue(),
+              sql: sqlInput,
               db_name: dbName
             }
 
@@ -700,6 +711,10 @@ export default {
   .dbSelect__select {
     padding-left: 5px;
     text-align: center;
+  }
+  .tree {
+    max-height: 300px;
+    overflow: scroll;
   }
   .radios {
     display: flex;

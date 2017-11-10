@@ -114,7 +114,7 @@ export default {
         {
           type: 'index',
           title: '序号',
-          width: 70
+          width: 60
         },
         {
           title: '库名',
@@ -134,7 +134,7 @@ export default {
         {
           title: '主键字段',
           key: 'priKey',
-          width: 120,
+          width: 150,
           render: (h, params) => {
             if (params.row.priKey.length > 0) {
               return this.buildPriKeySelect(h, params)
@@ -146,7 +146,7 @@ export default {
         {
           title: '增量字段',
           key: '',
-          width: 180,
+          width: 150,
           render: (h, params) => {
             return this.buildIncFieldSelect(h, params)
           }
@@ -154,7 +154,7 @@ export default {
         {
           title: '增量条件',
           key: '',
-          // width: 380,
+          width: 280,
           render: (h, params) => {
             if (this.createParams.scheduleMode === 3) {
               return this.buildConditionSelect2(h, params)
@@ -285,7 +285,7 @@ export default {
             value: targetTable.condition1
           },
           style: {
-            width: '160px'
+            width: '120px'
           },
           on: {
             input: (value) => {
@@ -312,7 +312,7 @@ export default {
             value: targetTable.condition2
           },
           style: {
-            width: '160px'
+            width: '120px'
           },
           on: {
             input: (value) => {
@@ -499,6 +499,7 @@ export default {
         })
         return
       }
+
       this.createTask(this.createParams).then(data => {
         if (data.response === 2) {
           let noFullTables = data.noFull.join(',')

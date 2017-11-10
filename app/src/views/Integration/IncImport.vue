@@ -131,7 +131,7 @@ export default {
         },
         {
           value: 'create',
-          text: '创建定时任务',
+          text: '创建导入任务',
           bgColor: '#66b8ef',
           imgUrl: require('../../assets/images/icon/new.png')
         }
